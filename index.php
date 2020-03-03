@@ -1,5 +1,6 @@
 <!-- Page Header -->
 <?php require_once "include_header.php"; ?>
+
 <body id="page-top">
 
   <!-- Page Wrapper -->
@@ -7,7 +8,7 @@
     <!-- Sidebar -->
     <?php require_once "body_sidebar.php"; ?>
     <script>
-    $("#nav_dashboard").addClass("active");
+    $("#nav_home").addClass("active");
     </script>
     <!-- Content Wrapper -->
     <div id="content-wrapper" class="d-flex flex-column">
@@ -23,8 +24,8 @@
 
           <!-- Page Heading -->
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
+            <h1 class="h3 mb-0 text-gray-800">STATUS</h1>
+            <a href="#" class="d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
           </div>
 
           <!-- Content Row -->
@@ -37,7 +38,7 @@
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                       <div class="font-weight-bold text-primary text-uppercase">Your skill points</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800">8000</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $u_skillp ?></div>
                     </div>
                     <div class="col-auto">
                       <i class="fas fa-star-of-david fa-3x text-primary"></i>
@@ -53,11 +54,11 @@
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Earnings (Annual)</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800">$215,000</div>
+                      <div class="font-weight-bold text-success text-uppercase">Your MMR Points</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $u_mmr ?></div>
                     </div>
                     <div class="col-auto">
-                      <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                      <i class="fas fa-registered fa-3x text-success"></i>
                     </div>
                   </div>
                 </div>
@@ -70,20 +71,11 @@
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Tasks</div>
-                      <div class="row no-gutters align-items-center">
-                        <div class="col-auto">
-                          <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
-                        </div>
-                        <div class="col">
-                          <div class="progress progress-sm mr-2">
-                            <div class="progress-bar bg-info" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-                          </div>
-                        </div>
-                      </div>
+                      <div class="font-weight-bold text-info text-uppercase">Registered Playinfo</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $u_mmr ?></div>
                     </div>
                     <div class="col-auto">
-                      <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                      <i class="fas fa-clipboard-list fa-3x text-info"></i>
                     </div>
                   </div>
                 </div>

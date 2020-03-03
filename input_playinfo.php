@@ -15,7 +15,12 @@
     $("#nav_input_pi").addClass("active");
     
     function formCheck(fm) {
-        console.log(fm.pi_file.value);
+        var pi_level = $('#pi_level').val();
+        if (!pi_level) {
+            alert("레벨이 입력되지 않았습니다.");
+            return false;
+        }
+
         if (!fm.pi_file.value) {
             alert("파일이 업로드되지 않았습니다.");
             return false;
@@ -27,22 +32,23 @@
         var pathstr = this.value;
         var pathpoint = pathstr.lastIndexOf('.');
         var file_ext = pathstr.substring(pathstr.lastIndexOf('.')+1);
-        switch(file_ext) {
-          case "jpg" :
+        switch(file_ext.toUpperCase()) {
           case "JPG" :
-          case "gif" :
-          case "GIF" :
-          case "png" :
           case "PNG" :
-          case "jpeg" :
           case "JPEG" :
-            console.log(file_ext);
-            break;
+              break;
+          default:
+              alert("지원하지 않는 확장자입니다.");
+              $("#submit_btn").attr("disabled", "");
+              return;
         }
+        $('#file_label').html(pathstr);
         if (this.files && this.files[0]) {
             var reader = new FileReader();
             reader.onload = function(e) {
+                $('#pi_img').removeClass("hiddenItem");
                 $('#pi_img').attr('src', e.target.result);
+                $("#submit_btn").removeAttr("disabled");
             }
             reader.readAsDataURL(this.files[0]);
         }
@@ -58,7 +64,7 @@
                     dataType: "json",
                     //data: {"param":"param"},
                     success: function(data) {
-                        console.log(data);
+                        //console.log(data);
                         //서버에서 json 데이터 response 후 목록에 추가
                         response(
                             $.map(data, function(item) {    //json[i] 번째 에 있는게 item 임.
@@ -79,7 +85,7 @@
                                         break;
                                 }
                                 return {
-                                    label: mode + item["c_level"] + " : " + item["s_title"],
+                                    label: mode + item["c_level"] + " : " + item["s_title"] + "(" + item["s_title_kr"] + ")",
                                     value: item["s_title"],
                                     type : item["c_type"],
                                     level : item["c_level"],
@@ -107,7 +113,7 @@
 //            disabled: true, //자동완성 기능 끄기
             position: { my : "left top" },    // 출력 위치
             close : function(event){    //자동완성창 닫아질때 호출
-                console.log(event);
+                //console.log(event);
             }
         });
     });
@@ -128,28 +134,28 @@
             <form role="form" method="post" id="pi_form" name="pi_form" action="input_pi_action.php" onsubmit="return formCheck(this)" enctype="multipart/form-data">
               <!-- IMAGE FILE -->
               <div class="form-row">
-                <div class="form-group col-md-4 pr_pi">
+                <div class="form-group col-lg-4 pr_pi">
                   <label for="pi_file">
                     리절트 사진
                   </label>
                   <input type="file" class="custom-file-input" id="pi_file" name="pi_file"/>
-                  <label class="custom-file-label" for="pi_file">Choose File</label>
+                  <label class="custom-file-label" id="file_label" for="pi_file">Choose File</label>
                   <p class="help-block">
                     .JPG / .JPEG / .PNG 파일만 가능합니다.
                   </p>
                 </div>
-                <div class="col-md-8 pr_pi">
-                  <img id="pi_img" alt="Playinfo Image" src="" class="rounded" />
+                <div class="col-lg-8 pr_pi">
+                  <img id="pi_img" class="hiddenItem" alt="Playinfo Image" src="" />
                 </div>
               </div>
               <!-- SONG TITLE / MODE / LEVEL -->
               <div class="form-row">
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-6 col-xl-4">
                   <label for="pi_title">곡 제목</label>
                   <input type="text" class="form-control" id="pi_title" name="pi_title" placeholder="제목, 모드, 레벨을 검색하여 선택하세요." required=""/>
                   <input type="hidden" id="pi_seq" name="pi_seq"/>
                 </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-6 col-md-4 col-xl-2">
                   <label for="pi_mode">모드</label>
                   <select class="form-control" id="pi_mode" name="pi_mode" disabled="true">
                     <option></option>
@@ -160,14 +166,12 @@
                     <option>CO-OP</option>
                   </select>
                 </div>
-                <div class="form-group col-md-2">
+                <div class="form-group col-3 col-md-2 col-xl-1">
                   <label for="pi_title">레벨</label>
-                  <input type="text" class="form-control" id="pi_level" name="pi_level" required="" disabled="true"/>
+                  <input type="text" class="form-control" id="pi_level" name="pi_level" required="" readonly/>
                 </div>
-              </div>
               <!-- GRADE / JUDGE / BREAK / SCORE -->
-              <div class="form-row">
-                <div class="form-group col-md-2">
+                <div class="form-group col-3 col-md-2 col-xl-1">
                   <label for="pi_grade">그레이드</label>
                   <select class="form-control" id="pi_grade" name="pi_grade">
                     <option>A</option>
@@ -180,7 +184,7 @@
                     <option>F</option>
                   </select>
                 </div>
-                <div class="form-group col-md-2">
+                <div class="form-group col-3 col-md-2 col-xl-1">
                   <label for="pi_judge">판정</label>
                   <select class="form-control" id="pi_judge" name="pi_judge">
                     <option>NJ</option>
@@ -188,50 +192,47 @@
                     <option>VJ</option>
                   </select>
                 </div>
-                <div class="form-group col-md-2">
+                <div class="form-group col-3 col-md-2 col-xl-1">
                   <label for="pi_break">Break</label>
                   <select class="form-control" id="pi_break" name="pi_break">
                     <option>ON</option>
                     <option>OFF</option>
                   </select>
                 </div>
-                <div class="form-group col-md-6">
+                <div class="form-group col-6 col-xl">
                   <label for="pi_score">스코어</label>
                   <input type="text" class="form-control" id="pi_score" name="pi_score" required=""/>
                 </div>
               </div>
-              <!-- PERFECT / GREAT / GOOD -->
               <div class="form-row">
-                <div class="form-group col-md-4">
+              <!-- PERFECT / GREAT / GOOD / BAD / MISS / MAXCOMBO -->
+                <div class="form-group col-4 col-md-2">
                   <label for="pi_perfect">퍼펙트</label>
                   <input type="text" class="form-control" id="pi_perfect" name="pi_perfect" required=""/>
                 </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-4 col-md-2">
                   <label for="pi_great">그레이트</label>
                   <input type="text" class="form-control" id="pi_great" name="pi_great" required=""/>
                 </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-4 col-md-2">
                   <label for="pi_good">굿</label>
                   <input type="text" class="form-control" id="pi_good" name="pi_good" required=""/>
                 </div>
-              </div>
-              <!-- BAD / MISS / MAXCOMBO -->
-              <div class="form-row">
-                <div class="form-group col-md-4">
+                <div class="form-group col-4 col-md-2">
                   <label for="pi_bad">배드</label>
                   <input type="text" class="form-control" id="pi_bad" name="pi_bad" required=""/>
                 </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-4 col-md-2">
                   <label for="pi_miss">미스</label>
                   <input type="text" class="form-control" id="pi_miss" name="pi_miss" required=""/>
                 </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-4 col-md-2">
                   <label for="pi_maxcom">맥스콤보</label>
                   <input type="text" class="form-control" id="pi_maxcom" name="pi_maxcom" required=""/>
                 </div>
               </div>
               
-              <button type="submit" class="btn btn-primary btn-block">
+              <button type="submit" id="submit_btn" class="btn btn-primary btn-block" disabled>
                 등 록
               </button>
             </form>

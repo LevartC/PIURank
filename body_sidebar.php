@@ -4,19 +4,19 @@
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.php">
     <div class="sidebar-brand-icon rotate-n-15">
-        <i class="fas fa-laugh-wink"></i>
+        <i class="fas fa-crown"></i>
     </div>
-    <div class="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div>
+    <div class="sidebar-brand-text mx-3">PIU Ranking</div>
     </a>
 
     <!-- Divider -->
     <hr class="sidebar-divider my-0">
 
     <!-- Nav Item - Dashboard -->
-    <li class="nav-item" id="nav_dashboard">
+    <li class="nav-item" id="nav_home">
     <a class="nav-link" href="index.php">
-        <i class="fas fa-fw fa-tachometer-alt"></i>
-        <span>Dashboard</span></a>
+        <i class="fas fa-home"></i>
+        <span>HOME</span></a>
     </li>
 
     <!-- Divider -->
@@ -26,22 +26,26 @@
     <div class="sidebar-heading">
     RANKING
     </div>
-    <!-- Nav Item - Pages Collapse Menu -->
-    <li class="nav-item" id="nav_category">
-    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#coll_category" aria-expanded="true" aria-controls="coll_category">
-        <i class="fas fa-fw fa-cog"></i>
-        <span>분류</span>
-    </a>
-    <div id="coll_category" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-        <div class="bg-white py-2 collapse-inner rounded">
-        <h6 class="collapse-header">종목별</h6>
-        <a class="collapse-item" id="nav_skillrank" href="buttons.html">스킬 랭킹</a>
-        <a class="collapse-item" id="nav_scorerank" href="cards.html">스코어 랭킹</a>
-        <a class="collapse-item" id="nav_input_pi" href="input_playinfo.php">기록 입력</a>
-        </div>
-    </div>
+    <!-- Nav Item - Tables -->
+    <li class="nav-item" id="nav_skillrank">
+        <a class="nav-link" href="rank_skill.php">
+            <i class="fas fa-fw fa-table"></i>
+            <span>스킬 랭킹</span>
+        </a>
     </li>
-
+    <li class="nav-item" id="nav_scorerank">
+        <a class="nav-link" href="rank_score.php">
+            <i class="fas fa-fw fa-table"></i>
+            <span>스코어 랭킹</span>
+        </a>
+    </li>
+    <li class="nav-item" id="nav_input_pi">
+        <a class="nav-link" href="input_playinfo.php">
+            <i class="fas fa-fw fa-table"></i>
+            <span>기록 입력</span>
+        </a>
+    </li>
+    
     <!-- Divider -->
     <hr class="sidebar-divider">
 
@@ -49,7 +53,6 @@
     <div class="sidebar-heading">
     League
     </div>
-
     <!-- Nav Item - Tables -->
     <li class="nav-item">
     <a class="nav-link" href="aevileague.html">

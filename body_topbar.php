@@ -1,8 +1,3 @@
-<?php
-    $u_id = isset($_SESSION['u_id']) ? $_SESSION['u_id'] : null;
-    $u_nick = isset($_SESSION['u_nick']) ? $_SESSION['u_nick'] : null;
-?>
-
 <!-- Topbar -->
 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
 
@@ -159,7 +154,7 @@
     <!-- Nav Item - User Information -->
     <li class="nav-item dropdown no-arrow">
         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <span class="mr-2 d-none d-lg-inline text-gray-600"><?= $u_nick ? $u_nick : "GUEST&nbsp;&nbsp;" ?></span>
+        <span class="mr-2 d-inline text-gray-600"><?= $u_nick ? $u_nick : "GUEST&nbsp;&nbsp;" ?></span>
         <i class="fas fa-user-circle fa-2x"></i>
         </a>
         <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
@@ -180,7 +175,7 @@
                 Activity Log
             </a>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" data-toggle="modal" data-target="#logoutModal">
+            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
                 <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                 Logout
             </a>
@@ -188,7 +183,7 @@
             <?php
             } else {
             ?>
-            <a class="dropdown-item" data-toggle="modal" data-target="#loginModal">
+            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#loginModal">
                 <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                 Login
             </a>
@@ -213,10 +208,10 @@
             <div class="modal-body">
             <form class="user" method="post" id="login_form" name="login_form" action="login_action.php">
                 <div class="form-group">
-                    <input type="text" class="form-control form-control-user" name="lg_id" id="lg_id" aria-describedby="emailHelp" placeholder="ID를 입력하세요." required>
+                    <input type="text" class="form-control form-control-user" name="login_id" id="login_id" placeholder="ID를 입력하세요." required>
                 </div>
                 <div class="form-group">
-                    <input type="password" class="form-control form-control-user" name="lg_pass" id="lg_pass" placeholder="Password" required>
+                    <input type="password" class="form-control form-control-user" name="login_pw" id="login_pw" placeholder="Password" required>
                 </div>
             </div>
             <div class="modal-footer">
@@ -240,7 +235,7 @@
             <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                <a class="btn btn-primary" href="login.html">Logout</a>
+                <a class="btn btn-primary" href="logout.php">Logout</a>
             </div>
         </div>
     </div>
