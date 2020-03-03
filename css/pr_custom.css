@@ -1,0 +1,20 @@
+
+.pr_pi {
+    margin: auto;
+}
+
+.pr_pi img {
+    width: 80%;
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: auto;
+    padding: 5px 5px 5px 5px;
+}
+
+.ui-autocomplete
+{
+    max-height: 180px;
+    overflow-y: auto; /* prevent horizontal scrollbar */
+    overflow-x: hidden;
+}
