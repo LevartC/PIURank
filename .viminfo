@@ -1,0 +1,167 @@
+# 이 viminfo 파일은 빔이 만든 것입니다 Vim 7.4.
+# 조심만 한다면 고칠 수도 있습니다!
+
+# 이 파일이 저장되었을 때의 'encoding'의 값
+*encoding=utf-8
+
+
+# hlsearch on (H) or off (h):
+~H
+# Last Search Pattern:
+~MSle0~/document_root
+
+# 명령 줄 히스토리 (새것부터 오래된 것 순):
+:wq
+:q
+:/document_root
+:/document
+
+# 찾을 문자열 히스토리 (새것부터 오래된 것 순):
+? document_root
+? document
+
+# 표현 히스토리 (새것부터 오래된 것 순):
+
+# 입력 줄 히스토리 (새것부터 오래된 것 순):
+
+# 입력 줄 히스토리 (새것부터 오래된 것 순):
+
+# 레지스터:
+
+# 파일 마크:
+'0  41  4  ~/.gitignore
+'1  201  0  /var/spool/mail/barune
+'2  24  0  ~/log/vod_updateList.log
+'3  682  0  /etc/php.ini
+'4  1  0  /use/bin/php.ini
+'5  2  0  ~/log/vod_updateList.log
+'6  45  0  /var/spool/mail/barune
+'7  1  0  ~/log/vod_updateList.log
+'8  1  0  /home/barune/log/updateList.log
+
+# 점프목록 (새것이 먼저):
+-'  41  4  ~/.gitignore
+-'  1  0  ~/.gitignore
+-'  201  0  /var/spool/mail/barune
+-'  45  0  /var/spool/mail/barune
+-'  24  0  ~/log/vod_updateList.log
+-'  2  0  ~/log/vod_updateList.log
+-'  682  0  /etc/php.ini
+-'  673  37  /etc/php.ini
+-'  558  19  /etc/php.ini
+-'  190  2  /etc/php.ini
+-'  93  46  /etc/php.ini
+-'  1055  10  /etc/php.ini
+-'  724  6  /etc/php.ini
+-'  677  36  /etc/php.ini
+-'  1  0  /etc/php.ini
+-'  1  0  /use/bin/php.ini
+-'  1  0  ~/log/vod_updateList.log
+-'  1  0  /var/spool/mail/barune
+-'  1  0  /home/barune/log/updateList.log
+-'  1  0  /home/barune/log/updateList.log
+-'  1  0  /home/barune/log/updateList.log
+-'  1  0  /home/barune/log/updateList.log
+-'  1  0  /home/barune/log/updateList.log
+-'  1  0  /home/barune/log/updateList.log
+-'  1  0  /home/barune/log/updateList.log
+-'  1  0  /home/barune/log/updateList.log
+-'  1  0  /home/barune/log/updateList.log
+-'  1  0  /home/barune/log/updateList.log
+-'  1  0  /home/barune/log/updateList.log
+-'  1  0  /home/barune/log/updateList.log
+-'  1  0  /home/barune/log/updateList.log
+-'  1  0  /home/barune/log/updateList.log
+-'  1  0  /home/barune/log/updateList.log
+-'  1  0  /home/barune/log/updateList.log
+-'  1  0  /use/bin/php.ini
+-'  1  0  /home/barune/log/updateList.log
+-'  1  0  /home/barune/log/updateList.log
+-'  1  0  /home/barune/log/updateList.log
+-'  1  0  /home/barune/log/updateList.log
+-'  1  0  /home/barune/log/updateList.log
+-'  1  0  /home/barune/log/updateList.log
+-'  1  0  /home/barune/log/updateList.log
+-'  1  0  /home/barune/log/updateList.log
+-'  1  0  /home/barune/log/updateList.log
+-'  1  0  /home/barune/log/updateList.log
+-'  1  0  /home/barune/log/updateList.log
+-'  1  0  /home/barune/log/updateList.log
+-'  1  0  /home/barune/log/updateList.log
+-'  1  0  /home/barune/log/updateList.log
+-'  1  0  /home/barune/log/updateList.log
+-'  1  0  /home/barune/log/updateList.log
+-'  682  0  /etc/php.ini
+-'  673  37  /etc/php.ini
+-'  558  19  /etc/php.ini
+-'  190  2  /etc/php.ini
+-'  93  46  /etc/php.ini
+-'  1055  10  /etc/php.ini
+-'  724  6  /etc/php.ini
+-'  677  36  /etc/php.ini
+-'  1  0  /etc/php.ini
+-'  1  0  /use/bin/php.ini
+-'  1  0  /home/barune/log/updateList.log
+-'  1  0  /home/barune/log/updateList.log
+-'  1  0  /home/barune/log/updateList.log
+-'  1  0  /home/barune/log/updateList.log
+-'  1  0  /home/barune/log/updateList.log
+-'  1  0  /home/barune/log/updateList.log
+-'  1  0  /home/barune/log/updateList.log
+-'  1  0  /home/barune/log/updateList.log
+-'  1  0  /home/barune/log/updateList.log
+-'  1  0  /home/barune/log/updateList.log
+-'  24  0  ~/log/vod_updateList.log
+-'  2  0  ~/log/vod_updateList.log
+-'  682  0  /etc/php.ini
+-'  673  37  /etc/php.ini
+-'  558  19  /etc/php.ini
+-'  190  2  /etc/php.ini
+-'  93  46  /etc/php.ini
+-'  1055  10  /etc/php.ini
+-'  724  6  /etc/php.ini
+-'  24  0  ~/log/vod_updateList.log
+-'  2  0  ~/log/vod_updateList.log
+-'  682  0  /etc/php.ini
+-'  673  37  /etc/php.ini
+-'  558  19  /etc/php.ini
+-'  190  2  /etc/php.ini
+-'  93  46  /etc/php.ini
+-'  1055  10  /etc/php.ini
+-'  724  6  /etc/php.ini
+-'  677  36  /etc/php.ini
+-'  1  0  /etc/php.ini
+-'  1  0  /use/bin/php.ini
+-'  1  0  ~/log/vod_updateList.log
+-'  1  0  /home/barune/log/updateList.log
+-'  1  0  /home/barune/log/updateList.log
+-'  1  0  /home/barune/log/updateList.log
+-'  201  0  /var/spool/mail/barune
+-'  45  0  /var/spool/mail/barune
+-'  24  0  ~/log/vod_updateList.log
+
+# 파일내의 마크 히스토리 (새것부터 오래된 순):
+
+> ~/.gitignore
+	"	41	4
+	^	41	5
+	.	41	4
+	+	41	4
+
+> /var/spool/mail/barune
+	"	201	0
+
+> ~/log/vod_updateList.log
+	"	24	0
+	^	2	0
+	.	1	24
+	+	1	24
+
+> /etc/php.ini
+	"	682	0
+
+> /use/bin/php.ini
+	"	1	0
+
+> /home/barune/log/updateList.log
+	"	1	0
