@@ -6,26 +6,6 @@ class Account_model extends CI_Model
 	function __construct() {
 		parent::__construct();
     }
-
-    public function writeData() {
-        if ($this->input->post('wr_chk4') === null) {
-            $cs_market_chk = 0;
-        } else {
-            $cs_market_chk = 1;
-        }
-
-        $data = array(
-            'cs_name' => $this->input->post('wr_name'),
-            'cs_pw' => password_hash($this->input->post('wr_pw'), PASSWORD_DEFAULT),
-            'cs_tel' => $this->input->post('wr_tel'),
-            'cs_email' => $this->input->post('wr_mail'),
-            'cs_content' => $this->input->post('wr_content'),
-            'cs_uptime' => date('Y-m-d H:i:s'),
-            'cs_market_chk' => $cs_market_chk
-        );
-
-        return $this->db->insert('barunai_cs', $data);
-    }
     
     function getUserData($u_seq) {
         if ($u_seq) {

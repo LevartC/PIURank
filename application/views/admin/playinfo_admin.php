@@ -29,12 +29,12 @@ require_once $common_dir . "/header.php";
 
           <!-- Content Row -->
           <div class="row">
-            <table class="table table-hover">
+            <table class="table table-hover" style="min-width:800px;">
               <thead>
                 <tr class="table-light">
-                  <th scope="col">등록일자</th>
-                  <th scope="col">닉네임</th>
-                  <th scope="col">승인</th>
+                  <th scope="col" style="width:200px;">등록일자</th>
+                  <th scope="col" style="width:150px;">닉네임</th>
+                  <th scope="col" style="width:150px;">승인</th>
                 </tr>
               </thead>
               <tbody>
