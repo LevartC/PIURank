@@ -1,3 +1,7 @@
+<?php
+    $u_id = isset($_SESSION['u_id']) ? $_SESSION['u_id'] : null;
+    $u_nick = isset($_SESSION['u_nick']) ? $_SESSION['u_nick'] : null;
+?>
 <!-- Topbar -->
 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
 
@@ -154,7 +158,7 @@
     <!-- Nav Item - User Information -->
     <li class="nav-item dropdown no-arrow">
         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <span class="mr-2 d-inline text-gray-600"><?= $u_nick ? $u_nick : "GUEST&nbsp;&nbsp;" ?></span>
+        <span class="mr-2 d-inline text-gray-600"><?= $u_nick ? $u_nick : "로그인하세요." ?>&nbsp;&nbsp;</span>
         <i class="fas fa-user-circle fa-2x"></i>
         </a>
         <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
@@ -164,28 +168,34 @@
             <!-- Dropdown - User Information -->
             <a class="dropdown-item" href="#">
                 <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                Profile
+                프로필
             </a>
             <a class="dropdown-item" href="#">
                 <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                Settings
+                설정
             </a>
+            <!-- Activity Log 
             <a class="dropdown-item" href="#">
                 <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
                 Activity Log
             </a>
+            -->
             <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
                 <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                Logout
+                로그아웃
             </a>
-
             <?php
             } else {
             ?>
             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#loginModal">
                 <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                Login
+                로그인
+            </a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="/account/register">
+                <i class="fas fa-sign-in-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                회원 가입
             </a>
             <?php
             }
@@ -206,7 +216,7 @@
                 </button>
             </div>
             <div class="modal-body">
-            <form class="user" method="post" id="login_form" name="login_form" action="login_action.php">
+            <form class="user" method="post" id="login_form" name="login_form" action="/account/login_action">
                 <div class="form-group">
                     <input type="text" class="form-control form-control-user" name="login_id" id="login_id" placeholder="ID를 입력하세요." required>
                 </div>
@@ -235,7 +245,7 @@
             <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                <a class="btn btn-primary" href="logout.php">Logout</a>
+                <a class="btn btn-primary" href="/account/logout">Logout</a>
             </div>
         </div>
     </div>

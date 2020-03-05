@@ -208,9 +208,18 @@ function check_pw() {
                       <input type="email" class="form-control form-control-user" id="reg_email" name="reg_email" placeholder="이메일 주소" required="">
                     </div>
                     <div class="g-recaptcha recap_center mb-3" style="margin:auto" data-sitekey="6LftetsUAAAAAIO_nEX8DMF10PU80bkXz2Yd0Rdx"></div>
-                    <button class="btn btn-primary btn-user btn-block" type="submit">
-                      계정 등록
-                    </button>
+                    <div class="row">
+                      <div class="col-6">
+                        <button class="btn btn-primary btn-user btn-block" type="submit">
+                          계정 등록
+                        </button>
+                      </div>
+                      <div class="col-6">
+                        <button class="btn btn-secondary btn-user btn-block" onclick="history.back();">
+                          뒤 로
+                        </button>
+                      </div>
+                    </div>
                     <!--
                     <a href="index.html" class="btn btn-google btn-user btn-block">
                       <i class="fab fa-google fa-fw"></i> Register with Google

@@ -29,12 +29,14 @@ class Account extends CI_Controller {
         $reg_nick = $this->input->post('reg_nick');
         $this->account_model->check_nick($reg_nick);
     }
-    public function loginAction() {
-        if ($this->account_model->login_action($reg_id, $reg_nick, $reg_pw, $reg_email)) {
-            redirect("http://".$_SERVER['SERVER_NAME']."/main");
+    public function login_action() {
+        $login_id = $this->input->post('login_id');
+        $login_pw = $this->input->post('login_pw');
+        if ($this->account_model->login_action($login_id, $login_pw)) {
+            redirect("http://".$_SERVER['SERVER_NAME']);
         }
     }
-    public function registerAction() {
+    public function register_action() {
         $reg_id = $this->input->post('reg_id');
         $reg_nick = $this->input->post('reg_nick');
         $reg_pw = $this->input->post('reg_pw');

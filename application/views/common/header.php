@@ -1,12 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-<?php
-    $u_id = isset($_SESSION['u_id']) ? $_SESSION['u_id'] : null;
-    $u_nick = isset($_SESSION['u_nick']) ? $_SESSION['u_nick'] : null;
-    $u_mmr = isset($_SESSION['u_mmr']) ? $_SESSION['u_mmr'] : null;
-    $u_skillp = isset($_SESSION['u_skillp']) ? $_SESSION['u_skillp'] : null;
-    $u_tier = isset($_SESSION['u_tier']) ? $_SESSION['u_tier'] : null;
-?>
 
 <head>
   <meta charset="utf-8">
