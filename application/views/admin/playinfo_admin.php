@@ -24,7 +24,7 @@ require_once $common_dir . "/header.php";
 
           <!-- Page Heading -->
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">정보 등록 승인</h1>
+            <h1 class="h3 mb-0 text-gray-800">승인 대기중인 정보</h1>
           </div>
 
           <!-- Content Row -->
@@ -32,13 +32,15 @@ require_once $common_dir . "/header.php";
             <table class="table table-hover" style="min-width:800px;">
               <thead>
                 <tr class="table-light">
-                  <th scope="col" style="width:200px;">등록일자</th>
-                  <th scope="col" style="width:150px;">닉네임</th>
-                  <th scope="col" style="width:150px;">승인</th>
+                  <th scope="col" style="max-width:200px;">등록일자</th>
+                  <th scope="col" style="max-width:150px;">닉네임</th>
+                  <th scope="col" style="max-width:400px;">정보</th>
+                  <th scope="col" style="max-width:150px;">승인</th>
                 </tr>
               </thead>
               <tbody>
                 <tr class="table-light">
+                  <form id="pi_frm">
                   <th scope="row"></th>
                   <td></td>
                   <td></td>
