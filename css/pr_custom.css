@@ -23,3 +23,22 @@
 .hiddenItem {
     display: none !important ;
 }
+
+.playinfo-table {
+    min-width:1300px;
+}
+.playinfo-table tr {
+    text-align:center;
+}
+.playinfo-table .pi_date {
+    min-width:120px;
+}
+.playinfo-table .pi_nick {
+    min-width:150px;
+}
+.playinfo-table .pi_info {
+    min-width:800px;
+}
+.playinfo-table .pi_approve {
+    min-width:150px;
+}

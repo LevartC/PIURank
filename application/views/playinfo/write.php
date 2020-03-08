@@ -144,7 +144,7 @@ require_once $common_dir . "/header.php";
               
         <div class="row">
           <div class="col">
-            <form role="form" method="post" id="pi_form" name="pi_form" action="input_pi_action.php" onsubmit="return formCheck(this)" enctype="multipart/form-data">
+            <form method="post" class="user" id="pi_form" name="pi_form" action="input_pi_action.php" onsubmit="return formCheck(this)" enctype="multipart/form-data">
               <!-- IMAGE FILE -->
               <div class="form-row">
                 <div class="form-group col-lg-4 pr_pi">

@@ -1,6 +1,6 @@
 (function($) {
   "use strict"; // Start of use strict
-
+  
   // Toggle the side navigation
   $(document).on('click',"#sidebarToggle, #sidebarToggleTop", function(e) {
     $("body").toggleClass("sidebar-toggled");
@@ -13,8 +13,13 @@
   // Close any open menu accordions when window is resized below 768px
   $(window).resize(function() {
     if ($(window).width() < 768) {
+      $("body").addClass("sidebar-toggled");
+      $(".sidebar").addClass("toggled");
       $('.sidebar .collapse').collapse('hide');
-    };
+    } else {
+      $("body").removeClass("sidebar-toggled");
+      $(".sidebar").removeClass("toggled");
+    }
   });
 
   // Prevent the content wrapper from scrolling when the fixed side navigation hovered over
