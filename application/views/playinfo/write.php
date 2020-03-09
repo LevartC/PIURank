@@ -72,7 +72,7 @@ require_once $common_dir . "/header.php";
             source : function( request, response ) {
                 $.ajax({
                     type: 'post',
-                    url: "search_file",
+                    url: "searchFile",
                     data: {"c_title" : $("#pi_title").val()},
                     dataType: "json",
                     //data: {"param":"param"},

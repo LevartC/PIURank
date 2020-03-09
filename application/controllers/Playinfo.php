@@ -12,10 +12,10 @@ class Playinfo extends CI_Controller {
 		$this->load->view('playinfo/write');
 	}
 
-	public function search_file() {
+	public function searchFile() {
 		header("Content-Type: application/json");
 		$c_title = $this->input->post('c_title');
-		$this->playinfo_model->search_file($c_title);
+		$this->playinfo_model->searchFile($c_title);
 	}
 }
 ?>

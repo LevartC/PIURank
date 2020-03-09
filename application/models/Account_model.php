@@ -23,7 +23,7 @@ class Account_model extends CI_Model
 
     public function login_action($login_id, $login_pw) {
         if ($login_id && $login_pw) {
-            $sql = "SELECT u_seq, u_id, u_pw, u_nick, u_class FROM pr_users WHERE u_id = ?";
+            $sql = "SELECT u_seq, u_id, u_pw, u_nick, u_class+0 as u_class FROM pr_users WHERE u_id = ?";
             $res = $this->db->query($sql, array($login_id));
             if ($login_data = $res->row_array()) {
                 if(!password_verify($login_pw, $row['u_pw'])) {

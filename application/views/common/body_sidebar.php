@@ -68,6 +68,9 @@
     <!-- Divider -->
     <hr class="sidebar-divider">
 
+    <?php
+    if (isset($_SESSION['u_class']) && $_SESSION['u_class'] == '1') {
+    ?>
     <!-- Heading -->
     <div class="sidebar-heading">
     Samples
@@ -152,6 +155,9 @@
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">
 
+    <?php
+    }
+    ?>
     <!-- Sidebar Toggler (Sidebar) -->
     <div class="text-center d-none d-md-inline">
     <button class="rounded-circle border-0" id="sidebarToggle"></button>
