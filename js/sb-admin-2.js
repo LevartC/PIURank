@@ -13,10 +13,12 @@
   // Close any open menu accordions when window is resized below 768px
   $(window).resize(function() {
     if ($(window).width() < 768) {
+      /*
       $("body").addClass("sidebar-toggled");
       $(".sidebar").addClass("toggled");
+      */
       $('.sidebar .collapse').collapse('hide');
-    } else {
+    } else if ($(window).width >= 1200) {
       $("body").removeClass("sidebar-toggled");
       $(".sidebar").removeClass("toggled");
     }

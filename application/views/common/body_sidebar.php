@@ -1,8 +1,13 @@
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 <script>
-    $("body").addClass("sidebar-toggled");
-    $(".sidebar").addClass("toggled");
-    $('.sidebar .collapse').collapse('hide');
+    if ($(window).width() < 992) {
+        $("body").addClass("sidebar-toggled");
+        $(".sidebar").addClass("toggled");
+        $('.sidebar .collapse').collapse('hide');
+    } else {
+      $("body").removeClass("sidebar-toggled");
+      $(".sidebar").removeClass("toggled");
+    }
 </script>
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.php">
