@@ -34,7 +34,7 @@
     <div class="sidebar-heading">
     RANKING
     </div>
-    <!-- Nav Item - Tables -->
+    <!-- Nav Item - Tables 
     <li class="nav-item" id="nav_skillrank">
         <a class="nav-link" href="#">
             <i class="fas fa-fw fa-table"></i>
@@ -47,6 +47,7 @@
             <span>스코어 랭킹</span>
         </a>
     </li>
+    -->
     <li class="nav-item" id="nav_input_pi">
         <a class="nav-link" href="/playinfo/write">
             <i class="fas fa-fw fa-table"></i>
@@ -67,8 +68,27 @@
         <i class="fas fa-fw fa-table"></i>
         <span>Aevileague</span></a>
     </li>
+    
+    <!-- Divider -->
+    <hr class="sidebar-divider">
 
-    <!-- Samples -->
+    <?php
+    if (isset($_SESSION['u_class']) && $_SESSION['u_class'] <= '2') {
+    ?>
+    <!-- 관리자 -->
+    <!-- Heading -->
+    <div class="sidebar-heading">
+    Admin
+    </div>
+    <!-- Nav Item - Tables -->
+    <li class="nav-item">
+    <a class="nav-link" href="admin/playinfo">
+        <i class="fas fa-fw fa-table"></i>
+        <span>기록 관리자</span></a>
+    </li>
+    <?php
+    }
+    ?>
 
     <!-- Divider -->
     <hr class="sidebar-divider">
@@ -76,6 +96,7 @@
     <?php
     if (isset($_SESSION['u_class']) && $_SESSION['u_class'] == '1') {
     ?>
+    <!-- Samples -->
     <!-- Heading -->
     <div class="sidebar-heading">
     Samples

@@ -4,6 +4,42 @@ $common_dir = get_common_dir();
 //<!-- Page Header -->
 require_once $common_dir . "/header.php";
 ?>
+<script>
+$(document).on("click", ".pi_button", function(e) {
+    console.log($(this).parent("form"));
+    var pi_seq = ($(this).attr("index"));
+    $("#pi_form"+pi_seq).attr("action", $(this).val());
+    $("#pi_form"+pi_seq).submit();
+});
+function formCheck(frm) {
+    switch($(frm).attr("action")) {
+        case "pi_approve" :
+            if (confirm("승인하시겠습니까?")) {
+                return true;
+            }
+        break;
+        case "pi_update" :
+            if (frm.pi_score.value && frm.pi_perfect.value && frm.pi_great.value && frm.pi_good.value && frm.pi_bad.value && frm.pi_miss.value && frm.pi_maxcom.value ) {
+                if (confirm("수정 후 승인하시겠습니까?")) {
+                    return true;
+                }
+            } else {
+                alert("정보가 누락되었습니다. 다시 확인해주세요.");
+                return false;
+            }
+        break;
+        case "pi_reject" :
+            if (confirm("이 기록을 거부하시겠습니까?")) {
+                return true;
+            }
+        break;
+        default:
+            return false;
+        break;
+    }
+    return false;
+}
+</script>
 <body id="page-top">
 
   <!-- Page Wrapper -->
@@ -31,7 +67,7 @@ require_once $common_dir . "/header.php";
           <?php
           foreach($this->pi_data as $row) {
           ?>
-          <form method="post" class="user" id="pi_form<?$row['pi_seq']?>" name="pi_form<?=$row['pi_seq']?>" action="" onsubmit="return formCheck(this)" enctype="multipart/form-data">
+          <form method="post" class="user" id="pi_form<?=$row['pi_seq']?>" name="pi_form<?=$row['pi_seq']?>" action="" onsubmit="return formCheck(this)">
           <!-- SONG TITLE / MODE / LEVEL -->
           <div class="row border border-secondary rounded mb-3">
           <div class="col-12 col-xl-4 pr_pi">
@@ -114,17 +150,18 @@ require_once $common_dir . "/header.php";
                 <textarea class="form-control" name="pi_comment"></textarea>
               </div>
               <div class="form-group col-4 col-xl-2 m-auto">
-                <button class="btn btn-success btn-lg btn-block">승 인</button>
+                <button type="button" value="pi_approve" index="<?=$row['pi_seq']?>"class="btn btn-primary btn-lg btn-block pi_button">승 인</button>
               </div>
               <div class="form-group col-4 col-xl-2 m-auto">
-                <button class="btn btn-danger btn-lg btn-block">거 부</button>
+                <button type="button" value="pi_update" index="<?=$row['pi_seq']?>" class="btn btn-success btn-lg btn-block pi_button">수 정</button>
               </div>
               <div class="form-group col-4 col-xl-2 m-auto">
-                <button class="btn btn-secondary btn-lg btn-block">보 류</button>
+                <button type="button" value="pi_reject" index="<?=$row['pi_seq']?>" class="btn btn-danger btn-lg btn-block pi_button">거 부</button>
               </div>
             </div>
           </div>
           </div>
+          </form>
           <?php
           }
           ?>
