@@ -13,7 +13,7 @@ class Admin extends CI_Controller {
     public function playinfo() {
         if (isset($this->session->u_class) && $this->session->u_class <= 2) {
             $this->pi_data = $this->admin_model->getWaitingPlayinfo();
-            $this->load->view('admin/playinfo_admin');
+            $this->load->view('admin/admin_playinfo');
         } else {
             alert("권한이 없습니다.");
         }
@@ -24,7 +24,9 @@ class Admin extends CI_Controller {
             'pi_seq' => $this->input->post('pi_seq'),
             'pi_comment' => $this->input->post('pi_comment'),
         );
-        $this->admin_model->setPlayinfo($pi_data);
+        if ($this->admin_model->setPlayinfo($pi_data)) {
+            alert("수정을 완료하였습니다.");
+        }
     }
     public function pi_update() {
         $pi_data = array(
@@ -43,7 +45,9 @@ class Admin extends CI_Controller {
             'pi_maxcom' => $this->input->post('pi_maxcom'),
             'pi_comment' => $this->input->post('pi_comment'),
         );
-        $this->admin_model->setPlayinfo($pi_data);
+        if ($this->admin_model->setPlayinfo($pi_data)) {
+            alert("수정을 완료하였습니다.");
+        }
     }
     public function pi_reject() {
         $pi_data = array(
@@ -51,7 +55,9 @@ class Admin extends CI_Controller {
             'pi_seq' => $this->input->post('pi_seq'),
             'pi_comment' => $this->input->post('pi_comment'),
         );
-        $this->admin_model->setPlayinfo($pi_data);
+        if ($this->admin_model->setPlayinfo($pi_data)) {
+            alert("수정을 완료하였습니다.");
+        }
     }
 }
 ?>

@@ -112,7 +112,7 @@ require_once $common_dir . "/header.php";
             select : function(event, ui) {    //아이템 선택시
                 $("#pi_mode option:eq("+ui.item.type+")").attr("selected","selected");
                 $("#pi_level").val(ui.item.level);
-                $("#pi_seq").val(ui.item.c_seq);
+                $("#pi_c_seq").val(ui.item.c_seq);
             },
             focus : function(event, ui) {    //포커스 가면
                 return false;//한글 에러 잡기용도로 사용됨
@@ -166,7 +166,7 @@ require_once $common_dir . "/header.php";
                 <div class="form-group col-md-6 col-xl-4">
                   <label for="pi_title">곡 제목</label>
                   <input type="text" class="form-control" id="pi_title" name="pi_title" placeholder="제목, 모드, 레벨을 검색하여 선택하세요." required=""/>
-                  <input type="hidden" id="pi_seq" name="pi_seq"/>
+                  <input type="hidden" id="pi_c_seq" name="pi_c_seq"/>
                 </div>
                 <div class="form-group col-6 col-md-4 col-xl-2">
                   <label for="pi_mode">모드</label>
@@ -245,9 +245,16 @@ require_once $common_dir . "/header.php";
                 </div>
               </div>
               
-              <button type="submit" id="submit_btn" class="btn btn-primary btn-block" disabled>
-                등 록
-              </button>
+              <div class="form-group col-6">
+                <button type="submit" id="submit_btn" class="btn btn-primary btn-block" disabled>
+                  등 록
+                </button>
+              </div>
+              <div class="form-group col-6">
+                <button type="button" class="btn btn-secondary btn-block" onclick="history.back();">
+                  뒤 로
+                </button>
+              </div>
             </form>
           </div>
         </div>

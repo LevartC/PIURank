@@ -176,7 +176,7 @@ function check_pw() {
           <div class="card-body p-0">
             <!-- Nested Row within Card Body -->
             <div class="row">
-              <div class="col-lg-7">
+              <div class="col">
                 <div class="p-5">
                   <div class="text-center">
                     <h1 class="h4 text-gray-900 mb-4">계정 등록하기</h1>
@@ -186,20 +186,20 @@ function check_pw() {
                     &nbsp;&nbsp;※ 아이디와 닉네임은 영문과 숫자, -, _만 입력 가능합니다.
                     </div>
                     <div class="form-group row text-center">
-                      <div class="col-sm-6 mb-3 mb-sm-0">
+                      <div class="col-md-6 mb-3 mb-sm-0">
                         <input type="text" class="form-control form-control-user only-eng" id="reg_id" name="reg_id" placeholder="아이디" required="">
                         <label class="form-control-label" display="none" id="reg_id_label" for="reg_id"></label>
                       </div>
-                      <div class="col-sm-6">
+                      <div class="col-md-6">
                         <input type="text" class="form-control form-control-user only-eng" id="reg_nick" name="reg_nick" placeholder="닉네임" required="">
                       <label class="form-control-label" display="none" id="reg_nick_label" for="reg_nick"></label>
                       </div>
                     </div>
                     <div class="form-group row text-center">
-                      <div class="col-sm-6 mb-3 mb-sm-0">
+                      <div class="col-md-6 mb-3 mb-sm-0">
                         <input type="password" class="form-control form-control-user" id="reg_pw" name="reg_pw" placeholder="비밀번호 입력" required="">
                       </div>
-                      <div class="col-sm-6">
+                      <div class="col-md-6">
                         <input type="password" class="form-control form-control-user" id="reg_pw2" name="reg_pw2" placeholder="비밀번호 확인" required="">
                         <label class="form-control-label" display="none" id="reg_pw_label" for="reg_pw2"></label>
                       </div>
@@ -210,12 +210,12 @@ function check_pw() {
                     <div class="g-recaptcha recap_center mb-3" style="margin:auto" data-sitekey="6LftetsUAAAAAIO_nEX8DMF10PU80bkXz2Yd0Rdx"></div>
                     <div class="row">
                       <div class="col-6">
-                        <button class="btn btn-primary btn-user btn-block" type="submit">
+                        <button type="submit" class="btn btn-primary btn-user btn-block">
                           계정 등록
                         </button>
                       </div>
                       <div class="col-6">
-                        <button class="btn btn-secondary btn-user btn-block" onclick="history.back();">
+                        <button type="button" class="btn btn-secondary btn-user btn-block" onclick="history.back();">
                           뒤 로
                         </button>
                       </div>
