@@ -1,4 +1,3 @@
-
 <?php 
 $common_dir = get_common_dir();
 $userdata = $this->userdata;

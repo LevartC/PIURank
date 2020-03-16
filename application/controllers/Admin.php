@@ -18,6 +18,13 @@ class Admin extends CI_Controller {
             alert("권한이 없습니다.");
         }
     }
+    public function aevileague() {
+        if (isset($this->session->u_class) && $this->session->u_class <= 2) {
+            $this->load->view('admin/admin_aevileague');
+        } else {
+            alert("권한이 없습니다.");
+        }
+    }
     public function pi_approve() {
         $pi_data = array(
             'pi_status' => 1,

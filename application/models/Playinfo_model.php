@@ -36,7 +36,7 @@ class Playinfo_model extends CI_Model
         $error = $pi_file["error"];
         $fm = explode(".", $pi_file["name"]);
         $ext = $fm[count($fm)-1];
-        $pi_filename = date("Ymdhis") . "_" . $_SESSION['u_id']. "." . $ext;
+        $pi_filename = date("Ymdhis") . "_" . $pi_data['u_id']. "." . $ext;
 
         if( $error != UPLOAD_ERR_OK ) {
             switch( $error ) {

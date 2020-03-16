@@ -1,4 +1,4 @@
-<?php
+<?php 
 $common_dir = get_common_dir();
 //<!-- Page Header -->
 require_once $common_dir . "/header.php";
@@ -244,14 +244,11 @@ require_once $common_dir . "/header.php";
                   <input type="text" class="form-control" id="pi_maxcom" name="pi_maxcom" required=""/>
                 </div>
               </div>
-              
               <div class="form-group col-6">
-                <button type="submit" id="submit_btn" class="btn btn-primary btn-block" disabled>
+                <button type="submit" id="submit_btn" class="btn btn-primary btn-inline-block" disabled>
                   등 록
                 </button>
-              </div>
-              <div class="form-group col-6">
-                <button type="button" class="btn btn-secondary btn-block" onclick="history.back();">
+                <button type="button" class="btn btn-secondary btn-inline-block" onclick="history.back();">
                   뒤 로
                 </button>
               </div>

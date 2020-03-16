@@ -80,20 +80,21 @@
     <div class="sidebar-heading">
     Admin
     </div>
-    <!-- Nav Item - Tables -->
+    <li class="nav-item">
+    <a class="nav-link" href="admin/aevileague">
+        <i class="fas fa-fw fa-table"></i>
+        <span>Aevileague 관리자</span></a>
+    </li>
     <li class="nav-item">
     <a class="nav-link" href="admin/playinfo">
         <i class="fas fa-fw fa-table"></i>
         <span>기록 관리자</span></a>
     </li>
-    <?php
-    }
-    ?>
-
     <!-- Divider -->
     <hr class="sidebar-divider">
-
     <?php
+    }
+
     if (isset($_SESSION['u_class']) && $_SESSION['u_class'] == '1') {
     ?>
     <!-- Samples -->
