@@ -144,7 +144,7 @@ require_once $common_dir . "/header.php";
               
         <div class="row">
           <div class="col">
-            <form method="post" class="user" id="pi_form" name="pi_form" action="input_pi_action.php" onsubmit="return formCheck(this)" enctype="multipart/form-data">
+            <form method="post" class="user" id="pi_form" name="pi_form" action="write_action" onsubmit="return formCheck(this)" enctype="multipart/form-data">
               <!-- IMAGE FILE -->
               <div class="form-row">
                 <div class="form-group col-lg-4 pr_pi">
@@ -244,13 +244,17 @@ require_once $common_dir . "/header.php";
                   <input type="text" class="form-control" id="pi_maxcom" name="pi_maxcom" required=""/>
                 </div>
               </div>
-              <div class="form-group col-6">
-                <button type="submit" id="submit_btn" class="btn btn-primary btn-inline-block" disabled>
-                  등 록
-                </button>
-                <button type="button" class="btn btn-secondary btn-inline-block" onclick="history.back();">
-                  뒤 로
-                </button>
+              <div class="form-row">
+                <div class="form-group col-6">
+                  <button type="submit" id="submit_btn" class="btn btn-primary btn-block" disabled>
+                    등 록
+                  </button>
+                </div>
+                <div class="form-group col-6">
+                  <button type="button" class="btn btn-secondary btn-block" onclick="history.back();">
+                    뒤 로
+                  </button>
+                </div>
               </div>
             </form>
           </div>

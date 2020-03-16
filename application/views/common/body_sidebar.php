@@ -64,7 +64,7 @@
     </div>
     <!-- Nav Item - Tables -->
     <li class="nav-item">
-    <a class="nav-link" href="aevileague">
+    <a class="nav-link" href="/aevileague">
         <i class="fas fa-fw fa-table"></i>
         <span>Aevileague</span></a>
     </li>
@@ -81,12 +81,12 @@
     Admin
     </div>
     <li class="nav-item">
-    <a class="nav-link" href="admin/aevileague">
+    <a class="nav-link" href="/admin/aevileague">
         <i class="fas fa-fw fa-table"></i>
         <span>Aevileague 관리자</span></a>
     </li>
     <li class="nav-item">
-    <a class="nav-link" href="admin/playinfo">
+    <a class="nav-link" href="/admin/playinfo">
         <i class="fas fa-fw fa-table"></i>
         <span>기록 관리자</span></a>
     </li>
