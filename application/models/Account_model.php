@@ -98,6 +98,7 @@ class Account_model extends CI_Model
         $grade_bal = $this->getConfig("cf_grade_balance");
         $judge_bal = $this->getConfig("cf_judge_balance");
         $judge_point_bal = $this->getConfig("cf_skillp_balance", "grade") / 100;
+        
         $level_weight = $this->getConfig("cf_level_weight", $level);
 
         if (!$grade_bal || !$judge_bal || !$level_weight) {
@@ -105,7 +106,8 @@ class Account_model extends CI_Model
             return false;
         }
     
-        $break_bal = ($break == "OFF") ? $judge_bal['BOFF'] : 0;
+        // 브렉오프시 이전 레벨로 가중
+        $break_bal = ($break == "OFF") ? -$level : 0;
     
         $total_notes = $perfect+$great+$good+$bad+$miss;
         $judge_notes =
@@ -114,8 +116,8 @@ class Account_model extends CI_Model
             (($judge_bal['good']/100)     * $good) +
             (($judge_bal['bad']/100)      * $bad) +
             (($judge_bal['miss']/100)     * $miss);
-        $judge_point = ($judge_notes / $total_notes) * $level_weight;
-        $grade_point = (($grade_bal[$grade]/100) + $break_bal) * $level_weight * $judge_point_bal;
+        $judge_point = ($judge_notes / $total_notes) * ($level_weight + $break_bal);
+        $grade_point = ($grade_bal[$grade]/100) * ($level_weight + $break_bal) * $judge_point_bal;
     
         $skill_point = $judge_point + $grade_point;
         return $skill_point;

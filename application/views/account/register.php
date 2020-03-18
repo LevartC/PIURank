@@ -53,7 +53,7 @@ $(function() {
             $.ajax({
                 type : "POST",
                 url : "check_nick",
-                data: { "reg_nick" : $('#reg_nick').val() },
+                data: { "reg_nick" : this.value },
                 success : function(data) {	//data : checkSignup에서 넘겨준 결과값
                     if($.trim(data) == "1") {
                         $("#reg_nick_label").html("사용 가능한 닉네임입니다.");
