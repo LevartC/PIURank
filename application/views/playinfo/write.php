@@ -132,37 +132,39 @@ require_once $common_dir . "/header.php";
       });
     });
     var chk_nick = false;
-    $("#pi_u_nick").blur(function() {
-        if (this.value != "") {
-            $.ajax({
-                type : "POST",
-                url : "/account/check_nick",
-                data: { "reg_nick" : this.value },
-                success : function(data) {	//data : checkSignup에서 넘겨준 결과값
-                    if($.trim(data) == "1") {
-                        $("#u_nick_label").html("존재하지 않는 유저입니다.");
-                        $("#u_nick_label").attr("style", "color:#e74a3b");
-                        $("#u_nick_label").removeAttr("display");
-                        $("#pi_u_nick").removeClass("is-valid");
-                        $("#pi_u_nick").addClass("is-invalid");
-                        chk_nick = false;
-                    } else {
-                        $("#u_nick_label").html("등록 가능한 유저입니다.");
-                        $("#u_nick_label").attr("style", "color:rgba(28, 200, 138, 0.9)");
-                        $("#pi_u_nick").removeClass("is-invalid");
-                        $("#pi_u_nick").addClass("is-valid");
-                        chk_nick = true;
-                    }
-                }
-            });
-        } else {
-            $("#u_nick_label").html("닉네임을 입력하세요.");
-            $("#u_nick_label").attr("style", "color:#e74a3b");
-            $("#u_nick_label").removeAttr("display");
-            $("#pi_u_nick").removeClass("is-valid");
-            $("#pi_u_nick").addClass("is-invalid");
-            chk_nick = false;
-        }
+    $(function() {
+      $("#pi_u_nick").blur(function(e) {
+          if (this.value != "") {
+              $.ajax({
+                  type : "POST",
+                  url : "/account/check_nick",
+                  data: { "reg_nick" : this.value },
+                  success : function(data) {	//data : checkSignup에서 넘겨준 결과값
+                      if($.trim(data) == "1") {
+                          $("#u_nick_label").html("존재하지 않는 유저입니다.");
+                          $("#u_nick_label").attr("style", "color:#e74a3b");
+                          $("#u_nick_label").removeAttr("display");
+                          $("#pi_u_nick").removeClass("is-valid");
+                          $("#pi_u_nick").addClass("is-invalid");
+                          chk_nick = false;
+                      } else {
+                          $("#u_nick_label").html("등록 가능한 유저입니다.");
+                          $("#u_nick_label").attr("style", "color:rgba(28, 200, 138, 0.9)");
+                          $("#pi_u_nick").removeClass("is-invalid");
+                          $("#pi_u_nick").addClass("is-valid");
+                          chk_nick = true;
+                      }
+                  }
+              });
+          } else {
+              $("#u_nick_label").html("닉네임을 입력하세요.");
+              $("#u_nick_label").attr("style", "color:#e74a3b");
+              $("#u_nick_label").removeAttr("display");
+              $("#pi_u_nick").removeClass("is-valid");
+              $("#pi_u_nick").addClass("is-invalid");
+              chk_nick = false;
+          }
+      });
     });
     </script>
 
