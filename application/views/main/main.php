@@ -8,11 +8,6 @@ require_once $common_dir . "/header.php";
 
   <!-- Page Wrapper -->
   <div id="wrapper">
-    <!-- Sidebar -->
-    <?php require_once $common_dir . "/body_sidebar.php"; ?>
-    <script>
-    $("#nav_home").addClass("active");
-    </script>
     <!-- Content Wrapper -->
     <div id="content-wrapper" class="d-flex flex-column">
 
@@ -21,6 +16,9 @@ require_once $common_dir . "/header.php";
 
         <!-- Topbar -->
         <?php require_once $common_dir . "/body_topbar.php"; ?>
+        <script>
+        $("#nav_home").addClass("active");
+        </script>
 
         <!-- Begin Page Content -->
         <div class="container-fluid">

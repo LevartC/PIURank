@@ -58,20 +58,18 @@ class Account_model extends CI_Model
     public function check_id($reg_id) {
         if ($reg_id) {
             $sql = "SELECT u_seq FROM pr_users WHERE u_id = ?";
-        
             $res = $this->db->query($sql, array($reg_id));
-            if ($res->num_rows() == 0) {
-                echo "1";
+            if ($row = $res->row_array()) {
+                echo "u_seq";
             }
         }
     }
     public function check_nick($reg_nick) {
         if ($reg_nick) {
             $sql = "SELECT u_seq FROM pr_users WHERE u_nick = ?";
-        
             $res = $this->db->query($sql, array($reg_nick));
-            if ($res->num_rows() == 0) {
-                echo "1";
+            if ($row = $res->row_array()) {
+                echo "u_seq";
             }
         }
     }

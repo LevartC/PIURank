@@ -22,20 +22,20 @@ $(function() {
                 url : "check_id",
                 data: { "reg_id" : $('#reg_id').val() },
                 success : function(data) {	//data : checkSignup에서 넘겨준 결과값
-                    if($.trim(data) == "1") {
-                        $("#reg_id_label").html("사용 가능한 아이디입니다.");
-                        $("#reg_id_label").attr("style", "color:rgba(28, 200, 138, 0.9)");
-                        $("#reg_id_label").removeAttr("display");
-                        $("#reg_id").removeClass("is-invalid");
-                        $("#reg_id").addClass("is-valid");
-                        chk_id = true;
-                    } else {
+                    if($.trim(data)) {
                         $("#reg_id_label").html("중복된 아이디입니다.");
                         $("#reg_id_label").attr("style", "color:#e74a3b");
                         $("#reg_id_label").removeAttr("display");
                         $("#reg_id").removeClass("is-valid");
                         $("#reg_id").addClass("is-invalid");
                         chk_id = false;
+                    } else {
+                        $("#reg_id_label").html("사용 가능한 아이디입니다.");
+                        $("#reg_id_label").attr("style", "color:rgba(28, 200, 138, 0.9)");
+                        $("#reg_id_label").removeAttr("display");
+                        $("#reg_id").removeClass("is-invalid");
+                        $("#reg_id").addClass("is-valid");
+                        chk_id = true;
                     }
                 }
             });
