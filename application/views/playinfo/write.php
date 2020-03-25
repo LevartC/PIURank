@@ -7,166 +7,6 @@ require_once $common_dir . "/header.php";
     
   <!-- Page Wrapper -->
   <div id="wrapper">
-    <!-- Sidebar -->
-    <?php require_once $common_dir . "/body_sidebar.php"; ?>
-    
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script>
-    $("#coll_category").addClass("show");
-    $("#nav_category").addClass("active");
-    $("#nav_input_pi").addClass("active");
-    
-    function formCheck(fm) {
-        var pi_level = $('#pi_level').val();
-        if (!pi_level) {
-            alert("레벨이 입력되지 않았습니다.");
-            return false;
-        }
-
-        if (!fm.pi_file.value) {
-            alert("파일이 업로드되지 않았습니다.");
-            return false;
-        }
-        return true;
-    }
-    
-    $(document).on("change", "#pi_file", function(e) {
-        if (this.value) {
-            var pathstr = this.value;
-        } else {
-            alert("파일이 선택되지 않았습니다.");
-            $("#submit_btn").attr("disabled", "");
-            return false;
-        }
-        var pathpoint = pathstr.lastIndexOf('.');
-        var file_name = pathstr.substring(pathstr.lastIndexOf('\\')+1);
-        if (!file_name) {
-            file_name = pathstr.substring(pathstr.lastIndexOf('/')+1);
-        }
-        var file_ext = pathstr.substring(pathstr.lastIndexOf('.')+1);
-        switch(file_ext.toUpperCase()) {
-          case "JPG" :
-          case "PNG" :
-          case "JPEG" :
-              break;
-          default:
-              alert("지원하지 않는 확장자입니다.");
-              $("#submit_btn").attr("disabled", "");
-              return false;
-        }
-        $('#file_label').html(file_name);
-        if (this.files && this.files[0]) {
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                $('#pi_img').removeClass("hiddenItem");
-                $('#pi_img').attr('src', e.target.result);
-                $("#submit_btn").removeAttr("disabled");
-            }
-            reader.readAsDataURL(this.files[0]);
-        }
-    });
-      
-    $(function() {
-      $("#pi_title").autocomplete({
-        source : function( request, response ) {
-          $.ajax({
-            type: 'post',
-            url: "searchFile",
-            data: {"c_title" : $("#pi_title").val()},
-            dataType: "json",
-            //data: {"param":"param"},
-            success: function(data) {
-              //console.log(data);
-              //서버에서 json 데이터 response 후 목록에 추가
-              response(
-                $.map(data, function(item) {    //json[i] 번째 에 있는게 item 임.
-                  switch(item["c_type"]) {
-                    case "1":
-                      mode = "S";
-                      break;
-                    case "2":
-                      mode = "D";
-                      break;
-                    case "3":
-                      mode = "SP";
-                      break;
-                    case "4":
-                      mode = "DP";
-                      break;
-                    default:
-                      break;
-                  }
-                  return {
-                    label: mode + item["c_level"] + " : " + item["s_title"] + "(" + item["s_title_kr"] + ")",
-                    value: item["s_title"],
-                    type : item["c_type"],
-                    level : item["c_level"],
-                    c_seq : item["c_seq"]
-                  }
-                })
-              );
-            }
-          });
-          },    // source 는 자동 완성 대상
-        select : function(event, ui) {    //아이템 선택시
-            $("#pi_mode option:eq("+ui.item.type+")").attr("selected","selected");
-            $("#pi_level").val(ui.item.level);
-            $("#pi_c_seq").val(ui.item.c_seq);
-        },
-        focus : function(event, ui) {    //포커스 가면
-            return false;//한글 에러 잡기용도로 사용됨
-        },
-        minLength: 1,// 최소 글자수
-        autoFocus: false, // 첫번째 항목 자동 포커스 기본값 false
-        classes: {    //잘 모르겠음
-            "ui-autocomplete": "highlight"
-        },
-        delay: 200,    //autocomplete 적용 딜레이(ms)
-//            disabled: true, //자동완성 기능 끄기
-        position: { my : "left top" },    // 출력 위치
-        close : function(event){    //자동완성창 닫아질때 호출
-            //console.log(event);
-        }
-      });
-    });
-    var chk_nick = false;
-    $(function() {
-      $("#pi_u_nick").blur(function(e) {
-          if (this.value != "") {
-              $.ajax({
-                  type : "POST",
-                  url : "/account/check_nick",
-                  data: { "reg_nick" : this.value },
-                  success : function(data) {	//data : checkSignup에서 넘겨준 결과값
-                      if($.trim(data)) {
-                          $("#u_nick_label").html("등록 가능한 유저입니다.");
-                          $("#u_nick_label").attr("style", "color:rgba(28, 200, 138, 0.9)");
-                          $("#pi_u_nick").removeClass("is-invalid");
-                          $("#pi_u_nick").addClass("is-valid");
-                          chk_nick = true;
-                      } else {
-                          $("#u_nick_label").html("존재하지 않는 유저입니다.");
-                          $("#u_nick_label").attr("style", "color:#e74a3b");
-                          $("#u_nick_label").removeAttr("display");
-                          $("#pi_u_nick").removeClass("is-valid");
-                          $("#pi_u_nick").addClass("is-invalid");
-                          chk_nick = false;
-                      }
-                  }
-              });
-          } else {
-              $("#u_nick_label").html("닉네임을 입력하세요.");
-              $("#u_nick_label").attr("style", "color:#e74a3b");
-              $("#u_nick_label").removeAttr("display");
-              $("#pi_u_nick").removeClass("is-valid");
-              $("#pi_u_nick").addClass("is-invalid");
-              chk_nick = false;
-          }
-      });
-    });
-    </script>
 
     <!-- Content Wrapper -->
     <div id="content-wrapper" class="d-flex flex-column">
@@ -174,6 +14,171 @@ require_once $common_dir . "/header.php";
       <!-- Topbar -->
       <?php require_once $common_dir . "/body_topbar.php"; ?>
 
+      <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+      <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+      <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+      <script>
+      $("#coll_category").addClass("show");
+      $("#nav_category").addClass("active");
+      $("#nav_input_pi").addClass("active");
+      
+      function formCheck(fm) {
+          if (!pi_u_seq_val) {
+              alert("플레이어가 정상적으로 입력되지 않았습니다.");
+              return false;
+          } else {
+              $("#pi_u_seq").val(pi_u_seq_val);
+          }
+          var pi_level = $('#pi_level').val();
+          if (!pi_level) {
+              alert("레벨이 입력되지 않았습니다.");
+              return false;
+          }
+
+          if (!fm.pi_file.value) {
+              alert("파일이 업로드되지 않았습니다.");
+              return false;
+          }
+          return true;
+      }
+      
+      $(document).on("change", "#pi_file", function(e) {
+          if (this.value) {
+              var pathstr = this.value;
+          } else {
+              alert("파일이 선택되지 않았습니다.");
+              $("#submit_btn").attr("disabled", "");
+              return false;
+          }
+          var pathpoint = pathstr.lastIndexOf('.');
+          var file_name = pathstr.substring(pathstr.lastIndexOf('\\')+1);
+          if (!file_name) {
+              file_name = pathstr.substring(pathstr.lastIndexOf('/')+1);
+          }
+          var file_ext = pathstr.substring(pathstr.lastIndexOf('.')+1);
+          switch(file_ext.toUpperCase()) {
+            case "JPG" :
+            case "PNG" :
+            case "JPEG" :
+                break;
+            default:
+                alert("지원하지 않는 확장자입니다.");
+                $("#submit_btn").attr("disabled", "");
+                return false;
+          }
+          $('#file_label').html(file_name);
+          if (this.files && this.files[0]) {
+              var reader = new FileReader();
+              reader.onload = function(e) {
+                  $('#pi_img').removeClass("hiddenItem");
+                  $('#pi_img').attr('src', e.target.result);
+                  $("#submit_btn").removeAttr("disabled");
+              }
+              reader.readAsDataURL(this.files[0]);
+          }
+      });
+        
+      $(function() {
+        $("#pi_title").autocomplete({
+          source : function( request, response ) {
+            $.ajax({
+              type: 'post',
+              url: "searchFile",
+              data: {"c_title" : $("#pi_title").val()},
+              dataType: "json",
+              //data: {"param":"param"},
+              success: function(data) {
+                //console.log(data);
+                //서버에서 json 데이터 response 후 목록에 추가
+                response(
+                  $.map(data, function(item) {    //json[i] 번째 에 있는게 item 임.
+                    switch(item["c_type"]) {
+                      case "1":
+                        mode = "S";
+                        break;
+                      case "2":
+                        mode = "D";
+                        break;
+                      case "3":
+                        mode = "SP";
+                        break;
+                      case "4":
+                        mode = "DP";
+                        break;
+                      default:
+                        break;
+                    }
+                    return {
+                      label: mode + item["c_level"] + " : " + item["s_title"] + "(" + item["s_title_kr"] + ")",
+                      value: item["s_title"],
+                      type : item["c_type"],
+                      level : item["c_level"],
+                      c_seq : item["c_seq"]
+                    }
+                  })
+                );
+              }
+            });
+            },    // source 는 자동 완성 대상
+          select : function(event, ui) {    //아이템 선택시
+              $("#pi_mode option:eq("+ui.item.type+")").attr("selected","selected");
+              $("#pi_level").val(ui.item.level);
+              $("#pi_c_seq").val(ui.item.c_seq);
+          },
+          focus : function(event, ui) {    //포커스 가면
+              return false;//한글 에러 잡기용도로 사용됨
+          },
+          minLength: 1,// 최소 글자수
+          autoFocus: false, // 첫번째 항목 자동 포커스 기본값 false
+          classes: {    //잘 모르겠음
+              "ui-autocomplete": "highlight"
+          },
+          delay: 200,    //autocomplete 적용 딜레이(ms)
+  //            disabled: true, //자동완성 기능 끄기
+          position: { my : "left top" },    // 출력 위치
+          close : function(event){    //자동완성창 닫아질때 호출
+              //console.log(event);
+          }
+        });
+      });
+      var pi_u_seq_val = false;
+      $(function() {
+        $("#pi_u_nick").blur(function(e) {
+            if (this.value != "") {
+                $.ajax({
+                    type : "POST",
+                    url : "/account/check_nick",
+                    data: { "reg_nick" : this.value },
+                    success : function(data) {	//data : checkSignup에서 넘겨준 결과값
+                        if($.trim(data)) {
+                            $("#u_nick_label").html("등록 가능한 유저입니다.");
+                            $("#u_nick_label").attr("style", "color:rgba(28, 200, 138, 0.9)");
+                            $("#pi_u_nick").removeClass("is-invalid");
+                            $("#pi_u_nick").addClass("is-valid");
+                            pi_u_seq_val = data;
+                        } else {
+                            $("#u_nick_label").html("존재하지 않는 유저입니다.");
+                            $("#u_nick_label").attr("style", "color:#e74a3b");
+                            $("#u_nick_label").removeAttr("display");
+                            $("#pi_u_nick").removeClass("is-valid");
+                            $("#pi_u_nick").addClass("is-invalid");
+                            $("#pi_u_seq").val("");
+                            pi_u_seq_val = false;
+                        }
+                    }
+                });
+            } else {
+                $("#u_nick_label").html("닉네임을 입력하세요.");
+                $("#u_nick_label").attr("style", "color:#e74a3b");
+                $("#u_nick_label").removeAttr("display");
+                $("#pi_u_nick").removeClass("is-valid");
+                $("#pi_u_nick").addClass("is-invalid");
+                $("#pi_u_seq").val("");
+                pi_u_seq_val = false;
+            }
+        });
+      });
+      </script>
       
       <!-- Begin Page Content -->
       <div class="container-fluid">
@@ -188,7 +193,7 @@ require_once $common_dir . "/header.php";
                     <label class="form-control-label" for="pi_u_nick">플레이어</label>
                     <input type="text" class="form-control" id="pi_u_nick" name="pi_u_nick" value=<?= isset($this->session->u_nick) ? "'".$this->session->u_nick."' disabled" : "" ?>>
                     <label class="form-control-label" display="none" id="u_nick_label" for="pi_u_nick"></label>
-                    <input type="hidden" id="pi_u_seq" name="pi_u_seq" value="<?= isset($this->session->u_nick) ? $this->session->u_nick : "" ?>">
+                    <input type="hidden" id="pi_u_seq" name="pi_u_seq" value="<?= isset($this->session->u_seq) ? $this->session->u_seq : "" ?>">
                   </div>
                   <div class="form-group col-12">
                     <label class="form-control-label" for="pi_file">

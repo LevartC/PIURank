@@ -23,7 +23,7 @@ require_once $common_dir . "/header.php";
         <table class="table table-hover">
           <thead>
             <tr>
-              <th scope="col">Type</th>
+              <th scope="col"></th>
               <th scope="col">Column heading</th>
               <th scope="col">Column heading</th>
               <th scope="col">Column heading</th>

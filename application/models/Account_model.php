@@ -60,7 +60,7 @@ class Account_model extends CI_Model
             $sql = "SELECT u_seq FROM pr_users WHERE u_id = ?";
             $res = $this->db->query($sql, array($reg_id));
             if ($row = $res->row_array()) {
-                echo "u_seq";
+                echo $row["u_seq"];
             }
         }
     }
@@ -69,7 +69,7 @@ class Account_model extends CI_Model
             $sql = "SELECT u_seq FROM pr_users WHERE u_nick = ?";
             $res = $this->db->query($sql, array($reg_nick));
             if ($row = $res->row_array()) {
-                echo "u_seq";
+                echo $row["u_seq"];
             }
         }
     }
