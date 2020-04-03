@@ -19,7 +19,7 @@ $(function() {
         if (this.value != "") {
             $.ajax({
                 type : "POST",
-                url : "check_id",
+                url : "/account/check_id",
                 data: { "reg_id" : $('#reg_id').val() },
                 success : function(data) {	//data : checkSignup에서 넘겨준 결과값
                     if($.trim(data)) {
@@ -49,34 +49,36 @@ $(function() {
         }
     });
     $("#reg_nick").blur(function() {
+        nick_input = $(this);
+        nick_label = $("#reg_nick_label");
         if (this.value != "") {
             $.ajax({
                 type : "POST",
-                url : "check_nick",
+                url : "/account/check_nick",
                 data: { "reg_nick" : this.value },
                 success : function(data) {	//data : checkSignup에서 넘겨준 결과값
-                    if($.trim(data) == "1") {
-                        $("#reg_nick_label").html("사용 가능한 닉네임입니다.");
-                        $("#reg_nick_label").attr("style", "color:rgba(28, 200, 138, 0.9)");
-                        $("#reg_nick").removeClass("is-invalid");
-                        $("#reg_nick").addClass("is-valid");
-                        chk_nick = true;
-                    } else {
-                        $("#reg_nick_label").html("중복된 닉네임입니다.");
-                        $("#reg_nick_label").attr("style", "color:#e74a3b");
-                        $("#reg_nick_label").removeAttr("display");
-                        $("#reg_nick").removeClass("is-valid");
-                        $("#reg_nick").addClass("is-invalid");
+                    if($.trim(data)) {
+                        nick_label.html("중복된 닉네임입니다.");
+                        nick_label.attr("style", "color:#e74a3b");
+                        nick_label.removeAttr("display");
+                        nick_input.removeClass("is-valid");
+                        nick_input.addClass("is-invalid");
                         chk_nick = false;
+                    } else {
+                        nick_label.html("사용 가능한 닉네임입니다.");
+                        nick_label.attr("style", "color:rgba(28, 200, 138, 0.9)");
+                        nick_input.removeClass("is-invalid");
+                        nick_input.addClass("is-valid");
+                        chk_nick = true;
                     }
                 }
             });
         } else {
-            $("#reg_nick_label").html("닉네임을 입력하세요.");
-            $("#reg_nick_label").attr("style", "color:#e74a3b");
-            $("#reg_nick_label").removeAttr("display");
-            $("#reg_nick").removeClass("is-valid");
-            $("#reg_nick").addClass("is-invalid");
+            nick_label.html("닉네임을 입력하세요.");
+            nick_label.attr("style", "color:#e74a3b");
+            nick_label.removeAttr("display");
+            nick_input.removeClass("is-valid");
+            nick_input.addClass("is-invalid");
             chk_nick = false;
         }
     });
@@ -126,29 +128,33 @@ $(document).on('submit', '#pi_form', function(event) {
     }
 });
 function check_pw() {
-    if ($("#reg_pw").val() && $("#reg_pw2").val()) {
-        if ($("#reg_pw").val().length >= 6) {
-            if ($("#reg_pw").val() == $("#reg_pw2").val()) {
-                $("#reg_pw_label").html("패스워드가 일치합니다.");
-                $("#reg_pw_label").attr("style", "color:rgba(28, 200, 138, 0.9)");
-                $("#reg_pw_label").removeAttr("display");
-                $("#reg_pw2").removeClass("is-invalid");
-                $("#reg_pw2").addClass("is-valid");
+    pw_input = $("#reg_pw");
+    pw2_input = $("#reg_pw2");
+    pw_label = $("#reg_pw_label");
+    var pw_chk;
+    if (pw_input.val() && pw2_input.val()) {
+        if (pw_input.val().length >= 6) {
+            if (pw_input.val() == pw2_input.val()) {
+                pw_label.html("패스워드가 일치합니다.");
+                pw_label.attr("style", "color:rgba(28, 200, 138, 0.9)");
+                pw_label.removeAttr("display");
+                pw2_input.removeClass("is-invalid");
+                pw2_input.addClass("is-valid");
                 chk_pw = true;
             } else {
-                $("#reg_pw_label").html("패스워드가 일치하지 않습니다.");
-                $("#reg_pw_label").attr("style", "color:#e74a3b");
-                $("#reg_pw_label").removeAttr("display");
-                $("#reg_pw2").removeClass("is-valid");
-                $("#reg_pw2").addClass("is-invalid");
+                pw_label.html("패스워드가 일치하지 않습니다.");
+                pw_label.attr("style", "color:#e74a3b");
+                pw_label.removeAttr("display");
+                pw2_input.removeClass("is-valid");
+                pw2_input.addClass("is-invalid");
                 chk_pw = false;
             }
         } else {
-            $("#reg_pw_label").html("패스워드는 6자 이상이어야 합니다.");
-            $("#reg_pw_label").attr("style", "color:#e74a3b");
-            $("#reg_pw_label").removeAttr("display");
-            $("#reg_pw2").removeClass("is-valid");
-            $("#reg_pw2").addClass("is-invalid");
+            pw_label.html("패스워드는 6자 이상이어야 합니다.");
+            pw_label.attr("style", "color:#e74a3b");
+            pw_label.removeAttr("display");
+            pw2_input.removeClass("is-valid");
+            pw2_input.addClass("is-invalid");
             chk_pw = false;
         }
     } else {
@@ -161,8 +167,6 @@ function check_pw() {
 
 <!-- Page Wrapper -->
 <div id="wrapper">
-  <!-- Sidebar -->
-  <?php require_once $common_dir . "/body_sidebar.php"; ?>
   
   <!-- Content Wrapper -->
   <div id="content-wrapper" class="d-flex flex-column">
@@ -173,69 +177,67 @@ function check_pw() {
       <div class="container" style="max-width:750px">
 
         <div class="card o-hidden border-0 shadow-lg my-5" style="max-width:100%; margin:auto;">
-          <div class="card-body p-0">
+          <div class="card-body p-5">
             <!-- Nested Row within Card Body -->
             <div class="row">
               <div class="col">
-                <div class="p-5">
-                  <div class="text-center">
-                    <h1 class="h4 text-gray-900 mb-4">계정 등록하기</h1>
+                <div class="text-center">
+                  <h1 class="h4 text-gray-900 mb-4">계정 등록하기</h1>
+                </div>
+                <form class="user" id="pi_form" name="pi_form" method="post" action="registerAction">
+                  <div class="form-group row text-center">
+                  &nbsp;&nbsp;※ 아이디와 닉네임은 영문과 숫자, -, _만 입력 가능합니다.
                   </div>
-                  <form class="user" id="pi_form" name="pi_form" method="post" action="registerAction">
-                    <div class="form-group row text-center">
-                    &nbsp;&nbsp;※ 아이디와 닉네임은 영문과 숫자, -, _만 입력 가능합니다.
+                  <div class="form-group row text-center">
+                    <div class="col-md-6 mb-3 mb-sm-0">
+                      <input type="text" class="form-control form-control-user only-eng" id="reg_id" name="reg_id" placeholder="아이디" required="">
+                      <label class="form-control-label" display="none" id="reg_id_label" for="reg_id"></label>
                     </div>
-                    <div class="form-group row text-center">
-                      <div class="col-md-6 mb-3 mb-sm-0">
-                        <input type="text" class="form-control form-control-user only-eng" id="reg_id" name="reg_id" placeholder="아이디" required="">
-                        <label class="form-control-label" display="none" id="reg_id_label" for="reg_id"></label>
-                      </div>
-                      <div class="col-md-6">
-                        <input type="text" class="form-control form-control-user only-eng" id="reg_nick" name="reg_nick" placeholder="닉네임" required="">
-                      <label class="form-control-label" display="none" id="reg_nick_label" for="reg_nick"></label>
-                      </div>
+                    <div class="col-md-6">
+                      <input type="text" class="form-control form-control-user only-eng" id="reg_nick" name="reg_nick" placeholder="닉네임" required="">
+                    <label class="form-control-label" display="none" id="reg_nick_label" for="reg_nick"></label>
                     </div>
-                    <div class="form-group row text-center">
-                      <div class="col-md-6 mb-3 mb-sm-0">
-                        <input type="password" class="form-control form-control-user" id="reg_pw" name="reg_pw" placeholder="비밀번호 입력" required="">
-                      </div>
-                      <div class="col-md-6">
-                        <input type="password" class="form-control form-control-user" id="reg_pw2" name="reg_pw2" placeholder="비밀번호 확인" required="">
-                        <label class="form-control-label" display="none" id="reg_pw_label" for="reg_pw2"></label>
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <input type="email" class="form-control form-control-user" id="reg_email" name="reg_email" placeholder="이메일 주소" required="">
-                    </div>
-                    <div class="g-recaptcha recap_center mb-3" style="margin:auto" data-sitekey="6LftetsUAAAAAIO_nEX8DMF10PU80bkXz2Yd0Rdx"></div>
-                    <div class="row">
-                      <div class="col-6">
-                        <button type="submit" class="btn btn-primary btn-user btn-block">
-                          계정 등록
-                        </button>
-                      </div>
-                      <div class="col-6">
-                        <button type="button" class="btn btn-secondary btn-user btn-block" onclick="history.back();">
-                          뒤 로
-                        </button>
-                      </div>
-                    </div>
-                    <!--
-                    <a href="index.html" class="btn btn-google btn-user btn-block">
-                      <i class="fab fa-google fa-fw"></i> Register with Google
-                    </a>
-                    <a href="index.html" class="btn btn-facebook btn-user btn-block">
-                      <i class="fab fa-facebook-f fa-fw"></i> Register with Facebook
-                    </a>
-                    -->
-                  </form>
-                  <hr>
-                  <div class="text-center">
-                    <a class="small" href="forgot_password">비밀번호 재설정</a>
                   </div>
-                  <div class="text-center">
-                    <a class="small" href="login">Already have an account? Login!</a>
+                  <div class="form-group row text-center">
+                    <div class="col-md-6 mb-3 mb-sm-0">
+                      <input type="password" class="form-control form-control-user" id="reg_pw" name="reg_pw" placeholder="비밀번호 입력" required="">
+                    </div>
+                    <div class="col-md-6">
+                      <input type="password" class="form-control form-control-user" id="reg_pw2" name="reg_pw2" placeholder="비밀번호 확인" required="">
+                      <label class="form-control-label" display="none" id="reg_pw_label" for="reg_pw2"></label>
+                    </div>
                   </div>
+                  <div class="form-group">
+                    <input type="email" class="form-control form-control-user" id="reg_email" name="reg_email" placeholder="이메일 주소" required="">
+                  </div>
+                  <div class="g-recaptcha recap_center mb-3" style="margin:auto" data-sitekey="6LftetsUAAAAAIO_nEX8DMF10PU80bkXz2Yd0Rdx"></div>
+                  <div class="row">
+                    <div class="col-6">
+                      <button type="submit" class="btn btn-primary btn-user btn-block">
+                        계정 등록
+                      </button>
+                    </div>
+                    <div class="col-6">
+                      <button type="button" class="btn btn-secondary btn-user btn-block" onclick="history.back();">
+                        뒤 로
+                      </button>
+                    </div>
+                  </div>
+                  <!--
+                  <a href="index.html" class="btn btn-google btn-user btn-block">
+                    <i class="fab fa-google fa-fw"></i> Register with Google
+                  </a>
+                  <a href="index.html" class="btn btn-facebook btn-user btn-block">
+                    <i class="fab fa-facebook-f fa-fw"></i> Register with Facebook
+                  </a>
+                  -->
+                </form>
+                <hr>
+                <div class="text-center">
+                  <a class="small" href="forgot_password">비밀번호 재설정</a>
+                </div>
+                <div class="text-center">
+                  <a class="small" href="login">Already have an account? Login!</a>
                 </div>
               </div>
             </div>

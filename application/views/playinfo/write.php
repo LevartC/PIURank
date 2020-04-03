@@ -181,7 +181,7 @@ require_once $common_dir . "/header.php";
       </script>
       
       <!-- Begin Page Content -->
-      <div class="container-fluid">
+      <div class="container-fluid mt-3">
               
         <div class="row">
           <div class="col">
@@ -189,7 +189,7 @@ require_once $common_dir . "/header.php";
               <!-- IMAGE FILE -->
               <div class="form-row">
                 <div class="col-lg-4 pr_pi">
-                  <div class="form-group col-12">
+                  <div class="form-group col-12 p-0">
                     <label class="form-control-label" for="pi_u_nick">플레이어</label>
                     <input type="text" class="form-control" id="pi_u_nick" name="pi_u_nick" value=<?= isset($this->session->u_nick) ? "'".$this->session->u_nick."' disabled" : "" ?>>
                     <label class="form-control-label" display="none" id="u_nick_label" for="pi_u_nick"></label>

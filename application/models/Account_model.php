@@ -26,7 +26,7 @@ class Account_model extends CI_Model
             $sql = "SELECT u_seq, u_id, u_pw, u_nick, u_class+0 as u_class FROM pr_users WHERE u_id = ?";
             $res = $this->db->query($sql, array($login_id));
             if ($login_data = $res->row_array()) {
-                if(!password_verify($login_pw, $row['u_pw'])) {
+                if(password_verify($login_pw, $login_data['u_pw'])) {
                     $_SESSION['u_seq'] = $login_data['u_seq'];
                     $_SESSION['u_id'] = $login_data['u_id'];
                     $_SESSION['u_nick'] = $login_data['u_nick'];

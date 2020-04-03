@@ -2,13 +2,27 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Account extends CI_Controller {
+    public $userData;
 	function __construct() {
 		parent::__construct();
 		$this->load->model('account_model');
     }
     
     public function register() {
-        $this->load->view('account/register');
+        if ($this->check_login()) {
+            alert("이미 로그인되어 있습니다.");
+        } else {
+            $this->load->view('account/register');
+        }
+    }
+
+    public function profile() {
+        if ($this->check_login()) {
+            $this->userData = $this->account_model->getUserData($this->session->u_seq);
+            $this->load->view('account/profile');
+        } else {
+            alert("로그인 정보가 없습니다.");
+        }
     }
 
     public function logout() {
@@ -20,6 +34,13 @@ class Account extends CI_Controller {
         $this->load->view('account/forgot_password');
     }
 
+    private function check_login() {
+        if ($this->session->u_seq) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     public function check_id() {
         $reg_id = $this->input->post('reg_id');
         $this->account_model->check_id($reg_id);

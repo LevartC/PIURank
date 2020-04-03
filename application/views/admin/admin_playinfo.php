@@ -43,19 +43,14 @@ function formCheck(frm) {
 
   <!-- Page Wrapper -->
   <div id="wrapper">
-    <!-- Sidebar -->
-    <?php require_once $common_dir . "/body_sidebar.php"; ?>
     <!-- Content Wrapper -->
     <div id="content-wrapper" class="d-flex flex-column">
-
-      <!-- Main Content -->
-      <div id="content">
 
         <!-- Topbar -->
         <?php require_once $common_dir . "/body_topbar.php"; ?>
 
         <!-- Begin Page Content -->
-        <div class="container-fluid">
+        <div class="container-fluid mt-3">
 
           <!-- Page Heading -->
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -167,9 +162,6 @@ function formCheck(frm) {
 
         </div>
         <!-- /.container-fluid -->
-
-      </div>
-      <!-- End of Main Content -->
 
       <?php require_once $common_dir . "/body_bottom.php"; ?>
 
