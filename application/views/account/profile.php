@@ -124,6 +124,9 @@ function check_pw() {
                   <input type="password" class="form-control" id="u_pw2" name="u_pw2" required=""/>
                   <label class="form-control-label" display="none" id="u_pw_label" for="u_pw2"></label>
                 </div>
+                <div class="form-group col">
+                  <button type="submit" id="u_update" class="btn btn-primary btn-lg btn-block pi_button">정보 수정</button>
+                </div>
               </div>
             </div>
           </div>
