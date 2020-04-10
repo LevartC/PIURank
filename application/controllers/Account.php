@@ -34,6 +34,29 @@ class Account extends CI_Controller {
         $this->load->view('account/forgot_password');
     }
 
+    public function prof_update() {
+        if ($this->check_login()) {
+            $updateUserData = array(
+                'u_seq' => $this->input->post('u_seq'),
+                'u_nick' => $this->input->post('u_nick'),
+                'u_pw' => $this->input->post('u_pw'),
+                'u_email' => $this->input->post('u_email'),
+            );
+            if ($this->session->u_seq != $this->input->post('u_seq')) {
+                alert("현재 로그인 정보가 일치하지 않습니다.");
+            } else {
+                if ($this->account_model->setUserData($updateUserData)) {
+                    alert("프로필 수정이 성공적으로 완료되었습니다.");
+                    $this->load->view('account/profile');
+                } else {
+                    alert("프로필 수정에 실패하였습니다. 관리자에게 문의해주세요.");
+                }
+            }
+        } else {
+            alert("로그인 정보가 없습니다.");
+        }
+    }
+
     private function check_login() {
         if ($this->session->u_seq) {
             return true;

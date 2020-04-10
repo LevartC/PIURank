@@ -97,7 +97,7 @@ $(document).on('keyup', '.only-ko', function() {
     this.value = this.value.replace(/[a-z0-9]|[ \[\]{}()<>?|`~!@#$%^&*-_+=,.;:\"\\]/g,"");
 });
 
-// 한글만 입력
+// 영문만 입력
 $(document).on('keyup', '.only-eng', function() {
     this.value = this.value.replace(/[^a-zA-Z-_0-9]/g,"");
 });

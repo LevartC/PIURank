@@ -34,12 +34,15 @@ require_once $common_dir . "/header.php";
               alert("레벨이 입력되지 않았습니다.");
               return false;
           }
-
           if (!fm.pi_file.value) {
               alert("파일이 업로드되지 않았습니다.");
               return false;
           }
-          return true;
+          if (confirm("기록을 입력하시겠습니까?")) {
+              return true;
+          } else {
+              return false;
+          }
       }
       
       $(document).on("change", "#pi_file", function(e) {
@@ -141,7 +144,7 @@ require_once $common_dir . "/header.php";
           }
         });
       });
-      var pi_u_seq_val = false;
+      var pi_u_seq_val = <?= isset($this->session->u_seq)?>;
       $(function() {
         $("#pi_u_nick").blur(function(e) {
             if (this.value != "") {

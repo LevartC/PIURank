@@ -34,7 +34,7 @@ class Playinfo_model extends CI_Model
         $error = $pi_file["error"];
         $fm = explode(".", $pi_file["name"]);
         $ext = $fm[count($fm)-1];
-        $pi_filename = date("Ymdhis") . "_" . $pi_data['u_id']. "." . $ext;
+        $pi_filename = date("Ymdhis") . "_" . $pi_data['u_id']. ".jpg";
 
         if( $error != UPLOAD_ERR_OK ) {
             switch( $error ) {
@@ -55,9 +55,9 @@ class Playinfo_model extends CI_Model
             alert("허용되지 않는 확장자입니다.");
             exit();
         }
-        // 파일 이동
-        move_uploaded_file($_FILES["pi_file"]["tmp_name"], $upload_dir."/".$pi_filename);
-
+        // 파일 압축 후 이동
+        $this->uploadFile($_FILES["pi_file"]["tmp_name"], $upload_dir."/".$pi_filename, 90);
+    //    move_uploaded_file($_FILES["pi_file"]["tmp_name"], $upload_dir."/".$pi_filename);
         try {
             $pi_skillp = $this->account_model->getSkillPoint($pi_data['pi_level'], $pi_data['pi_perfect'], $pi_data['pi_great'], $pi_data['pi_good'], $pi_data['pi_bad'], $pi_data['pi_miss'], $pi_data['pi_grade'], $pi_data['pi_break']);
             
@@ -72,6 +72,22 @@ class Playinfo_model extends CI_Model
         } catch(Exception $e) {
             alert($e->getMessage());
         }
+    }
+    function uploadFile($src, $dest, $quality) {
+        $info = getimagesize($src);
+ 
+        if ($info['mime'] == 'image/jpeg') 
+            $image = imagecreatefromjpeg($src);
+ 
+        elseif ($info['mime'] == 'image/gif') 
+            $image = imagecreatefromgif($src);
+ 
+        elseif ($info['mime'] == 'image/png') 
+            $image = imagecreatefrompng($src);
+ 
+        imagejpeg($image, $dest, $quality);
+ 
+        return $dest;
     }
 }
 ?>

@@ -59,7 +59,14 @@ function formCheck(frm) {
 
           
           <?php
-          foreach($this->pi_data as $row) {
+          if (!count($this->pi_data)) {
+          ?>
+          <div class="border border-secondary rounded p-3">
+            대기중인 정보가 존재하지 않습니다.
+          </div>
+          <?php
+          } else {
+              foreach($this->pi_data as $row) {
           ?>
           <form method="post" class="user" id="pi_form<?=$row['pi_seq']?>" name="pi_form<?=$row['pi_seq']?>" action="" onsubmit="return formCheck(this)">
           <!-- SONG TITLE / MODE / LEVEL -->
@@ -78,6 +85,7 @@ function formCheck(frm) {
                 </div>
                 <div class="form-group col-6 col-xl-3 mt-auto">
                   <input type="text" class="form-control" name="pi_modelevel" value="<?=$row['c_type']?> <?=$row['c_level']?>" readonly/>
+                  <input type="hidden" name="pi_level" value="<?=$row['c_level']?>" readonly/>
                 </div>
               <!-- GRADE / JUDGE / BREAK / SCORE -->
                 <div class="form-group col col-xl-2">
@@ -157,6 +165,7 @@ function formCheck(frm) {
           </div>
           </form>
           <?php
+              }
           }
           ?>
 

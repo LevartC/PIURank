@@ -22,8 +22,8 @@
                 프로필
             </a>
             <a class="dropdown-item" href="#">
-                <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                설정
+                <i class="fas fa-list-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                내 기록
             </a>
             <!-- Activity Log 
             <a class="dropdown-item" href="#">
@@ -73,6 +73,13 @@
                 <a class="nav-link" href="/playinfo/write">
                     <i class="fas fa-fw fa-table"></i>
                     <span>기록 입력</span>
+                </a>
+            </li>
+            <div class="topbar-divider d-none d-lg-block"></div>
+            <li class="nav-item" id="nav_aevileague">
+                <a class="nav-link" href="/playinfo/write">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>Aevileague</span>
                 </a>
             </li>
 <?php

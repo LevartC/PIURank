@@ -21,6 +21,30 @@ class Account_model extends CI_Model
         }
     }
 
+    function setUserData($u_data) {
+        if ($u_data['u_seq']) {
+            $update_arr = array();
+            if ($u_data['u_nick']) {
+                $update_arr['u_nick'] = $u_data['u_nick'];
+            }
+            if ($u_data['u_pw']) {
+                $update_arr['u_pw'] = password_hash($u_data['u_pw'], PASSWORD_DEFAULT);
+            }
+            if ($u_data['u_email']) {
+                $update_arr['u_email'] = $u_data['u_email'];
+            }
+            $where_sql = "u_seq = ". $u_data['u_seq'];
+            $res = $this->db->update_string("pr_users", $update_arr, $where_sql);
+            if ($res) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
     public function login_action($login_id, $login_pw) {
         if ($login_id && $login_pw) {
             $sql = "SELECT u_seq, u_id, u_pw, u_nick, u_class+0 as u_class FROM pr_users WHERE u_id = ?";
