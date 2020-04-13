@@ -18,8 +18,18 @@ class Account extends CI_Controller {
 
     public function profile() {
         if ($this->check_login()) {
-            $this->userData = $this->account_model->getUserData($this->session->u_seq);
+            $this->load->model('playinfo_model');
+            $this->userData = $this->playinfo_model->getUserData($this->session->u_seq);
             $this->load->view('account/profile');
+        } else {
+            alert("로그인 정보가 없습니다.");
+        }
+    }
+
+    public function playlog() {
+        if ($this->check_login()) {
+            $this->userData = $this->account_model->getUserData($this->session->u_seq);
+            $this->load->view('account/playlog');
         } else {
             alert("로그인 정보가 없습니다.");
         }

@@ -7,16 +7,6 @@ class Admin_model extends CI_Model
 		parent::__construct();
     }
     
-
-    function getWaitingPlayinfo() {
-        $sql = "SELECT pr_users.u_nick, pr_playinfo.*, pr_charts.*, pr_songs.* FROM pr_playinfo inner join pr_users on pr_playinfo.u_seq = pr_users.u_seq inner join pr_charts on pr_playinfo.c_seq = pr_charts.c_seq inner join pr_songs on pr_charts.s_seq = pr_songs.s_seq WHERE pi_status is null";
-        $res = $this->db->query($sql);
-        $data = null;
-        foreach($res->result_array() as $row) {
-            $data[] = $row;
-        }
-        return $data;
-    }
     
     function setPlayinfo($pi_data) {
         if ($pi_data['pi_status'] == 1) { // 승인, 수정
