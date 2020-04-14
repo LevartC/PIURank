@@ -2,18 +2,19 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Admin extends CI_Controller {
-    public $pi_data;
+    public $piData;
 
 	function __construct() {
 		parent::__construct();
         $this->load->model('admin_model');
         $this->load->model('account_model');
+        $this->load->model('playinfo_model');
         $pi_data = null;
     }
     
     public function playinfo() {
         if ($this->check_admin()) {
-            $this->pi_data = $this->admin_model->getWaitingPlayinfo();
+            $this->piData = $this->playinfo_model->getPlayinfo(null);
             $this->load->view('admin/admin_playinfo');
         }
     }

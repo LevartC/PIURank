@@ -21,7 +21,7 @@
                 <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                 프로필
             </a>
-            <a class="dropdown-item" href="/account/playlog">
+            <a class="dropdown-item" href="/account/myplay">
                 <i class="fas fa-list-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                 내 기록
             </a>

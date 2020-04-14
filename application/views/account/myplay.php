@@ -53,8 +53,17 @@ function formCheck(frm) {
         <div class="container-fluid mt-3">
 
           <!-- Page Heading -->
-          <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">승인 대기중인 정보</h1>
+          <div class="d-flex justify-content-between mb-4">
+            <div>
+              <h1 class="h3 mb-0 text-gray-800">내 기록</h1>
+            </div>
+            <div>
+              <select class="form-control" id="pi_status" name="pi_status">
+              <option value="" selected>전체</option>
+              <option value="1">활성</option>
+              <option value="2">거부</option>
+            </select>
+            </div>
           </div>
 
           
@@ -62,23 +71,25 @@ function formCheck(frm) {
           if (!count($this->piData)) {
           ?>
           <div class="border border-secondary rounded p-3">
-            대기중인 정보가 존재하지 않습니다.
+            정보가 존재하지 않습니다.
           </div>
           <?php
           } else {
               foreach($this->piData as $row) {
           ?>
-          <form method="post" class="user" id="pi_form<?=$row['pi_seq']?>" name="pi_form<?=$row['pi_seq']?>" action="" onsubmit="return formCheck(this)">
           <!-- SONG TITLE / MODE / LEVEL -->
           <div class="row border border-secondary rounded mb-3 py-2">
+            <div class="col-12 col-xl-4">
+              <input type="hidden" name="pi_seq" value="<?=$row['pi_seq']?>"/>
+              <?=$row['s_title']?>(<?=$row['s_title_kr']?>)
+            </div>
             <div class="col-12 col-xl-4 pr_pi">
-              <img alt="Playinfo Image" src="/pi_images/<?=$row['pi_filename']?>" />
+              <button class="btn btn-primary" value="/pi_images/<?=$row['pi_filename']?>">aa</a>
             </div>
             <div class="col-12 col-xl-8 mt-2 mb-2">
               <div class="form-row">
-                <input type="hidden" name="pi_seq" value="<?=$row['pi_seq']?>"/>
                 <div class="form-group col-12 col-xl-8">
-                  <input type="text" class="form-control" name="pi_title" value="<?=$row['s_title']?>(<?=$row['s_title_kr']?>)" required readonly/>
+                  <input type="text" class="form-control" name="pi_title" value="" required readonly/>
                 </div>
                 <div class="form-group col-6 col-xl-4">
                   <input type="text" class="form-control" name="pi_player" value="<?=$row['u_nick']?>" required readonly/>

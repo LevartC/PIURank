@@ -4,22 +4,24 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Playinfo_model extends CI_Model
 {
 	function __construct() {
-		parent::__construct();
+        parent::__construct();
     }
     
-    function getWaitingPlayinfo() {
-        $sql = "SELECT pr_users.u_nick, pr_playinfo.*, pr_charts.*, pr_songs.* FROM pr_playinfo inner join pr_users on pr_playinfo.u_seq = pr_users.u_seq inner join pr_charts on pr_playinfo.c_seq = pr_charts.c_seq inner join pr_songs on pr_charts.s_seq = pr_songs.s_seq WHERE pi_status is null";
-        $res = $this->db->query($sql);
-        $data = null;
-        foreach($res->result_array() as $row) {
-            $data[] = $row;
+    function getPlayinfo($status, $u_seq = null) {
+        $bind_array = array();
+        if ($status === null) {
+            $stat_where = "";
+        } else {
+            $stat_where = " AND pi_status = ?";
+            array_push($bind_array, $status);
         }
-        return $data;
-    }
-    
-    function getPlayinfo() {
-        $sql = "SELECT pr_users.u_nick, pr_playinfo.*, pr_charts.*, pr_songs.* FROM pr_playinfo inner join pr_users on pr_playinfo.u_seq = pr_users.u_seq inner join pr_charts on pr_playinfo.c_seq = pr_charts.c_seq inner join pr_songs on pr_charts.s_seq = pr_songs.s_seq WHERE pi_status = 1";
-        $res = $this->db->query($sql);
+        if ($u_seq) {
+            $sql = "SELECT pr_users.u_nick, pr_playinfo.*, pr_charts.*, pr_songs.* FROM pr_playinfo inner join pr_users on pr_playinfo.u_seq = pr_users.u_seq inner join pr_charts on pr_playinfo.c_seq = pr_charts.c_seq inner join pr_songs on pr_charts.s_seq = pr_songs.s_seq WHERE pr_playinfo.u_seq = ?" . $stat_where;
+            array_push($bind_array, (int)$u_seq);
+        } else {
+            $sql = "SELECT pr_users.u_nick, pr_playinfo.*, pr_charts.*, pr_songs.* FROM pr_playinfo inner join pr_users on pr_playinfo.u_seq = pr_users.u_seq inner join pr_charts on pr_playinfo.c_seq = pr_charts.c_seq inner join pr_songs on pr_charts.s_seq = pr_songs.s_seq WHERE 1" . $stat_where;
+        }
+        $res = count($bind_array) ? $this->db->query($sql, $bind_array) : $this->db->query($sql);
         $data = null;
         foreach($res->result_array() as $row) {
             $data[] = $row;
@@ -108,6 +110,35 @@ class Playinfo_model extends CI_Model
         imagejpeg($image, $dest, $quality);
  
         return $dest;
+    }
+    
+    public function getSkillPoint($level, $perfect, $great, $good, $bad, $miss, $grade, $break) {
+        $grade_bal = $this->admin_model->getConfig("cf_grade_balance");
+        $judge_bal = $this->admin_model->getConfig("cf_judge_balance");
+        $judge_point_bal = $this->admin_model->getConfig("cf_skillp_balance", "grade") / 100;
+        
+        $level_weight = $this->admin_model->getConfig("cf_level_weight", $level);
+
+        if (!$grade_bal || !$judge_bal || !$level_weight) {
+            alert("DB 로드 실패.");
+            return false;
+        }
+    
+        // 브렉오프시 이전 레벨로 가중
+        $break_bal = ($break == "OFF") ? -$level : 0;
+    
+        $total_notes = $perfect+$great+$good+$bad+$miss;
+        $judge_notes =
+            (($judge_bal['perfect']/100)  * $perfect) +
+            (($judge_bal['great']/100)    * $great) +
+            (($judge_bal['good']/100)     * $good) +
+            (($judge_bal['bad']/100)      * $bad) +
+            (($judge_bal['miss']/100)     * $miss);
+        $judge_point = ($judge_notes / $total_notes) * ($level_weight + $break_bal);
+        $grade_point = ($grade_bal[$grade]/100) * ($level_weight + $break_bal) * $judge_point_bal;
+    
+        $skill_point = $judge_point + $grade_point;
+        return $skill_point;
     }
 }
 ?>

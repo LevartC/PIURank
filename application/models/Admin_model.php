@@ -7,7 +7,6 @@ class Admin_model extends CI_Model
 		parent::__construct();
     }
     
-    
     function setPlayinfo($pi_data) {
         if ($pi_data['pi_status'] == 1) { // 승인, 수정
             if ($pi_data['pi_update']) { // 수정
@@ -26,12 +25,30 @@ class Admin_model extends CI_Model
             }
 
         } else { // 거부
-            $sql = "UPDATE pr_playinfo SET pi_status = 0, pi_updatetime = now(), pi_comment = ? WHERE pi_seq = ?";
+            $sql = "UPDATE pr_playinfo SET pi_status = -1, pi_updatetime = now(), pi_comment = ? WHERE pi_seq = ?";
             $res = $this->db->query($sql, array($pi_data['pi_comment'], $pi_data['pi_seq']));
             if ($res) {
                 return true;
             }
         }
         return false;
+    }
+    
+    public function getConfig($cf_name, $cf_key = 0) {
+        $data = null;
+        if ($cf_key) {
+            $sql = "SELECT * from pr_config WHERE cf_name = ? and cf_key = ?";
+            $res = $this->db->query($sql, array($cf_name, $cf_key));
+            if ($row = $res->row_array()) {
+                $data = $row['cf_value'];
+            }
+        } else {
+            $sql = "SELECT * from pr_config WHERE cf_name = ?";
+            $res = $this->db->query($sql, array($cf_name));
+            foreach ($res->result_array() as $row) {
+                $data[$row['cf_key']] = $row['cf_value'];
+            }
+        }
+        return $data;
     }
 }
