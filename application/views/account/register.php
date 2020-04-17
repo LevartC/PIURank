@@ -184,7 +184,7 @@ function check_pw() {
                 <div class="text-center">
                   <h1 class="h4 text-gray-900 mb-4">계정 등록하기</h1>
                 </div>
-                <form class="user" id="pi_form" name="pi_form" method="post" action="registerAction">
+                <form class="user" id="pi_form" name="pi_form" method="post" action="register_action">
                   <div class="form-group row text-center">
                   &nbsp;&nbsp;※ 아이디와 닉네임은 영문과 숫자, -, _만 입력 가능합니다.
                   </div>

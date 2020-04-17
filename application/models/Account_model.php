@@ -97,4 +97,17 @@ class Account_model extends CI_Model
             }
         }
     }
+
+    public function updateSkillPoint($u_seq) {
+        if ($u_seq) {
+            $sql = "update pr_users set u_skillp = truncate((SELECT SUM(sp) AS pi_skillp FROM (SELECT MAX(pi_skillp) AS sp from pr_playinfo where u_seq = ? AND pi_status = 2 GROUP BY c_seq ORDER BY pi_skillp DESC LIMIT 25) a), 2) WHERE u_seq = ?";
+            if ($this->db->query($sql, array($u_seq, $u_seq))) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
 }

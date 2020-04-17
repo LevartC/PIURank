@@ -13,6 +13,7 @@ class Playinfo extends CI_Controller {
 	}
 	public function write_action() {
 		if (isset($this->session->u_seq)) {
+			$this->load->model('admin_model');
 			$pi_file = $_FILES['pi_file'];
 			$pi_data = array(
 				'u_seq' => $this->session->u_seq,

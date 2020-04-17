@@ -3,6 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Account extends CI_Controller {
     public $userData;
+    public $piStatus;
     public $piData;
 	function __construct() {
 		parent::__construct();
@@ -30,11 +31,11 @@ class Account extends CI_Controller {
 
     public function myplay() {
         if ($this->check_login()) {
-            $pi_status = null;
+            $this->piStatus = PI_STATUS_ALL;
             if ($this->input->post('pi_status') !== null) {
-                $pi_status = $this->input->post('pi_status');
+                $this->piStatus = (int)$this->input->post('pi_status');
             }
-            $this->piData = $this->playinfo_model->getPlayinfo($pi_status, $this->session->u_seq);
+            $this->piData = $this->playinfo_model->getPlayinfo($this->piStatus, $this->session->u_seq);
             $this->load->view('account/myplay');
         } else {
             alert("로그인 정보가 없습니다.");

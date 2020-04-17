@@ -4,40 +4,14 @@ $common_dir = get_common_dir();
 require_once $common_dir . "/header.php";
 ?>
 <script>
-$(document).on("click", ".pi_button", function(e) {
-    console.log($(this).parent("form"));
-    var pi_seq = ($(this).attr("index"));
-    $("#pi_form"+pi_seq).attr("action", $(this).val());
-    $("#pi_form"+pi_seq).submit();
+  pi_status = <?= $this->piStatus?>;
+$(document).ready(function(e) {
+$("#pi_status").val(pi_status).attr("selected", "selected");
+
 });
-function formCheck(frm) {
-    switch($(frm).attr("action")) {
-        case "pi_approve" :
-            if (confirm("승인하시겠습니까?")) {
-                return true;
-            }
-        break;
-        case "pi_update" :
-            if (frm.pi_score.value && frm.pi_perfect.value && frm.pi_great.value && frm.pi_good.value && frm.pi_bad.value && frm.pi_miss.value && frm.pi_maxcom.value ) {
-                if (confirm("수정 후 승인하시겠습니까?")) {
-                    return true;
-                }
-            } else {
-                alert("정보가 누락되었습니다. 다시 확인해주세요.");
-                return false;
-            }
-        break;
-        case "pi_reject" :
-            if (confirm("이 기록을 거부하시겠습니까?")) {
-                return true;
-            }
-        break;
-        default:
-            return false;
-        break;
-    }
-    return false;
-}
+$(document).on("change", "#pi_status", function(e){
+    $("#status_form").submit();
+});
 </script>
 <body id="page-top">
 
@@ -58,125 +32,125 @@ function formCheck(frm) {
               <h1 class="h3 mb-0 text-gray-800">내 기록</h1>
             </div>
             <div>
+              <form method="post" id="status_form" name="status_form" class="user" action="myplay">
               <select class="form-control" id="pi_status" name="pi_status">
-              <option value="" selected>전체</option>
-              <option value="1">활성</option>
-              <option value="2">거부</option>
-            </select>
+                <option value="<?=PI_STATUS_ALL?>">전체</option>
+                <option value="<?=PI_STATUS_WAITING?>">대기</option>
+                <option value="<?=PI_STATUS_ACTIVE?>">활성</option>
+                <option value="<?=PI_STATUS_DENIED?>">거부</option>
+              </select>
+              </form>
             </div>
           </div>
 
           
           <?php
-          if (!count($this->piData)) {
+          if ($this->piData === null || !count($this->piData)) {
           ?>
           <div class="border border-secondary rounded p-3">
-            정보가 존재하지 않습니다.
+              정보가 존재하지 않습니다.
           </div>
           <?php
           } else {
-              foreach($this->piData as $row) {
           ?>
-          <!-- SONG TITLE / MODE / LEVEL -->
-          <div class="row border border-secondary rounded mb-3 py-2">
-            <div class="col-12 col-xl-4">
-              <input type="hidden" name="pi_seq" value="<?=$row['pi_seq']?>"/>
-              <?=$row['s_title']?>(<?=$row['s_title_kr']?>)
-            </div>
-            <div class="col-12 col-xl-4 pr_pi">
-              <button class="btn btn-primary" value="/pi_images/<?=$row['pi_filename']?>">aa</a>
-            </div>
-            <div class="col-12 col-xl-8 mt-2 mb-2">
-              <div class="form-row">
-                <div class="form-group col-12 col-xl-8">
-                  <input type="text" class="form-control" name="pi_title" value="" required readonly/>
-                </div>
-                <div class="form-group col-6 col-xl-4">
-                  <input type="text" class="form-control" name="pi_player" value="<?=$row['u_nick']?>" required readonly/>
-                </div>
-                <div class="form-group col-6 col-xl-3 mt-auto">
-                  <input type="text" class="form-control" name="pi_modelevel" value="<?=$row['c_type']?> <?=$row['c_level']?>" readonly/>
-                  <input type="hidden" name="pi_level" value="<?=$row['c_level']?>" readonly/>
-                </div>
-              <!-- GRADE / JUDGE / BREAK / SCORE -->
-                <div class="form-group col col-xl-2">
-                  <label for="pi_grade">그레이드</label>
-                  <select class="form-control" name="pi_grade" value="<?=$row['pi_grade']?>">
-                    <option>A</option>
-                    <option>SSS</option>
-                    <option>SS</option>
-                    <option>S</option>
-                    <option>B</option>
-                    <option>C</option>
-                    <option>D</option>
-                    <option>F</option>
-                  </select>
-                </div>
-                <div class="form-group col col-xl-2">
-                  <label for="pi_judge">판정</label>
-                  <select class="form-control" name="pi_judge" value="<?=$row['pi_judge']?>">
-                    <option>NJ</option>
-                    <option>HJ</option>
-                    <option>VJ</option>
-                  </select>
-                </div>
-                <div class="form-group col col-xl-2">
-                  <label for="pi_break">Break</label>
-                  <select class="form-control" name="pi_break" value="<?=$row['pi_break']?>"> 
-                    <option>ON</option>
-                    <option>OFF</option>
-                  </select>
-                </div>
-                <div class="form-group col-4 col-xl-3">
-                  <label for="pi_score">스코어</label>
-                  <input type="text" class="form-control" name="pi_score" value="<?=$row['pi_score']?>" required=""/>
-                </div>
+          <div class="row mb-2 py-2 text-center">
+            <table class="table table-hover border border-light">
+              <thead class="table-light">
+                <tr>
+                  <th scope="col">날짜</th>
+                  <th scope="col">제목</th>
+                  <th scope="col">상태</th>
+                </tr>
+              </thead>
+              <tbody>
+          <?php
+              foreach($this->piData as $row) {
+                  switch($row['pi_status']) {
+                      case "Active":
+                          $status_type = "success";
+                          $status_str = "활성";
+                      break;
+                      case "Waiting":
+                          $status_type = "secondary";
+                          $status_str = "대기";
+                      break;
+                      case "Denied":
+                          $status_type = "danger";
+                          $status_str = "거부";
+                      break;
+                      default:
+                          $status_type = "";
+                          $status_str = "";
+                      break;
+                  }
+                  if (!$row['pi_comment']) {
+                      $row['pi_comment'] = "코멘트 없음";
+                  }
+          ?>
+          <!-- DATE / TITLE / STATUS -->
+            <tr class="table-<?= $status_type?> text-dark" href="#" data-toggle="modal" data-target="#piModal<?=$row['pi_seq']?>">
+              <th scope="row"> <?= date("Y-m-d", strtotime($row['pi_createtime'])) ?></th>
+              <td><?=$row['s_title']?><br>(<?=$row['s_title_kr']?>)</td>
+              <td><?=$status_str?></td>
+            </tr>
+          <!-- Playinfo Modal -->
+          <div class="modal fade" id="piModal<?=$row['pi_seq']?>" tabindex="-1" role="dialog" aria-labelledby="piModalLabel<?= $row['pi_seq']?>" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                      <div class="modal-header">
+                          <h5 class="modal-title" id="piModalLabel<?=$row['pi_seq']?>">플레이 정보</h5>
+                          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">×</span>
+                          </button>
+                      </div>
+                      <div class="modal-body">
+                        <div class="card" style="width: 100%;">
+                        <img class="card-img-top" src="/pi_images/<?=$row['pi_filename']?>" alt="Playinfo Image">
+                        <div class="card-body">
+                          <h5 class="card-title text-dark d-flex justify-content-between text-center border border-dark rounded p-2">
+                            <div><?=$row['s_title']?><br>(<?=$row['s_title_kr']?>)</div>
+                            <div>스킬포인트<br><?=get_sp_floor($row['pi_skillp'])?></div>
+                          </h5>
+                          <div class="text-center border border-dark rounded p-2 mb-2">
+                            <pre class="text-<?= $status_type?>"><?= $row['pi_comment']?></pre>
+                          </div>
+                          <div class="row text-center text-dark">
+                            <div class="col-3 border border-secondary">BREAK</div>
+                            <div class="col-3 border border-secondary"><?= $row['pi_break']?></div>
+                            <div class="col-3 border border-secondary">JUDGE</div>
+                            <div class="col-3 border border-secondary"><?= $row['pi_judge']?></div>
+                            <div class="col-3 border border-secondary">그레이드</div>
+                            <div class="col-3 border border-secondary"><?= $row['pi_grade']?></div>
+                            <div class="col-3 border border-secondary">스코어</div>
+                            <div class="col-3 border border-secondary"><?= $row['pi_score']?></div>
+                            <div class="col-3 border border-secondary text-primary">퍼펙트</div>
+                            <div class="col-3 border border-secondary"><?= $row['pi_perfect']?></div>
+                            <div class="col-3 border border-secondary text-success">그레이트</div>
+                            <div class="col-3 border border-secondary"><?= $row['pi_great']?></div>
+                            <div class="col-3 border border-secondary text-warning">굿</div>
+                            <div class="col-3 border border-secondary"><?= $row['pi_good']?></div>
+                            <div class="col-3 border border-secondary" style="color:purple">배드</div>
+                            <div class="col-3 border border-secondary"><?= $row['pi_bad']?></div>
+                            <div class="col-3 border border-secondary text-danger">미스</div>
+                            <div class="col-3 border border-secondary"><?= $row['pi_miss']?></div>
+                            <div class="col-3 border border-secondary">맥스콤보</div>
+                            <div class="col-3 border border-secondary"><?= $row['pi_maxcom']?></div>
+                          </div>
+                        </div>
+                      </div></div>
+                      <div class="modal-footer">
+                          <button class="btn btn-secondary" type="button" data-dismiss="modal">닫기</button>
+                      </div>
+                  </div>
               </div>
-              <div class="form-row">
-              <!-- PERFECT / GREAT / GOOD / BAD / MISS / MAXCOMBO -->
-                <div class="form-group col-4 col-md-2 col-xl-2">
-                  <label for="pi_perfect">퍼펙트</label>
-                  <input type="text" class="form-control" name="pi_perfect" value="<?=$row['pi_perfect']?>" required=""/>
-                </div>
-                <div class="form-group col-4 col-md-2 col-xl-2">
-                  <label for="pi_great">그레이트</label>
-                  <input type="text" class="form-control" name="pi_great" value="<?=$row['pi_great']?>" required=""/>
-                </div>
-                <div class="form-group col-4 col-md-2 col-xl-2">
-                  <label for="pi_good">굿</label>
-                  <input type="text" class="form-control" name="pi_good" value="<?=$row['pi_good']?>" required=""/>
-                </div>
-                <div class="form-group col-4 col-md-2 col-xl-2">
-                  <label for="pi_bad">배드</label>
-                  <input type="text" class="form-control" name="pi_bad" value="<?=$row['pi_bad']?>" required=""/>
-                </div>
-                <div class="form-group col-4 col-md-2 col-xl-2">
-                  <label for="pi_miss">미스</label>
-                  <input type="text" class="form-control" name="pi_miss" value="<?=$row['pi_miss']?>" required=""/>
-                </div>
-                <div class="form-group col-4 col-md-2 col-xl-2">
-                  <label for="pi_maxcom">맥스콤보</label>
-                  <input type="text" class="form-control" name="pi_maxcom" value="<?=$row['pi_maxcom']?>" required=""/>
-                </div>
-                <div class="form-group col-12 col-xl-6">
-                  <label for="pi_comment">코멘트</label>
-                  <textarea class="form-control" name="pi_comment"></textarea>
-                </div>
-                <div class="form-group col-4 col-xl-2 m-auto">
-                  <button type="button" value="pi_approve" index="<?=$row['pi_seq']?>"class="btn btn-primary btn-lg btn-block pi_button">승 인</button>
-                </div>
-                <div class="form-group col-4 col-xl-2 m-auto">
-                  <button type="button" value="pi_update" index="<?=$row['pi_seq']?>" class="btn btn-success btn-lg btn-block pi_button">수 정</button>
-                </div>
-                <div class="form-group col-4 col-xl-2 m-auto">
-                  <button type="button" value="pi_reject" index="<?=$row['pi_seq']?>" class="btn btn-danger btn-lg btn-block pi_button">거 부</button>
-                </div>
-              </div>
-            </div>
           </div>
-          </form>
           <?php
               }
+          ?>
+              </tbody>
+            </table>
+          </div>
+          <?php
           }
           ?>
 

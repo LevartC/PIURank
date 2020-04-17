@@ -14,7 +14,7 @@ class Admin extends CI_Controller {
     
     public function playinfo() {
         if ($this->check_admin()) {
-            $this->piData = $this->playinfo_model->getPlayinfo(null);
+            $this->piData = $this->playinfo_model->getPlayinfo(PI_STATUS_WAITING);
             $this->load->view('admin/admin_playinfo');
         }
     }
@@ -26,8 +26,9 @@ class Admin extends CI_Controller {
     public function pi_approve() {
         if ($this->check_admin()) {
             $pi_data = array(
-                'pi_status' => 1,
+                'pi_status' => PI_STATUS_ACTIVE,
                 'pi_update' => false,
+                'u_seq' => $this->input->post('u_seq'),
                 'pi_seq' => $this->input->post('pi_seq'),
                 'pi_comment' => $this->input->post('pi_comment'),
             );
@@ -39,8 +40,9 @@ class Admin extends CI_Controller {
     public function pi_update() {
         if ($this->check_admin()) {
             $pi_data = array(
-                'pi_status' => 1,
+                'pi_status' => PI_STATUS_ACTIVE,
                 'pi_update' => true,
+                'u_seq' => $this->input->post('u_seq'),
                 'pi_seq' => $this->input->post('pi_seq'),
                 'pi_level' => $this->input->post('pi_level'),
                 'pi_grade' => $this->input->post('pi_grade'),
@@ -63,7 +65,7 @@ class Admin extends CI_Controller {
     public function pi_reject() {
         if ($this->check_admin()) {
             $pi_data = array(
-                'pi_status' => 0,
+                'pi_status' => PI_STATUS_DENIED,
                 'pi_seq' => $this->input->post('pi_seq'),
                 'pi_comment' => $this->input->post('pi_comment'),
             );

@@ -59,7 +59,7 @@ function formCheck(frm) {
 
           
           <?php
-          if (!count($this->piData)) {
+          if ($this->piData === null || !count($this->piData)) {
           ?>
           <div class="border border-secondary rounded p-3">
             대기중인 정보가 존재하지 않습니다.
@@ -77,6 +77,7 @@ function formCheck(frm) {
             <div class="col-12 col-xl-8 mt-2 mb-2">
               <div class="form-row">
                 <input type="hidden" name="pi_seq" value="<?=$row['pi_seq']?>"/>
+                <input type="hidden" name="u_seq" value="<?=$row['u_seq']?>"/>
                 <div class="form-group col-12 col-xl-8">
                   <input type="text" class="form-control" name="pi_title" value="<?=$row['s_title']?>(<?=$row['s_title_kr']?>)" required readonly/>
                 </div>

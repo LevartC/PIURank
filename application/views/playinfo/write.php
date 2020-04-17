@@ -17,6 +17,7 @@ require_once $common_dir . "/header.php";
       <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
       <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
       <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+      <script src="/js/load-image.all.min.js"></script>
       <script>
       $("#coll_category").addClass("show");
       $("#nav_category").addClass("active");
@@ -71,13 +72,19 @@ require_once $common_dir . "/header.php";
           }
           $('#file_label').html(file_name);
           if (this.files && this.files[0]) {
-              var reader = new FileReader();
-              reader.onload = function(e) {
-                  $('#pi_img').removeClass("hiddenItem");
-                  $('#pi_img').attr('src', e.target.result);
-                  $("#submit_btn").removeAttr("disabled");
-              }
-              reader.readAsDataURL(this.files[0]);
+            var files = e.target.files;
+            var fileType = files[0].type;
+            loadImage(files[0], function(img, data) {
+              img.toBlob(function(blob) {
+                var rotateFile = new File([blob], files[0].name, {type:fileType});
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#pi_img').removeClass("hiddenItem");
+                    $('#pi_img').attr('src', e.target.result);
+                    $("#submit_btn").removeAttr("disabled");
+                }
+                reader.readAsDataURL(rotateFile);
+              }, fileType)}, {orientation:true} );
           }
       });
         

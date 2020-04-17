@@ -77,7 +77,7 @@
             </li>
             <div class="topbar-divider d-none d-lg-block"></div>
             <li class="nav-item" id="nav_aevileague">
-                <a class="nav-link" href="/playinfo/write">
+                <a class="nav-link" href="#">
                     <i class="fas fa-fw fa-table"></i>
                     <span>Aevileague</span>
                 </a>
@@ -94,7 +94,7 @@ if (isset($_SESSION['u_class']) && $_SESSION['u_class'] <= '2') {
                     <a class="dropdown-item" href="/admin/aevileague">Aevileague 관리자</a>
                     <a class="dropdown-item" href="/admin/playinfo">기록 관리자</a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">Something else here</a>
+                    <a class="dropdown-item" href="#">-</a>
                 </div>
             </li>
 <?php
