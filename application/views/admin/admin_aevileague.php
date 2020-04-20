@@ -18,7 +18,7 @@ require_once $common_dir . "/header.php";
         <?php require_once $common_dir . "/body_topbar.php"; ?>
 
         <!-- Begin Page Content -->
-        <div class="container-fluid">
+        <div class="container-fhd">
           <!-- Page Heading -->
           <div class="d-sm-flex align-items-center justify-content-between my-3">
             <h1 class="h3 mb-0 text-gray-800">리그 관리</h1>

@@ -19,7 +19,7 @@ require_once $common_dir . "/header.php";
         <?php require_once $common_dir . "/body_topbar.php"; ?>
 
         <!-- Begin Page Content -->
-        <div class="container-fluid">
+        <div class="container-fhd">
         <table class="table table-hover">
           <thead>
             <tr>

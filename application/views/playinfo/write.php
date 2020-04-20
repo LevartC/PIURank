@@ -191,7 +191,7 @@ require_once $common_dir . "/header.php";
       </script>
       
       <!-- Begin Page Content -->
-      <div class="container-fluid mt-3">
+      <div class="container-fhd mt-3">
               
         <div class="row">
           <div class="col">

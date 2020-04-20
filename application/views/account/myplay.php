@@ -24,7 +24,7 @@ $(document).on("change", "#pi_status", function(e){
         <?php require_once $common_dir . "/body_topbar.php"; ?>
 
         <!-- Begin Page Content -->
-        <div class="container-fluid mt-3">
+        <div class="container-fhd mt-3">
 
           <!-- Page Heading -->
           <div class="d-flex justify-content-between mb-4">
