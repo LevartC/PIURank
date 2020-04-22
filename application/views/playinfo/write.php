@@ -151,7 +151,7 @@ require_once $common_dir . "/header.php";
           }
         });
       });
-      var pi_u_seq_val = <?= isset($this->session->u_seq)?>;
+      var pi_u_seq_val = <?= isset($this->session->u_seq) ? "true" : "false" ?>;
       $(function() {
         $("#pi_u_nick").blur(function(e) {
             if (this.value != "") {

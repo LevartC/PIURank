@@ -76,11 +76,26 @@
                 </a>
             </li>
             <div class="topbar-divider d-none d-lg-block"></div>
-            <li class="nav-item" id="nav_aevileague">
-                <a class="nav-link" href="#">
-                    <i class="fas fa-fw fa-table"></i>
-                    <span>Aevileague</span>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-crown"></i>RANKING
                 </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="/ranking/total">전체 랭킹</a>
+                    <a class="dropdown-item" href="/ranking/song">곡별 랭킹</a>
+                </div>
+            </li>
+            <div class="topbar-divider d-none d-lg-block"></div>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    ON-BATTLE
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="/admin/aevileague">Aevileague</a>
+                    <a class="dropdown-item" href="/admin/playinfo">기록 관리자</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#">-</a>
+                </div>
             </li>
 <?php
 if (isset($_SESSION['u_class']) && $_SESSION['u_class'] <= '2') {
