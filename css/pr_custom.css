@@ -1,4 +1,12 @@
 
+.container-fhd {
+    max-width: 1080px;
+    padding-right: 0.75rem;
+    padding-left: 0.75rem;
+    margin-right: auto;
+    margin-left: auto;
+}
+  
 .pr_pi {
     margin: auto;
 }

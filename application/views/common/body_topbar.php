@@ -78,7 +78,7 @@
             <div class="topbar-divider d-none d-lg-block"></div>
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="fas fa-crown"></i>RANKING
+                    <i class="fas fa-crown"></i> RANKING
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item" href="/ranking/total">전체 랭킹</a>
@@ -91,8 +91,8 @@
                     ON-BATTLE
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="/admin/aevileague">Aevileague</a>
-                    <a class="dropdown-item" href="/admin/playinfo">기록 관리자</a>
+                    <a class="dropdown-item" href="/league/main">메인</a>
+                    <a class="dropdown-item" href="/league/aevileague">Aevileague</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="#">-</a>
                 </div>
@@ -116,6 +116,10 @@ if (isset($_SESSION['u_class']) && $_SESSION['u_class'] <= '2') {
 }
 ?>
         </ul>
+        
+<?php
+if (0) {
+?>
         <form>
             <div class="input-group">
                 <input type="text" disabled class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
@@ -126,6 +130,9 @@ if (isset($_SESSION['u_class']) && $_SESSION['u_class'] <= '2') {
                 </div>
             </div>
         </form>
+<?php
+}
+?>
     </div>
 </nav>
     

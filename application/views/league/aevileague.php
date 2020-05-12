@@ -8,8 +8,6 @@ require_once $common_dir . "/header.php";
 
   <!-- Page Wrapper -->
   <div id="wrapper">
-    <!-- Sidebar -->
-    <?php require_once $common_dir . "/body_sidebar.php"; ?>
     <!-- Content Wrapper -->
     <div id="content-wrapper" class="d-flex flex-column">
 
