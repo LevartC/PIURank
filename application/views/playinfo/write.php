@@ -1,16 +1,16 @@
-<?php 
+<?php
 $common_dir = get_common_dir();
 //<!-- Page Header -->
 require_once $common_dir . "/header.php";
 ?>
 <body id="page-top">
-    
+
   <!-- Page Wrapper -->
   <div id="wrapper">
 
     <!-- Content Wrapper -->
     <div id="content-wrapper" class="d-flex flex-column">
-      
+
       <!-- Topbar -->
       <?php require_once $common_dir . "/body_topbar.php"; ?>
 
@@ -22,7 +22,7 @@ require_once $common_dir . "/header.php";
       $("#coll_category").addClass("show");
       $("#nav_category").addClass("active");
       $("#nav_input_pi").addClass("active");
-      
+
       function formCheck(fm) {
           if (!pi_u_seq_val) {
               alert("플레이어가 정상적으로 입력되지 않았습니다.");
@@ -45,7 +45,7 @@ require_once $common_dir . "/header.php";
               return false;
           }
       }
-      
+
       $(document).on("change", "#pi_file", function(e) {
           if (this.value) {
               var pathstr = this.value;
@@ -87,7 +87,7 @@ require_once $common_dir . "/header.php";
               }, fileType)}, {orientation:true} );
           }
       });
-        
+
       $(function() {
         $("#pi_title").autocomplete({
           source : function( request, response ) {
@@ -189,10 +189,10 @@ require_once $common_dir . "/header.php";
         });
       });
       </script>
-      
+
       <!-- Begin Page Content -->
       <div class="container-fhd mt-3">
-              
+
         <div class="row">
           <div class="col">
             <form method="post" class="user" id="pi_form" name="pi_form" action="write_action" onsubmit="return formCheck(this)" enctype="multipart/form-data">
@@ -318,7 +318,7 @@ require_once $common_dir . "/header.php";
             </form>
           </div>
         </div>
-        
+
     <!-- End of Content Wrapper -->
     </div>
 
@@ -326,5 +326,5 @@ require_once $common_dir . "/header.php";
 
   <!-- End of Page Wrapper -->
   </div>
-  
+
 </body>

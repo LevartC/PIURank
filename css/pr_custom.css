@@ -66,3 +66,20 @@ pre {
     background-color: #fff;
     margin: 0;
 }
+
+.text-silver {
+    color: #c0c0c0;
+}
+
+.text-bronze {
+    color: #CD7F32;
+}
+
+.border-left-silver {
+    border-left: 0.25rem solid #c0c0c0 !important;
+}
+  
+.border-left-bronze {
+    border-left: 0.25rem solid #CD7F32 !important;
+}
+

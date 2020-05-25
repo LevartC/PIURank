@@ -11,5 +11,14 @@ class Ranking extends CI_Controller {
 	public function index()
 	{
 	}
+	public function total()
+	{
+		$this->load->view('ranking/total');
+	}
+	public function song()
+	{
+		
+		$this->load->view('ranking/song');
+	}
 }
 ?>
