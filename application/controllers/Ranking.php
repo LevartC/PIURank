@@ -17,7 +17,6 @@ class Ranking extends CI_Controller {
 	}
 	public function song()
 	{
-		
 		$this->load->view('ranking/song');
 	}
 }
