@@ -1,12 +1,31 @@
 
 .container-fhd {
-    max-width: 1080px;
+    width: 90%;
     padding-right: 0.75rem;
     padding-left: 0.75rem;
     margin-right: auto;
     margin-left: auto;
 }
-  
+
+@media (min-width: 492px) {
+  .container-fhd {
+    max-width: 480px;
+  }
+}
+
+@media (min-width: 768px) {
+  .container-fhd {
+    max-width: 720px;
+  }
+}
+
+
+@media (min-width: 1080px) {
+  .container-fhd {
+    max-width: 1080px;
+  }
+}
+
 .pr_pi {
     margin: auto;
 }

@@ -3,14 +3,8 @@ $common_dir = get_common_dir();
 //<!-- Page Header -->
 require_once $common_dir . "/header.php";
 ?>
-<body id="page-top">
-
-  <!-- Page Wrapper -->
-  <div id="wrapper">
-
-    <!-- Content Wrapper -->
-    <div id="content-wrapper" class="d-flex flex-column">
-
+<!-- Body head -->
+<?php require_once $common_dir . "/body_head.php"; ?>
       <!-- Topbar -->
       <?php require_once $common_dir . "/body_topbar.php"; ?>
 

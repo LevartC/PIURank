@@ -26,13 +26,3 @@
   <!-- Custom scripts for all pages-->
   <script src="/js/sb-admin-2.js"></script>
 </head>
-
-<body id="page-top">
-
-  <!-- Page Wrapper -->
-  <div id="wrapper">
-    <!-- Content Wrapper -->
-    <div id="content-wrapper" class="d-flex flex-column">
-
-      <!-- Main Content -->
-      <div id="content" class="mx-auto" style="max-width:1080px;">
