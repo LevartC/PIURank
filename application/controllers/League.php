@@ -2,14 +2,20 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class League extends CI_Controller {
-	public $userdata;
+	function __construct() {
+		parent::__construct();
+		$this->load->model("league_model");
+    }
 
 	public function index()
 	{
 	}
 	public function aevileague()
 	{
-		$this->load->view('league/aevileague');
+		$arr_data = array(
+			"league_data" => $this->league_model->getWorkingLeagueData(),
+		);
+		$this->load->view('league/aevileague', $arr_data);
     }
 }
 ?>

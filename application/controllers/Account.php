@@ -10,7 +10,7 @@ class Account extends CI_Controller {
 		$this->load->model('account_model');
 		$this->load->model('playinfo_model');
     }
-    
+
     public function register() {
         if ($this->check_login()) {
             alert("이미 로그인되어 있습니다.");
@@ -84,7 +84,7 @@ class Account extends CI_Controller {
     public function check_id() {
         $reg_id = $this->input->post('reg_id');
         $this->account_model->check_id($reg_id);
-        
+
     }
     public function check_nick() {
         $reg_nick = $this->input->post('reg_nick');

@@ -4,6 +4,8 @@
 <div class="container my-auto">
     <div class="copyright text-center my-auto">
     <span>Copyright &copy; PIURank 2020</span>
+    <p></p>
+    <span>문의 : Admin@piurank.com</span>
     </div>
 </div>
 </footer>

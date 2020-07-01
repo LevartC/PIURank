@@ -1,43 +1,22 @@
-
-<?php 
+<?php
 $common_dir = get_common_dir();
 //<!-- Page Header -->
 require_once $common_dir . "/header.php";
 ?>
-<body id="page-top">
+<!-- Body head -->
+<?php require_once $common_dir . "/body_head.php"; ?>
+    <!-- Topbar -->
+    <?php require_once $common_dir . "/body_topbar.php"; ?>
 
-  <!-- Page Wrapper -->
-  <div id="wrapper">
-    <!-- Content Wrapper -->
-    <div id="content-wrapper" class="d-flex flex-column">
+    <!-- Begin Page Content -->
+    <div class="container-fhd mt-4">
 
-      <!-- Main Content -->
-      <div id="content">
-        <!-- Topbar -->
-        <?php require_once $common_dir . "/body_topbar.php"; ?>
-
-        <!-- Begin Page Content -->
-        <div class="container-fhd">
-        <table class="table table-hover">
-          <thead>
-            <tr>
-              <th scope="col"></th>
-              <th scope="col">Column heading</th>
-              <th scope="col">Column heading</th>
-              <th scope="col">Column heading</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr class="table-active">
-              <th scope="row">Active</th>
-              <td>Column content</td>
-              <td>Column content</td>
-              <td>Column content</td>
-            </tr>
-          </tbody>
-        </table>
-        </div>
+      <!-- Page Heading -->
+      <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800"></h1>
       </div>
+
     </div>
-  </div>
-</div>
+    <!-- /.container-fhd -->
+
+    <?php require_once $common_dir . "/footer.php"; ?>

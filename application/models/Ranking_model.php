@@ -9,7 +9,7 @@ class Ranking_model extends CI_Model
 
     function getRankingInfo($c_seq = null, $is_skill = false) {
         if ($c_seq) {
-            $sql = "SELECT pr_users.u_nick, pr_playinfo.*, pr_charts.*, pr_songs.* FROM pr_playinfo inner join pr_users on pr_playinfo.u_seq = pr_users.u_seq inner join pr_charts on pr_playinfo.c_seq = pr_charts.c_seq inner join pr_songs on pr_charts.s_seq = pr_songs.s_seq WHERE pr_playinfo.c_seq = ?";
+            $sql = "SELECT pr_users.u_nick, pr_playinfo.*, pr_charts.*, pr_songs.* FROM pr_playinfo inner join pr_users on pi_u_seq = u_seq inner join pr_charts on pi_c_seq = c_seq inner join pr_songs on c_s_seq = pr_songs.s_seq WHERE c_seq = ?";
         } else {
             $sql = "SELECT u_nick, u_skillp FROM pr_users LIMIT 20";
         }
@@ -23,10 +23,10 @@ class Ranking_model extends CI_Model
             $stat_where = " AND pi_status = ".$status;
         }
         if ($u_seq) {
-            $sql = "SELECT pr_users.u_nick, pr_playinfo.*, pr_charts.*, pr_songs.* FROM pr_playinfo inner join pr_users on pr_playinfo.u_seq = pr_users.u_seq inner join pr_charts on pr_playinfo.c_seq = pr_charts.c_seq inner join pr_songs on pr_charts.s_seq = pr_songs.s_seq WHERE pr_playinfo.u_seq = ?" . $stat_where;
+            $sql = "SELECT pr_users.u_nick, pr_playinfo.*, pr_charts.*, pr_songs.* FROM pr_playinfo inner join pr_users on pi_u_seq = u_seq inner join pr_charts on pi_c_seq = c_seq inner join pr_songs on c_s_seq = s_seq WHERE u_seq = ?" . $stat_where;
             array_push($bind_array, (int)$u_seq);
         } else {
-            $sql = "SELECT pr_users.u_nick, pr_playinfo.*, pr_charts.*, pr_songs.* FROM pr_playinfo inner join pr_users on pr_playinfo.u_seq = pr_users.u_seq inner join pr_charts on pr_playinfo.c_seq = pr_charts.c_seq inner join pr_songs on pr_charts.s_seq = pr_songs.s_seq WHERE 1" . $stat_where;
+            $sql = "SELECT pr_users.u_nick, pr_playinfo.*, pr_charts.*, pr_songs.* FROM pr_playinfo inner join pr_users on pi_u_seq = u_seq inner join pr_charts on pi_c_seq = c_seq inner join pr_songs on c_s_seq = s_seq WHERE 1" . $stat_where;
         }
         $res = count($bind_array) ? $this->db->query($sql, $bind_array) : $this->db->query($sql);
         $data = null;

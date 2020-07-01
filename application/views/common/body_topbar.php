@@ -25,7 +25,7 @@
                 <i class="fas fa-list-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                 내 기록
             </a>
-            <!-- Activity Log 
+            <!-- Activity Log
             <a class="dropdown-item" href="#">
                 <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
                 Activity Log
@@ -53,7 +53,7 @@
             ?>
         </div>
     </div>
-        
+
     <div class="topbar-divider d-none d-lg-block"></div>
 
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -91,7 +91,9 @@
                     ON-BATTLE
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <!--
                     <a class="dropdown-item" href="/league/main">메인</a>
+                    -->
                     <a class="dropdown-item" href="/league/aevileague">Aevileague</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="#">-</a>
@@ -116,7 +118,7 @@ if (isset($_SESSION['u_class']) && $_SESSION['u_class'] <= '2') {
 }
 ?>
         </ul>
-        
+
 <?php
 if (0) {
 ?>
@@ -135,7 +137,7 @@ if (0) {
 ?>
     </div>
 </nav>
-    
+
 <!-- Login Modal-->
 <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
