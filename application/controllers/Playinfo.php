@@ -18,7 +18,7 @@ class Playinfo extends CI_Controller {
 			$pi_data = array(
 				'u_seq' => $this->session->u_seq,
 				'u_id' => $this->session->u_id,
-				'c_seq' => $this->input->post('pi_c_seq'),
+				'pi_c_seq' => $this->input->post('pi_c_seq'),
 				'pi_level' => $this->input->post('pi_level'),
 				'pi_grade' => $this->input->post('pi_grade'),
 				'pi_break' => $this->input->post('pi_break'),
