@@ -12,7 +12,6 @@ require_once $common_dir . "/header.php";
       <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
       <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
       <script src="/js/load-image.all.min.js"></script>
-      <script src="/js/canvas-to-blob.js"></script>
       <script>
       $("#coll_category").addClass("show");
       $("#nav_category").addClass("active");
@@ -67,15 +66,28 @@ require_once $common_dir . "/header.php";
           }
           $('#file_label').html(file_name);
           if (this.files && this.files[0]) {
+            var loadingImage = loadImage(
+                this.files[0].name,
+                function (img) {
+                    $('#pi_img').removeClass("hiddenItem");
+                    $('#pi_img').attr('src', img.currentSrc);
+                    $("#submit_btn").removeAttr("disabled");
+                },
+                { orientation:true }
+            )
+            /*
+            // 이미지 회전 적용 전
+            var reader = new FileReader();
+              reader.onload = function(e) {
+                  $('#pi_img').removeClass("hiddenItem");
+                  $('#pi_img').attr('src', e.target.result);
+                  $("#submit_btn").removeAttr("disabled");
+              }
+              reader.readAsDataURL(this.files[0]);
+            // 이미지 회전 적용 후 (크롬 미지원)
             var files = e.target.files;
             var fileType = files[0].type;
             var reader = new FileReader();
-            reader.onload = function(e) {
-                $('#pi_img').removeClass("hiddenItem");
-                $('#pi_img').attr('src', e.target.result);
-                $("#submit_btn").removeAttr("disabled");
-            }
-            /*
             loadImage(files[0], function(img, data) {
               img.toBlob(function(blob) {
                 var rotateFile = new File([blob], files[0].name, {type:fileType});
