@@ -68,16 +68,20 @@ class Playinfo_model extends CI_Model
                 exit();
             }
             // 파일 압축 후 이동
-            $this->uploadFile($pi_file["tmp_name"], $upload_dir."/".$pi_filename, 90);
+            if (!$this->uploadFile($pi_file["tmp_name"], $upload_dir."/".$pi_filename, 90)) {
+                alert('파일 생성에 실패하였습니다.');
+                exit();
+            }
         //    move_uploaded_file($_FILES["pi_file"]["tmp_name"], $upload_dir."/".$pi_filename);
         } catch(Exception $e) {
             alert('파일 생성에 실패하였습니다.\n' . $e->getMessage());
         }
         try {
             $pi_skillp = $this->getSkillPoint($pi_data['pi_level'], $pi_data['pi_perfect'], $pi_data['pi_great'], $pi_data['pi_good'], $pi_data['pi_bad'], $pi_data['pi_miss'], $pi_data['pi_grade'], $pi_data['pi_break']);
+            $pi_xscore = $this->getXScore($pi_data['pi_perfect'], $pi_data['pi_great'], $pi_data['pi_good'], $pi_data['pi_bad'], $pi_data['pi_miss'], $pi_data['pi_break']);
 
-            $sql = "INSERT INTO pr_playinfo(pi_c_seq, pi_u_seq, pi_grade, pi_break, pi_judge, pi_perfect, pi_great, pi_good, pi_bad, pi_miss, pi_maxcom, pi_score, pi_skillp, pi_filename) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-            $res = $this->db->query($sql, array($pi_data['pi_c_seq'], $pi_data['u_seq'], $pi_data['pi_grade'], $pi_data['pi_break'], $pi_data['pi_judge'], $pi_data['pi_perfect'], $pi_data['pi_great'], $pi_data['pi_good'], $pi_data['pi_bad'], $pi_data['pi_miss'], $pi_data['pi_maxcom'], $pi_data['pi_score'], $pi_skillp, $pi_filename));
+            $sql = "INSERT INTO pr_playinfo(pi_c_seq, pi_u_seq, pi_grade, pi_break, pi_judge, pi_perfect, pi_great, pi_good, pi_bad, pi_miss, pi_maxcom, pi_score, pi_skillp, pi_xscore, pi_filename) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            $res = $this->db->query($sql, array($pi_data['pi_c_seq'], $pi_data['u_seq'], $pi_data['pi_grade'], $pi_data['pi_break'], $pi_data['pi_judge'], $pi_data['pi_perfect'], $pi_data['pi_great'], $pi_data['pi_good'], $pi_data['pi_bad'], $pi_data['pi_miss'], $pi_data['pi_maxcom'], $pi_data['pi_score'], $pi_skillp, $pi_xscore, $pi_filename));
             if ($res) {
                 alert("성공적으로 입력되었습니다.");
             } else {
@@ -93,6 +97,24 @@ class Playinfo_model extends CI_Model
 
         if ($info['mime'] == 'image/jpeg') {
             $image = imagecreatefromjpeg($src);
+            if(function_exists('exif_read_data')) {
+                $exif = exif_read_data($src);
+                if(!empty($exif) && isset($exif['Orientation'])) {
+                    switch ($exif['Orientation']) {
+                        case 8:
+                            $image = imagerotate($image,90,0);
+                        break;
+                        case 3:
+                            $image = imagerotate($image,180,0);
+                        break;
+                        case 6:
+                            $image = imagerotate($image,-90,0);
+                        break;
+                        default:
+                        break;
+                    }
+                }
+            }
         }
         elseif ($info['mime'] == 'image/gif') {
             $image = imagecreatefromgif($src);
@@ -100,24 +122,11 @@ class Playinfo_model extends CI_Model
         elseif ($info['mime'] == 'image/png') {
             $image = imagecreatefrompng($src);
         }
-        $exif = exif_read_data($src);
-        switch ($exif['Orientation']) {
-            case 8:
-                $image = imagerotate($image,90,0);
-            break;
-            case 3:
-                $image = imagerotate($image,180,0);
-            break;
-            case 6:
-                $image = imagerotate($image,-90,0);
-            break;
-            default:
-            break;
+        if (imagejpeg($image, $dest, $quality)) {
+            return $dest;
+        } else {
+            return null;
         }
-
-        imagejpeg($image, $dest, $quality);
-
-        return $dest;
     }
 
     public function getSkillPoint($level, $perfect, $great, $good, $bad, $miss, $grade, $break) {
@@ -147,6 +156,11 @@ class Playinfo_model extends CI_Model
 
         $skill_point = $judge_point + $grade_point;
         return $skill_point;
+    }
+    public function getXScore($perfect, $great, $good, $bad, $miss, $break) {
+        $break_val = ($break == "OFF") ? 50 : 0;
+        $xscore = ($perfect*2) + $great - $bad - ($miss*2) - $break;
+        return $xscore;
     }
 }
 ?>

@@ -148,8 +148,8 @@ if (0) {
                 <span aria-hidden="true">×</span>
                 </button>
             </div>
-            <div class="modal-body">
             <form class="user" method="post" id="login_form" name="login_form" action="/account/login_action">
+            <div class="modal-body">
                 <div class="form-group">
                     <input type="text" class="form-control form-control-user" name="login_id" id="login_id" placeholder="ID를 입력하세요." required>
                 </div>
@@ -159,7 +159,7 @@ if (0) {
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">취소</button>
-                <button type="submit" class="btn btn-primary">로그인</a>
+                <button type="submit" class="btn btn-primary">로그인</button>
             </div>
             </form>
         </div>

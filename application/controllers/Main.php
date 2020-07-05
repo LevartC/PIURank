@@ -9,8 +9,7 @@ class Main extends CI_Controller {
 		$this->load->model('account_model');
     }
 
-	public function index()
-	{
+	public function index() {
 		if (isset($this->session->u_seq)) {
 			$this->userdata = $this->account_model->getUserData($this->session->u_seq);
 		}

@@ -11,8 +11,10 @@ require_once $common_dir . "/header.php";
       <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
       <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
       <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-      <script src="/js/load-image.all.min.js"></script>
+      <script src="/js/loadimage/load-image.all.min.js"></script>
       <script>
+      var agent = navigator.userAgent.toLowerCase();
+      console.log(agent);
       $("#coll_category").addClass("show");
       $("#nav_category").addClass("active");
       $("#nav_input_pi").addClass("active");
@@ -66,40 +68,47 @@ require_once $common_dir . "/header.php";
           }
           $('#file_label').html(file_name);
           if (this.files && this.files[0]) {
-            var loadingImage = loadImage(
-                this.files[0].name,
-                function (img) {
-                    $('#pi_img').removeClass("hiddenItem");
-                    $('#pi_img').attr('src', img.currentSrc);
-                    $("#submit_btn").removeAttr("disabled");
-                },
-                { orientation:true }
-            )
-            /*
-            // 이미지 회전 적용 전
-            var reader = new FileReader();
+              // 이미지 회전 적용 전
+              var reader = new FileReader();
               reader.onload = function(e) {
                   $('#pi_img').removeClass("hiddenItem");
                   $('#pi_img').attr('src', e.target.result);
                   $("#submit_btn").removeAttr("disabled");
               }
               reader.readAsDataURL(this.files[0]);
-            // 이미지 회전 적용 후 (크롬 미지원)
-            var files = e.target.files;
-            var fileType = files[0].type;
-            var reader = new FileReader();
-            loadImage(files[0], function(img, data) {
-              img.toBlob(function(blob) {
-                var rotateFile = new File([blob], files[0].name, {type:fileType});
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    $('#pi_img').removeClass("hiddenItem");
-                    $('#pi_img').attr('src', e.target.result);
-                    $("#submit_btn").removeAttr("disabled");
-                }
-                reader.readAsDataURL(rotateFile);
-              }, fileType)}, {orientation:true} );
-            */
+              /*
+              // 이미지 회전 적용 (크롬 지원)
+              var reader = new FileReader();
+              reader.onload = function(e) {
+                  var loadingImage = loadImage(
+                      e.target.result,
+                      function (img) {
+                          $('#pi_img').removeClass("hiddenItem");
+                          $('#pi_img').attr('src', img.src);
+                          $("#submit_btn").removeAttr("disabled");
+                      },
+                      { orientation:true }
+                  );
+              }
+              reader.readAsDataURL(this.files[0]);
+
+              // 이미지 회전 적용 (크롬 미지원)
+              var files = e.target.files;
+              var fileType = files[0].type;
+              loadImage(files[0], function(img, data) {
+                  (Canvas)img.toBlob(function(blob) {
+                    var rotateFile = new File([blob], files[0].name, {type:fileType});
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        $('#pi_img').removeClass("hiddenItem");
+                        $('#pi_img').attr('src', e.target.result);
+                        $("#submit_btn").removeAttr("disabled");
+                    }
+                    reader.readAsDataURL(rotateFile);
+                  }, fileType)}, {orientation:true}
+              );
+
+              */
           }
       });
 
@@ -216,7 +225,7 @@ require_once $common_dir . "/header.php";
                 <div class="col-lg-4 pr_pi">
                   <div class="form-group col-12 p-0">
                     <label class="form-control-label" for="pi_u_nick">플레이어</label>
-                    <input type="text" class="form-control" id="pi_u_nick" name="pi_u_nick" value=<?= isset($this->session->u_nick) ? "'".$this->session->u_nick."' disabled" : "" ?>>
+                    <input type="text" class="form-control" id="pi_u_nick" name="pi_u_nick" value=<?= isset($this->session->u_nick) ? "'".$this->session->u_nick."' disabled" : "''" ?>>
                     <label class="form-control-label" display="none" id="u_nick_label" for="pi_u_nick"></label>
                     <input type="hidden" id="pi_u_seq" name="pi_u_seq" value="<?= isset($this->session->u_seq) ? $this->session->u_seq : "" ?>">
                   </div>
@@ -343,3 +352,4 @@ require_once $common_dir . "/header.php";
   </div>
 
 </body>
+</html>
