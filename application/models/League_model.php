@@ -7,7 +7,7 @@ class League_model extends CI_Model
         parent::__construct();
     }
 
-    function getWorkingLeague() {
+    public function getWorkingLeague() {
         $sql = "SELECT * FROM al_info WHERE now() between li_starttime AND li_endtime LIMIT 1";
         $res = $this->db->query($sql);
         if ($row = $res->row_array()) {
@@ -16,8 +16,8 @@ class League_model extends CI_Model
             return null;
         }
     }
-    
-    function getTierData() {
+
+    public function getTierData() {
         $sql = "SELECT * FROM al_tier";
         $res = $this->db->query($sql);
         $data = null;
@@ -26,9 +26,9 @@ class League_model extends CI_Model
         }
         return $data;
     }
-    
-    function getChartData() {
-        $sql = "SELECT * FROM al_char";
+
+    public function getChartData() {
+        $sql = "SELECT * FROM al_chart";
         $res = $this->db->query($sql);
         $data = null;
         foreach($res->result_array() as $row) {
@@ -37,8 +37,29 @@ class League_model extends CI_Model
         return $data;
     }
 
+    public function getLeagueUserData() {
+        $sql = "SELECT u_id, u_nick, u_mmr, u_al_tier FROM pr_users WHERE u_al_tier IS NOT NULL";
+        $res = $this->db->query($sql);
+        $data = null;
+        foreach($res->result_array() as $row) {
+            $data[] = $row;
+        }
+        return $data;
+    }
 
-    function getWorkingLeagueData() {
+    public function getTierPlayInfo($league_data) {
+        $sql = "SELECT MAX(pi_xscore) AS pi_x, u_seq, pr_playinfo.* from pr_playinfo
+            inner join pr_users on pi_u_seq = u_seq
+            inner join pr_charts on pi_c_seq = c_seq
+            inner join pr_songs on c_s_seq = s_seq
+            INNER JOIN al_charts ON lc_c_seq = c_seq
+            WHERE pi_status = 'Active' AND lc_li_season = 1 and lc_li_degree = 1 AND pi_createtime BETWEEN '2020-01-29' AND '2020-07-10'
+            GROUP BY u_seq, pi_c_seq
+            ORDER BY pi_u_seq ASC, pi_x DESC, pi_c_seq asc
+            ";
+    }
+
+    public function getWorkingLeagueData() {
         $sql = "SELECT * FROM pr_playinfo
             inner join pr_users on pi_u_seq = u_seq
             inner join pr_charts on pi_c_seq = c_seq

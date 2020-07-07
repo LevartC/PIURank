@@ -15,6 +15,7 @@ class League extends CI_Controller {
 		$arr_data = array(
 			"tier_data" => $this->league_model->getTierData(),
 			"league_data" => $this->league_model->getWorkingLeagueData(),
+			"league_user_data" => $this->league_model->getLeagueUserData(),
 		);
 		$this->load->view('league/aevileague', $arr_data);
     }
