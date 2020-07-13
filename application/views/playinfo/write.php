@@ -20,11 +20,11 @@ require_once $common_dir . "/header.php";
       $("#nav_input_pi").addClass("active");
 
       function formCheck(fm) {
-          if (!pi_u_seq_val) {
+          if (!pi_u_id_val) {
               alert("플레이어가 정상적으로 입력되지 않았습니다.");
               return false;
           } else {
-              $("#pi_u_seq").val(pi_u_seq_val);
+              $("#pi_u_id").val(pi_u_id_val);
           }
           var pi_level = $('#pi_level').val();
           if (!pi_level) {
@@ -175,7 +175,7 @@ require_once $common_dir . "/header.php";
           }
         });
       });
-      var pi_u_seq_val = <?= isset($this->session->u_seq) ? "true" : "false" ?>;
+      var pi_u_id_val = <?= isset($this->session->u_id) ? "true" : "false" ?>;
       $(function() {
         $("#pi_u_nick").blur(function(e) {
             if (this.value != "") {
@@ -189,15 +189,15 @@ require_once $common_dir . "/header.php";
                             $("#u_nick_label").attr("style", "color:rgba(28, 200, 138, 0.9)");
                             $("#pi_u_nick").removeClass("is-invalid");
                             $("#pi_u_nick").addClass("is-valid");
-                            pi_u_seq_val = data;
+                            pi_u_id_val = data;
                         } else {
                             $("#u_nick_label").html("존재하지 않는 유저입니다.");
                             $("#u_nick_label").attr("style", "color:#e74a3b");
                             $("#u_nick_label").removeAttr("display");
                             $("#pi_u_nick").removeClass("is-valid");
                             $("#pi_u_nick").addClass("is-invalid");
-                            $("#pi_u_seq").val("");
-                            pi_u_seq_val = false;
+                            $("#pi_u_id").val("");
+                            pi_u_id_val = false;
                         }
                     }
                 });
@@ -207,8 +207,8 @@ require_once $common_dir . "/header.php";
                 $("#u_nick_label").removeAttr("display");
                 $("#pi_u_nick").removeClass("is-valid");
                 $("#pi_u_nick").addClass("is-invalid");
-                $("#pi_u_seq").val("");
-                pi_u_seq_val = false;
+                $("#pi_u_id").val("");
+                pi_u_id_val = false;
             }
         });
       });
@@ -227,7 +227,7 @@ require_once $common_dir . "/header.php";
                     <label class="form-control-label" for="pi_u_nick">플레이어</label>
                     <input type="text" class="form-control" id="pi_u_nick" name="pi_u_nick" value=<?= isset($this->session->u_nick) ? "'".$this->session->u_nick."' disabled" : "''" ?>>
                     <label class="form-control-label" display="none" id="u_nick_label" for="pi_u_nick"></label>
-                    <input type="hidden" id="pi_u_seq" name="pi_u_seq" value="<?= isset($this->session->u_seq) ? $this->session->u_seq : "" ?>">
+                    <input type="hidden" id="pi_u_id" name="pi_u_id" value="<?= isset($this->session->u_id) ? $this->session->u_id : "" ?>">
                   </div>
                   <div class="form-group col-12">
                     <label class="form-control-label" for="pi_file">

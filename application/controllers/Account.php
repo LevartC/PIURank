@@ -21,8 +21,7 @@ class Account extends CI_Controller {
 
     public function profile() {
         if ($this->check_login()) {
-            $this->load->model('playinfo_model');
-            $this->userData = $this->account_model->getUserData($this->session->u_seq);
+            $this->userData = $this->account_model->getUserData($this->session->u_id);
             $this->load->view('account/profile');
         } else {
             alert("로그인 정보가 없습니다.");
@@ -35,7 +34,7 @@ class Account extends CI_Controller {
             if ($this->input->post('pi_status') !== null) {
                 $this->piStatus = (int)$this->input->post('pi_status');
             }
-            $this->piData = $this->playinfo_model->getPlayinfo($this->piStatus, $this->session->u_seq);
+            $this->piData = $this->playinfo_model->getPlayinfo($this->piStatus, $this->session->u_id);
             $this->load->view('account/myplay');
         } else {
             alert("로그인 정보가 없습니다.");
@@ -48,18 +47,19 @@ class Account extends CI_Controller {
     }
 
     public function forgot_password() {
-        $this->load->view('account/forgot_password');
+        alert("준비중입니다.");
+        //$this->load->view('account/forgot_password');
     }
 
     public function prof_update() {
         if ($this->check_login()) {
             $updateUserData = array(
-                'u_seq' => $this->input->post('u_seq'),
+                'u_id' => $this->input->post('u_id'),
                 'u_nick' => $this->input->post('u_nick'),
                 'u_pw' => $this->input->post('u_pw'),
                 'u_email' => $this->input->post('u_email'),
             );
-            if ($this->session->u_seq != $this->input->post('u_seq')) {
+            if ($this->session->u_id != $this->input->post('u_id')) {
                 alert("현재 로그인 정보가 일치하지 않습니다.");
             } else {
                 if ($this->account_model->setUserData($updateUserData)) {
@@ -75,7 +75,7 @@ class Account extends CI_Controller {
     }
 
     private function check_login() {
-        if ($this->session->u_seq) {
+        if ($this->session->u_id) {
             return true;
         } else {
             return false;

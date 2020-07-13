@@ -194,7 +194,7 @@ function check_pw() {
                       <label class="form-control-label" display="none" id="reg_id_label" for="reg_id"></label>
                     </div>
                     <div class="col-md-6">
-                      <input type="text" class="form-control form-control-user only-eng" id="reg_nick" name="reg_nick" placeholder="닉네임" required="">
+                      <input type="text" class="form-control form-control-user only-eng" id="reg_nick" name="reg_nick" placeholder="닉네임 (PIU GAME ID)" required="">
                     <label class="form-control-label" display="none" id="reg_nick_label" for="reg_nick"></label>
                     </div>
                   </div>
@@ -235,9 +235,6 @@ function check_pw() {
                 <hr>
                 <div class="text-center">
                   <a class="small" href="forgot_password">비밀번호 재설정</a>
-                </div>
-                <div class="text-center">
-                  <a class="small" href="login">Already have an account? Login!</a>
                 </div>
               </div>
             </div>

@@ -1,6 +1,5 @@
 <?php
 $common_dir = get_common_dir();
-$userdata = $this->userdata;
 //<!-- Page Header -->
 require_once $common_dir . "/header.php";
 ?>
@@ -28,8 +27,8 @@ require_once $common_dir . "/header.php";
             <div class="card-body">
               <div class="row no-gutters align-items-center">
                 <div class="col mr-2">
-                  <div class="font-weight-bold text-primary text-uppercase">Your skill points</div>
-                  <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $userdata['u_skillp'] ?></div>
+                  <div class="font-weight-bold text-primary text-uppercase mb-1">Your skill points</div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $user_data['u_skillp'] ?? "로그인하세요." ?></div>
                 </div>
                 <div class="col-auto">
                   <i class="fas fa-star-of-david fa-3x text-primary"></i>
@@ -45,8 +44,8 @@ require_once $common_dir . "/header.php";
             <div class="card-body">
               <div class="row no-gutters align-items-center">
                 <div class="col mr-2">
-                  <div class="font-weight-bold text-success text-uppercase">Your MMR Points</div>
-                  <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $userdata['u_mmr'] ?></div>
+                  <div class="font-weight-bold text-success text-uppercase mb-1">Your MMR Points</div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $user_data ? $user_data['u_mmr'] : "로그인하세요." ?></div>
                 </div>
                 <div class="col-auto">
                   <i class="fas fa-registered fa-3x text-success"></i>
@@ -62,8 +61,8 @@ require_once $common_dir . "/header.php";
             <div class="card-body">
               <div class="row no-gutters align-items-center">
                 <div class="col mr-2">
-                  <div class="font-weight-bold text-info text-uppercase">Registered Playinfo</div>
-                  <div class="h5 mb-0 font-weight-bold text-gray-800"><?= 3 ?></div>
+                  <div class="font-weight-bold text-info text-uppercase mb-1">Registered Charts</div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $playinfo_cnt ?? 0 ?></div>
                 </div>
                 <div class="col-auto">
                   <i class="fas fa-clipboard-list fa-3x text-info"></i>
@@ -79,8 +78,8 @@ require_once $common_dir . "/header.php";
             <div class="card-body">
               <div class="row no-gutters align-items-center">
                 <div class="col mr-2">
-                  <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Pending Requests</div>
-                  <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+                  <div class="font-weight-bold text-warning text-uppercase mb-1">YOUR LEAGUE TIER</div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800 text-uppercase"><?= $user_data ? ($user_data['u_al_tier'] ? $user_data['u_al_tier'] : "없음") : "로그인하세요." ?></div>
                 </div>
                 <div class="col-auto">
                   <i class="fas fa-comments fa-2x text-gray-300"></i>

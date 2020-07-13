@@ -7,16 +7,16 @@ class Playinfo_model extends CI_Model
         parent::__construct();
     }
 
-    function getPlayinfo($status, $u_seq = null) {
+    function getPlayinfo($status, $u_id = null) {
         $bind_array = array();
         if (!$status) {
             $stat_where = "";
         } else {
             $stat_where = " AND pi_status = ".$status;
         }
-        if ($u_seq) {
-            $sql = "SELECT pr_users.u_nick, pr_playinfo.*, pr_charts.*, pr_songs.* FROM pr_playinfo inner join pr_users on pi_u_seq = u_seq inner join pr_charts on pi_c_seq = c_seq inner join pr_songs on c_s_seq = s_seq WHERE u_seq = ?" . $stat_where;
-            array_push($bind_array, (int)$u_seq);
+        if ($u_id) {
+            $sql = "SELECT pr_users.u_nick, pr_playinfo.*, pr_charts.*, pr_songs.* FROM pr_playinfo inner join pr_users on pi_u_seq = u_seq inner join pr_charts on pi_c_seq = c_seq inner join pr_songs on c_s_seq = s_seq WHERE u_id = ?" . $stat_where;
+            array_push($bind_array, $u_id);
         } else {
             $sql = "SELECT pr_users.u_nick, pr_playinfo.*, pr_charts.*, pr_songs.* FROM pr_playinfo inner join pr_users on pi_u_seq = u_seq inner join pr_charts on pi_c_seq = c_seq inner join pr_songs on c_s_seq = s_seq WHERE 1" . $stat_where;
         }
@@ -80,7 +80,7 @@ class Playinfo_model extends CI_Model
             $pi_skillp = $this->getSkillPoint($pi_data['pi_level'], $pi_data['pi_perfect'], $pi_data['pi_great'], $pi_data['pi_good'], $pi_data['pi_bad'], $pi_data['pi_miss'], $pi_data['pi_grade'], $pi_data['pi_break']);
             $pi_xscore = $this->getXScore($pi_data['pi_perfect'], $pi_data['pi_great'], $pi_data['pi_good'], $pi_data['pi_bad'], $pi_data['pi_miss'], $pi_data['pi_break']);
 
-            $sql = "INSERT INTO pr_playinfo(pi_c_seq, pi_u_seq, pi_grade, pi_break, pi_judge, pi_perfect, pi_great, pi_good, pi_bad, pi_miss, pi_maxcom, pi_score, pi_skillp, pi_xscore, pi_filename) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            $sql = "INSERT INTO pr_playinfo(pi_c_seq, pi_u_seq, pi_grade, pi_break, pi_judge, pi_perfect, pi_great, pi_good, pi_bad, pi_miss, pi_maxcom, pi_score, pi_skillp, pi_xscore, pi_filename) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
             $res = $this->db->query($sql, array($pi_data['pi_c_seq'], $pi_data['u_seq'], $pi_data['pi_grade'], $pi_data['pi_break'], $pi_data['pi_judge'], $pi_data['pi_perfect'], $pi_data['pi_great'], $pi_data['pi_good'], $pi_data['pi_bad'], $pi_data['pi_miss'], $pi_data['pi_maxcom'], $pi_data['pi_score'], $pi_skillp, $pi_xscore, $pi_filename));
             if ($res) {
                 alert("성공적으로 입력되었습니다.");
@@ -90,6 +90,7 @@ class Playinfo_model extends CI_Model
             }
         } catch(Exception $e) {
             alert($e->getMessage());
+            unlink($upload_dir."/".$pi_filename);
         }
     }
     function uploadFile($src, $dest, $quality) {

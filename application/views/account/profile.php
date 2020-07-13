@@ -131,7 +131,6 @@ function check_update() {
             <div class="card-body p-4">
               <form method="post" class="user" id="prof_form" name="prof_form" action="prof_update" onsubmit="return formCheck(this)">
               <div class="form-row">
-                <input type="hidden" name="u_seq" value="<?=$this->session->u_seq?>"/>
                 <div class="form-group col-md-6">
                   <label class="form-control-label" for="u_id">아이디</label>
                   <input type="text" class="form-control only-eng" id="u_id" name="u_id" value="<?=$this->userData['u_id']?>" required="" disabled/>
