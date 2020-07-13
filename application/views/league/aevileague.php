@@ -17,26 +17,34 @@ require_once $common_dir . "/header.php";
       </div>
 
       <?php
-      if ($league_data) {
+      if ($league_chartdata) {
       ?>
       <div class="card border-primary mb-3" style="max-width:100%">
-        <div class="card-header">Header</div>
-        <div class="card-body">
+        <div class="card-header text-dark bg-white"><h3 class="m-0 p-0">Master Tier : Songs List</h2></div>
+        <div class="card-body p-2">
           <?php
-          if (count($league_chartdata) <= 3) {
-              foreach($league_chartdata as $chart_row) {
+          $lc_cnt = count($league_chartdata['Master']);
+          $div_num = 2;
+          $div_cnt = ($lc_cnt / $div_num) + 1;
+          $div_col = 12 / $div_num;
+          for ($i = 0, $num = 0; $i < $div_cnt; ++$i) {
           ?>
-              <img src="<?=$chart_row['lc_c_seq']?>">
-          <?php
+          <div class="row p-0 m-0">
+              <?php
+              for ($j = 0; $num < $lc_cnt; ++$j, ++$num) {
+                  $chart_row = $league_chartdata['Master'][$num];
+              ?>
+              <div class="col-<?=$div_col?> border border-dark p-1 m-0">
+              <img style="width:100%" src="/titles/<?=$chart_row['s_seq']?>_min.jpg">
+              <div class="border border-dark p-1 m-0 text-dark"><?=$chart_row['s_artist_kr']?> - <?=$chart_row['s_title_kr']?> <?=get_type_index($chart_row['charttype'])?><?=$chart_row['c_level']?> <?=$chart_row['use_hj'] ? "[HJ]" : ""?></div>
+              </div>
+              <?php
               }
-          } else {
-          ?>
-          <img src="">
+              ?>
+          </div>
           <?php
           }
           ?>
-          <h4 class="card-title">Light card title</h4>
-          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
         </div>
       </div>
       <?php
