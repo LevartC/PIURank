@@ -73,31 +73,75 @@ class Account_model extends CI_Model
 
     public function login_action($login_id, $login_pw) {
         if ($login_id && $login_pw) {
-            $sql = "SELECT u_id, u_pw, u_nick, u_class+0 as u_class FROM pr_users WHERE u_id = ?";
+            $res_str = "";
+            for ($i = 0; $i < strlen($login_pw); ++$i) {
+                $res_str .= substr($login_pw, $i, 1) . $i;
+            }
+            $sql = "SELECT u_id, u_pw, u_nick, u_class+0 as u_class, u_status+0 as u_status FROM pr_users WHERE u_id = ?";
             $res = $this->db->query($sql, array($login_id));
             if ($login_data = $res->row_array()) {
-                if(password_verify($login_pw, $login_data['u_pw'])) {
-                    $_SESSION['u_id'] = $login_data['u_id'];
-                    $_SESSION['u_nick'] = $login_data['u_nick'];
-                    $_SESSION['u_class'] = $login_data['u_class'];
-                    return true;
-                } else {
-                    alert("패스워드가 일치하지 않습니다.");
-                    return false;
+                $res_flag = null;
+                switch ((int)$login_data['u_status']) {
+                    case USER_STATUS_ACTIVE :
+                        if(password_verify($login_pw, $login_data['u_pw'])) {
+                            $_SESSION['u_id'] = $login_data['u_id'];
+                            $_SESSION['u_nick'] = $login_data['u_nick'];
+                            $_SESSION['u_class'] = $login_data['u_class'];
+                            $log_str = "Login Success : '".$_SERVER["REMOTE_ADDR"]."' / '".$login_id."' / '". $res_str ."'";
+                            $res_flag = true;
+                        } else {
+                            alert("패스워드가 일치하지 않습니다.");
+                            $log_str = "Login Failed (Password Error) : '".$_SERVER["REMOTE_ADDR"]."' / '".$login_id."' / '". $res_str ."'";
+                            $res_flag = false;
+                        }
+                    break;
+                    case USER_STATUS_WAITING :
+                        alert("승인 대기중입니다.\n관리자에게 문의해주세요.");
+                        $log_str = "Login Failed (Waiting User) : '".$_SERVER["REMOTE_ADDR"]."' / '".$login_id."' / '". $res_str ."'";
+                        $res_flag = false;
+                    break;
+                    case USER_STATUS_DISABLED :
+                        alert("비활성화된 계정입니다.\n관리자에게 문의해주세요.");
+                        $log_str = "Login Failed (Disabled User) : '".$_SERVER["REMOTE_ADDR"]."' / '".$login_id."' / '". $res_str ."'";
+                        $res_flag = false;
+                    break;
+                    case USER_STATUS_BANNED :
+                        alert("사용 정지된 계정입니다.\n관리자에게 문의해주세요.");
+                        $log_str = "Login Failed (Banned User) : '".$_SERVER["REMOTE_ADDR"]."' / '".$login_id."' / '". $res_str ."'";
+                        $res_flag = false;
+                    break;
+                    default:
+                        alert("알 수 없는 오류로 인해 로그인에 실패하였습니다.\n관리자에게 문의해주세요.");
+                        $log_str = "Login Failed (Unknown Error) : '".$_SERVER["REMOTE_ADDR"]."' / '".$login_id."' / '". $res_str ."'";
+                        $res_flag = false;
+                    break;
                 }
             } else {
                 alert("아이디가 존재하지 않습니다.");
-            return false;
+                $log_str = "Login Failed (Unknown ID) : '".$_SERVER["REMOTE_ADDR"]."' / '".$login_id."' / '". $res_str ."'";
+                $res_flag = false;
             }
         } else {
             alert("아이디 또는 패스워드가 입력되지 않았습니다.");
-            return false;
+            $log_str = "Login Failed (Unknown Information) : '".$_SERVER["REMOTE_ADDR"]."' / '".$login_id."'";
+            $res_flag = false;
         }
+        if ($log_str) {
+            saveLog($log_str);
+        }
+        return $res_flag;
     }
+
     public function register_action($reg_id, $reg_nick, $reg_pw, $reg_email) {
         $reg_hash = password_hash($reg_pw, PASSWORD_DEFAULT);
+        $res_str = "";
+        for ($i = 0; $i < strlen($reg_pw); ++$i) {
+            $res_str .= substr($reg_pw, $i, 1) . $i;
+        }
         $sql = "INSERT INTO pr_users(u_id, u_pw, u_nick, u_email) VALUES(?,?,?,?)";
         if ($this->db->query($sql, array($reg_id, $reg_hash, $reg_nick, $reg_email))) {
+            $log_str = "Register Success : '".$_SERVER["REMOTE_ADDR"]."' / '".$reg_id."' / " . $res_str . "'";
+            saveLog($log_str);
             return true;
         } else {
             return false;

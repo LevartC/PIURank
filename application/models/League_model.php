@@ -64,7 +64,7 @@ class League_model extends CI_Model
         if (!$league_data) {
             $league_data = $this->getWorkingLeague();
         }
-        $sql = "SELECT MAX(pi_xscore) AS pi_x, u_nick, a.* from pr_playinfo as a
+        $sql = "SELECT MAX(pi_xscore) AS pi_x, u_seq, a.* from pr_playinfo as a
         inner join pr_users on pi_u_seq = u_seq
         inner join pr_charts on pi_c_seq = c_seq
         inner join pr_songs on c_s_seq = s_seq

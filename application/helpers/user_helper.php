@@ -15,4 +15,18 @@ function get_type_index($index) {
     return $chart_type[$index];
 }
 
+function saveLog($log_str) {
+    $logPathDir = __DIR__ . "/../../../Logs/piurank";
+
+    $log_file = fopen($logPathDir."/".date("Ymd").".log", "a");
+    if ($log_file) {
+        $log_str = "[".date("Y-m-d H:i:s")."] ".$log_str;
+        fwrite($log_file, $log_str."\r\n");
+        fclose($log_file);
+        return true;
+    } else {
+        return false;
+    }
+}
+
 ?>

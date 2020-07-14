@@ -123,6 +123,38 @@ class Playinfo_model extends CI_Model
         elseif ($info['mime'] == 'image/png') {
             $image = imagecreatefrompng($src);
         }
+
+        // Image Resize (기준보다 클 경우)
+        $width = 1920;
+        $height = 1080;
+        $ratio = $width / $height;
+        $img_width = $info[0];
+        $img_height = $info[1];
+        if ($img_width > $width || $img_height > $height) {
+            if ($img_width > $img_height) {
+                $img_ratio = $img_width / $img_height;
+                if ($img_ratio > $ratio) {
+                    $new_width = $width;
+                    $new_height = (int)($width / $img_ratio);
+                } else {
+                    $new_width = (int)($height * $img_ratio);
+                    $new_height = $height;
+                }
+            } else {
+                $img_ratio = $img_height / $img_width;
+                if ($img_ratio > $ratio) {
+                    $new_width = (int)($width / $img_ratio);
+                    $new_height = $width;
+                } else {
+                    $new_width = $height;
+                    $new_height = (int)($height * $img_ratio);
+                }
+            }
+            $tmp = imagecreatetruecolor($new_width, $new_height);
+            imagecopyresampled($tmp, $image, 0, 0, 0, 0, $new_width, $new_height, $img_width, $img_height);
+            imagedestroy($image);
+            $image = $tmp;
+        }
         if (imagejpeg($image, $dest, $quality)) {
             return $dest;
         } else {
@@ -160,7 +192,7 @@ class Playinfo_model extends CI_Model
     }
     public function getXScore($perfect, $great, $good, $bad, $miss, $break) {
         $break_val = ($break == "OFF") ? 50 : 0;
-        $xscore = ($perfect*2) + $great - $bad - ($miss*2) - $break;
+        $xscore = ($perfect*2) + $great - $bad - ($miss*2) - $break_val;
         return $xscore;
     }
 }

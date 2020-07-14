@@ -84,7 +84,13 @@ defined('EXIT_DATABASE')       OR define('EXIT_DATABASE', 8); // database error
 defined('EXIT__AUTO_MIN')      OR define('EXIT__AUTO_MIN', 9); // lowest automatically-assigned error code
 defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
 
-defined('PI_STATUS_ALL')       OR define('PI_STATUS_ALL', 0); // highest automatically-assigned error code
-defined('PI_STATUS_WAITING')   OR define('PI_STATUS_WAITING', 1); // highest automatically-assigned error code
-defined('PI_STATUS_ACTIVE')    OR define('PI_STATUS_ACTIVE', 2); // highest automatically-assigned error code
-defined('PI_STATUS_DENIED')    OR define('PI_STATUS_DENIED', 3); // highest automatically-assigned error code
+defined('PI_STATUS_ALL')       OR define('PI_STATUS_ALL', 0);
+defined('PI_STATUS_WAITING')   OR define('PI_STATUS_WAITING', 1);
+defined('PI_STATUS_ACTIVE')    OR define('PI_STATUS_ACTIVE', 2);
+defined('PI_STATUS_DENIED')    OR define('PI_STATUS_DENIED', 3);
+
+defined('USER_STATUS_ALL')      OR define('USER_STATUS_ALL', 0);
+defined('USER_STATUS_WAITING')  OR define('USER_STATUS_WAITING', 1);
+defined('USER_STATUS_ACTIVE')   OR define('USER_STATUS_ACTIVE', 2);
+defined('USER_STATUS_DISABLED')  OR define('USER_STATUS_DISABLED', 3);
+defined('USER_STATUS_BANNED')   OR define('USER_STATUS_BANNED', 4);

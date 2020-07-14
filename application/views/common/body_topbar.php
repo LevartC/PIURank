@@ -76,7 +76,7 @@
                 </a>
             </li>
 <?php
-if (isset($_SESSION['u_class']) && $_SESSION['u_class'] <= '2') {
+if (isset($_SESSION['u_class']) && $_SESSION['u_class'] == '1') {
 ?>
             <div class="topbar-divider d-none d-lg-block"></div>
             <li class="nav-item dropdown">
@@ -114,7 +114,6 @@ if (isset($_SESSION['u_class']) && $_SESSION['u_class'] <= '2') {
                     관리자
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="/admin/aevileague">Aevileague 관리자</a>
                     <a class="dropdown-item" href="/admin/playinfo">기록 관리자</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="#">-</a>

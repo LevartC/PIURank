@@ -12,7 +12,7 @@ class League extends CI_Controller {
 	}
 	public function aevileague()
 	{
-		if ($this->check_admin()) {
+		if ($this->check_super()) {
 			$tier_data = $this->league_model->getTierData();
 			$league_data = $this->league_model->getWorkingLeague();
 			$league_chartdata = $this->league_model->getLeagueChartData();
@@ -31,14 +31,15 @@ class League extends CI_Controller {
 				"league_playdata" => $league_playdata,
 			);
 			$this->load->view('league/aevileague', $arr_data);
-		}
-	}
-	
-	private function check_admin() {
-		if (isset($this->session->u_class) && $this->session->u_class <= 2) {
-			return true;
 		} else {
 			alert("준비중입니다.");
+		}
+	}
+
+	private function check_super() {
+		if (isset($this->session->u_class) && $this->session->u_class == 1) {
+			return true;
+		} else {
 			return false;
 		}
 	}

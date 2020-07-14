@@ -11,7 +11,7 @@ class Admin extends CI_Controller {
         $this->load->model('playinfo_model');
         $pi_data = null;
     }
-    
+
     public function playinfo() {
         if ($this->check_admin()) {
             $this->piData = $this->playinfo_model->getPlayinfo(PI_STATUS_WAITING);
@@ -19,8 +19,10 @@ class Admin extends CI_Controller {
         }
     }
     public function aevileague() {
-        if ($this->check_admin()) {
+        if ($this->check_super()) {
             $this->load->view('admin/admin_aevileague');
+        } else {
+            alert("준비중입니다.");
         }
     }
     public function pi_approve() {
@@ -80,6 +82,13 @@ class Admin extends CI_Controller {
             return true;
         } else {
             alert("권한이 없습니다.");
+            return false;
+        }
+    }
+    private function check_super() {
+        if (isset($this->session->u_class) && $this->session->u_class = 1) {
+            return true;
+        } else {
             return false;
         }
     }
