@@ -104,9 +104,9 @@ class Account extends CI_Controller {
         $reg_email = $this->input->post('reg_email');
         if ($reg_id && $reg_nick && $reg_pw && $reg_email) {
             if ($this->account_model->register_action($reg_id, $reg_nick, $reg_pw, $reg_email)) {
-                alert('회원 가입에 성공하였습니다.\\r\\n이제 해당 아이디로 로그인이 가능합니다.', "http://".$_SERVER['SERVER_NAME']."/main");
+                alert('회원 가입에 성공하였습니다.\\r\\n관리자에게 가입 승인을 요청해주세요.', "http://".$_SERVER['SERVER_NAME']."/main");
             } else {
-                alert('회원 가입에 실패하였습니다.\\r\\n관리자에게 문의하세요.');
+                alert('회원 가입에 실패하였습니다.\\r\\n관리자에게 문의해주세요.');
             }
         }
     }

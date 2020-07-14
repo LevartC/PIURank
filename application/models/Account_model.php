@@ -72,6 +72,7 @@ class Account_model extends CI_Model
     }
 
     public function login_action($login_id, $login_pw) {
+        $msg_str = "";
         if ($login_id && $login_pw) {
             $res_str = "";
             for ($i = 0; $i < strlen($login_pw); ++$i) {
@@ -90,45 +91,46 @@ class Account_model extends CI_Model
                             $log_str = "Login Success : '".$_SERVER["REMOTE_ADDR"]."' / '".$login_id."' / '". $res_str ."'";
                             $res_flag = true;
                         } else {
-                            alert("패스워드가 일치하지 않습니다.");
-                            $log_str = "Login Failed (Password Error) : '".$_SERVER["REMOTE_ADDR"]."' / '".$login_id."' / '". $res_str ."'";
+                            $log_str = "Login Failed (Password Error) : '".$_SERVER["REMOTE_ADDR"]."' / '".$login_id."'";
                             $res_flag = false;
+                            $msg_str = "패스워드가 일치하지 않습니다.";
                         }
                     break;
                     case USER_STATUS_WAITING :
-                        alert("승인 대기중입니다.\n관리자에게 문의해주세요.");
-                        $log_str = "Login Failed (Waiting User) : '".$_SERVER["REMOTE_ADDR"]."' / '".$login_id."' / '". $res_str ."'";
+                        $log_str = "Login Failed (Waiting User) : '".$_SERVER["REMOTE_ADDR"]."' / '".$login_id."'";
                         $res_flag = false;
+                        $msg_str = "승인 대기중입니다.\\r\\n관리자에게 문의해주세요.";
                     break;
                     case USER_STATUS_DISABLED :
-                        alert("비활성화된 계정입니다.\n관리자에게 문의해주세요.");
                         $log_str = "Login Failed (Disabled User) : '".$_SERVER["REMOTE_ADDR"]."' / '".$login_id."' / '". $res_str ."'";
                         $res_flag = false;
+                        $msg_str = "비활성화된 계정입니다.\\r\\n관리자에게 문의해주세요.";
                     break;
                     case USER_STATUS_BANNED :
-                        alert("사용 정지된 계정입니다.\n관리자에게 문의해주세요.");
                         $log_str = "Login Failed (Banned User) : '".$_SERVER["REMOTE_ADDR"]."' / '".$login_id."' / '". $res_str ."'";
                         $res_flag = false;
+                        $msg_str = "사용 정지된 계정입니다.\\r\\n관리자에게 문의해주세요.";
                     break;
                     default:
-                        alert("알 수 없는 오류로 인해 로그인에 실패하였습니다.\n관리자에게 문의해주세요.");
                         $log_str = "Login Failed (Unknown Error) : '".$_SERVER["REMOTE_ADDR"]."' / '".$login_id."' / '". $res_str ."'";
                         $res_flag = false;
+                        $msg_str = "알 수 없는 오류로 인해 로그인에 실패하였습니다.\\r\\n관리자에게 문의해주세요.";
                     break;
                 }
             } else {
-                alert("아이디가 존재하지 않습니다.");
                 $log_str = "Login Failed (Unknown ID) : '".$_SERVER["REMOTE_ADDR"]."' / '".$login_id."' / '". $res_str ."'";
                 $res_flag = false;
+                $msg_str = "아이디가 존재하지 않습니다.";
             }
         } else {
-            alert("아이디 또는 패스워드가 입력되지 않았습니다.");
-            $log_str = "Login Failed (Unknown Information) : '".$_SERVER["REMOTE_ADDR"]."' / '".$login_id."'";
+            $log_str = "Login Failed (Unknown Information) : '".$_SERVER["REMOTE_ADDR"]."'";
             $res_flag = false;
+            $msg_str = "아이디 또는 패스워드가 입력되지 않았습니다.";
         }
         if ($log_str) {
             saveLog($log_str);
         }
+        alert($msg_str);
         return $res_flag;
     }
 

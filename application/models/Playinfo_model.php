@@ -7,7 +7,7 @@ class Playinfo_model extends CI_Model
         parent::__construct();
     }
 
-    function getPlayinfo($status, $u_id = null) {
+    function getPlayinfo($status = "", $u_id = null) {
         $bind_array = array();
         if (!$status) {
             $stat_where = "";
@@ -124,6 +124,7 @@ class Playinfo_model extends CI_Model
             $image = imagecreatefrompng($src);
         }
 
+        $info = getimagesize($image);
         // Image Resize (기준보다 클 경우)
         $width = 1920;
         $height = 1080;

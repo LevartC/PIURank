@@ -92,29 +92,29 @@ function formCheck(frm) {
                 <div class="form-group col col-xl-2">
                   <label for="pi_grade">그레이드</label>
                   <select class="form-control" name="pi_grade" value="<?=$row['pi_grade']?>">
-                    <option>A</option>
-                    <option>SSS</option>
-                    <option>SS</option>
-                    <option>S</option>
-                    <option>B</option>
-                    <option>C</option>
-                    <option>D</option>
-                    <option>F</option>
+                    <option <?= $row['pi_grade'] == 'A' ? "selected" : "" ?>>A</option>
+                    <option <?= $row['pi_grade'] == 'SSS' ? "selected" : "" ?>>SSS</option>
+                    <option <?= $row['pi_grade'] == 'SS' ? "selected" : "" ?>>SS</option>
+                    <option <?= $row['pi_grade'] == 'S' ? "selected" : "" ?>>S</option>
+                    <option <?= $row['pi_grade'] == 'B' ? "selected" : "" ?>>B</option>
+                    <option <?= $row['pi_grade'] == 'C' ? "selected" : "" ?>>C</option>
+                    <option <?= $row['pi_grade'] == 'D' ? "selected" : "" ?>>D</option>
+                    <option <?= $row['pi_grade'] == 'F' ? "selected" : "" ?>>F</option>
                   </select>
                 </div>
                 <div class="form-group col col-xl-2">
                   <label for="pi_judge">판정</label>
                   <select class="form-control" name="pi_judge" value="<?=$row['pi_judge']?>">
-                    <option>NJ</option>
-                    <option>HJ</option>
-                    <option>VJ</option>
+                    <option <?= $row['pi_judge'] == 'NJ' ? "selected" : "" ?>>NJ</option>
+                    <option <?= $row['pi_judge'] == 'HJ' ? "selected" : "" ?>>HJ</option>
+                    <option <?= $row['pi_judge'] == 'VJ' ? "selected" : "" ?>>VJ</option>
                   </select>
                 </div>
                 <div class="form-group col col-xl-2">
                   <label for="pi_break">Break</label>
                   <select class="form-control" name="pi_break" value="<?=$row['pi_break']?>"> 
-                    <option>ON</option>
-                    <option>OFF</option>
+                    <option <?= $row['pi_break'] == 'ON' ? "selected" : "" ?>>ON</option>
+                    <option <?= $row['pi_break'] == 'OFF' ? "selected" : "" ?>>OFF</option>
                   </select>
                 </div>
                 <div class="form-group col-4 col-xl-3">
