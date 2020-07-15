@@ -15,10 +15,10 @@ class Playinfo_model extends CI_Model
             $stat_where = " AND pi_status = ".$status;
         }
         if ($u_id) {
-            $sql = "SELECT pr_users.u_nick, pr_playinfo.*, pr_charts.*, pr_songs.* FROM pr_playinfo inner join pr_users on pi_u_seq = u_seq inner join pr_charts on pi_c_seq = c_seq inner join pr_songs on c_s_seq = s_seq WHERE u_id = ?" . $stat_where;
+            $sql = "SELECT pr_users.u_nick, pr_playinfo.*, pr_charts.*, pr_songs.* FROM pr_playinfo inner join pr_users on pi_u_seq = u_seq inner join pr_charts on pi_c_seq = c_seq inner join pr_songs on c_s_seq = s_seq WHERE pi_enable = 1 AND u_id = ?" . $stat_where;
             array_push($bind_array, $u_id);
         } else {
-            $sql = "SELECT pr_users.u_nick, pr_playinfo.*, pr_charts.*, pr_songs.* FROM pr_playinfo inner join pr_users on pi_u_seq = u_seq inner join pr_charts on pi_c_seq = c_seq inner join pr_songs on c_s_seq = s_seq WHERE 1" . $stat_where;
+            $sql = "SELECT pr_users.u_nick, pr_playinfo.*, pr_charts.*, pr_songs.* FROM pr_playinfo inner join pr_users on pi_u_seq = u_seq inner join pr_charts on pi_c_seq = c_seq inner join pr_songs on c_s_seq = s_seq WHERE pi_enable = 1" . $stat_where;
         }
         $res = count($bind_array) ? $this->db->query($sql, $bind_array) : $this->db->query($sql);
         $data = null;
@@ -46,7 +46,7 @@ class Playinfo_model extends CI_Model
             $error = $pi_file["error"];
             $fm = explode(".", $pi_file["name"]);
             $ext = $fm[count($fm)-1];
-            $pi_filename = date("Ymdhis") . "_" . $pi_data['u_id']. ".jpg";
+            $pi_filename = date("YmdHis") . "_" . $pi_data['u_id']. ".jpg";
 
             if( $error != UPLOAD_ERR_OK ) {
                 switch( $error ) {
@@ -83,7 +83,7 @@ class Playinfo_model extends CI_Model
             $sql = "INSERT INTO pr_playinfo(pi_c_seq, pi_u_seq, pi_grade, pi_break, pi_judge, pi_perfect, pi_great, pi_good, pi_bad, pi_miss, pi_maxcom, pi_score, pi_skillp, pi_xscore, pi_filename) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
             $res = $this->db->query($sql, array($pi_data['pi_c_seq'], $pi_data['u_seq'], $pi_data['pi_grade'], $pi_data['pi_break'], $pi_data['pi_judge'], $pi_data['pi_perfect'], $pi_data['pi_great'], $pi_data['pi_good'], $pi_data['pi_bad'], $pi_data['pi_miss'], $pi_data['pi_maxcom'], $pi_data['pi_score'], $pi_skillp, $pi_xscore, $pi_filename));
             if ($res) {
-                alert("성공적으로 입력되었습니다.");
+                alert("성공적으로 입력되었습니다.", "/playinfo/write");
             } else {
                 alert("오류가 발생하였습니다.\r\n관리자에게 문의하세요.");
                 unlink($upload_dir."/".$pi_filename);
@@ -95,7 +95,7 @@ class Playinfo_model extends CI_Model
     }
     function uploadFile($src, $dest, $quality) {
         $info = getimagesize($src);
-
+        $is_rotate = false;
         if ($info['mime'] == 'image/jpeg') {
             $image = imagecreatefromjpeg($src);
             if(function_exists('exif_read_data')) {
@@ -104,12 +104,14 @@ class Playinfo_model extends CI_Model
                     switch ($exif['Orientation']) {
                         case 8:
                             $image = imagerotate($image,90,0);
+                            $is_rotate = true;
                         break;
                         case 3:
                             $image = imagerotate($image,180,0);
                         break;
                         case 6:
                             $image = imagerotate($image,-90,0);
+                            $is_rotate = true;
                         break;
                         default:
                         break;
@@ -124,13 +126,17 @@ class Playinfo_model extends CI_Model
             $image = imagecreatefrompng($src);
         }
 
-        $info = getimagesize($image);
         // Image Resize (기준보다 클 경우)
         $width = 1920;
         $height = 1080;
         $ratio = $width / $height;
-        $img_width = $info[0];
-        $img_height = $info[1];
+        if ($is_rotate) {
+            $img_width = $info[0];
+            $img_height = $info[1];
+        } else {
+            $img_width = $info[1];
+            $img_height = $info[0];
+        }
         if ($img_width > $width || $img_height > $height) {
             if ($img_width > $img_height) {
                 $img_ratio = $img_width / $img_height;
@@ -161,6 +167,17 @@ class Playinfo_model extends CI_Model
         } else {
             return null;
         }
+    }
+
+    public function deletePlayinfo($pi_seq) {
+        $sql = "UPDATE pr_playinfo SET pi_enable = 0 WHERE pi_seq = ?";
+        $res = $this->db->query($sql, array($pi_seq));
+        if ($res) {
+            alert("성공적으로 삭제되었습니다.", "/");
+        } else {
+            alert("오류가 발생하였습니다.\r\n관리자에게 문의해주세요.");
+        }
+
     }
 
     public function getSkillPoint($level, $perfect, $great, $good, $bad, $miss, $grade, $break) {

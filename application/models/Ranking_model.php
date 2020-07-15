@@ -9,7 +9,7 @@ class Ranking_model extends CI_Model
 
     function getRankingInfo($c_seq = null, $is_skill = false) {
         if ($c_seq) {
-            $sql = "SELECT pr_users.u_nick, pr_playinfo.*, pr_charts.*, pr_songs.* FROM pr_playinfo inner join pr_users on pi_u_seq = u_seq inner join pr_charts on pi_c_seq = c_seq inner join pr_songs on c_s_seq = pr_songs.s_seq WHERE c_seq = ?";
+            $sql = "SELECT pr_users.u_nick, pr_playinfo.*, pr_charts.*, pr_songs.* FROM pr_playinfo inner join pr_users on pi_u_seq = u_seq inner join pr_charts on pi_c_seq = c_seq inner join pr_songs on c_s_seq = pr_songs.s_seq WHERE pi_enable = 1 AND c_seq = ?";
         } else {
             $sql = "SELECT u_nick, u_skillp FROM pr_users LIMIT 20";
         }

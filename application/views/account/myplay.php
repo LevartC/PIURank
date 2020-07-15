@@ -1,4 +1,4 @@
-<?php 
+<?php
 $common_dir = get_common_dir();
 //<!-- Page Header -->
 require_once $common_dir . "/header.php";
@@ -43,7 +43,7 @@ $(document).on("change", "#pi_status", function(e){
             </div>
           </div>
 
-          
+
           <?php
           if ($this->piData === null || !count($this->piData)) {
           ?>
@@ -89,9 +89,9 @@ $(document).on("change", "#pi_status", function(e){
           ?>
           <!-- DATE / TITLE / STATUS -->
             <tr class="table-<?= $status_type?> text-dark" href="#" data-toggle="modal" data-target="#piModal<?=$row['pi_seq']?>">
-              <th scope="row"> <?= date("Y-m-d", strtotime($row['pi_createtime'])) ?></th>
-              <td><?=$row['s_title']?><br>(<?=$row['s_title_kr']?>)</td>
-              <td><?=$status_str?></td>
+              <th scope="row" style="min-width=40px;max-width:40px;width=40px;"> <?= date("m-d", strtotime($row['pi_createtime'])) ?></th>
+              <td><?=$row['s_title_kr']?></td>
+              <td style="min-width=40px;max-width:40px;width=40px;"><?=$status_str?></td>
             </tr>
           <!-- Playinfo Modal -->
           <div class="modal fade" id="piModal<?=$row['pi_seq']?>" tabindex="-1" role="dialog" aria-labelledby="piModalLabel<?= $row['pi_seq']?>" aria-hidden="true">
@@ -103,15 +103,15 @@ $(document).on("change", "#pi_status", function(e){
                           <span aria-hidden="true">×</span>
                           </button>
                       </div>
-                      <div class="modal-body">
+                      <div class="modal-body" style="font-size:0.8rem;">
                         <div class="card" style="width: 100%;">
                         <img class="card-img-top" src="/pi_images/<?=$row['pi_filename']?>" alt="Playinfo Image">
                         <div class="card-body">
                           <h5 class="card-title text-dark d-flex justify-content-between text-center border border-dark rounded p-2">
                             <div><?=$row['s_title']?><br>(<?=$row['s_title_kr']?>)</div>
-                            <div>스킬포인트<br><?=get_sp_floor($row['pi_skillp'])?></div>
+                            <div>스킬<br><?=get_sp_floor($row['pi_skillp'])?></div>
                           </h5>
-                          <div class="text-center border border-dark rounded p-2 mb-2">
+                          <div class="text-center border border-dark rounded p-2 m-0 mb-2">
                             <pre class="text-<?= $status_type?>"><?= $row['pi_comment']?></pre>
                           </div>
                           <div class="row text-center text-dark">
@@ -139,7 +139,8 @@ $(document).on("change", "#pi_status", function(e){
                         </div>
                       </div></div>
                       <div class="modal-footer">
-                          <button class="btn btn-secondary" type="button" data-dismiss="modal">닫기</button>
+                          <button id="btn_pi_del" class="btn btn-danger mr-auto" type="button">삭제</button>
+                          <button class="btn btn-secondary ml-auto" type="button" data-dismiss="modal">닫기</button>
                       </div>
                   </div>
               </div>

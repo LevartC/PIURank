@@ -35,8 +35,8 @@ class Account_model extends CI_Model
     }
     function getPlayinfoCount($u_id) {
         if ($u_id) {
-            $sql = "SELECT count(DISTINCT pi_c_seq) as pi_cnt FROM pr_playinfo inner join pr_users on pi_u_seq = u_seq WHERE u_id = ?";
-            $res = $this->db->query($sql, array((int)$u_id));
+            $sql = "SELECT count(DISTINCT pi_c_seq) as pi_cnt FROM pr_playinfo inner join pr_users on pi_u_seq = u_seq WHERE u_id = ? AND pi_enable = 1";
+            $res = $this->db->query($sql, array($u_id));
             if ($row = $res->row_array()) {
                 return $row['pi_cnt'];
             } else {

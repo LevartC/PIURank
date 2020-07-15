@@ -69,7 +69,7 @@ class League_model extends CI_Model
         inner join pr_charts on pi_c_seq = c_seq
         inner join pr_songs on c_s_seq = s_seq
         INNER JOIN al_charts ON lc_c_seq = c_seq
-        WHERE pi_status = 'Active' AND lc_li_season = '{$league_data['li_season']}' AND lc_li_degree = '{$league_data['li_degree']}' AND pi_createtime BETWEEN '{$league_data['li_starttime']}' AND '{$league_data['li_endtime']}'
+        WHERE pi_status = 'Active' AND lc_li_season = '{$league_data['li_season']}' AND lc_li_degree = '{$league_data['li_degree']}' AND pi_createtime BETWEEN '{$league_data['li_starttime']}' AND '{$league_data['li_endtime']}' AND pi_enable = 1
         GROUP BY u_seq, pi_c_seq
         ORDER BY pi_u_seq ASC, pi_x DESC, pi_c_seq asc
         ";

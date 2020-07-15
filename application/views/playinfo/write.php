@@ -11,7 +11,6 @@ require_once $common_dir . "/header.php";
       <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
       <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
       <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-      <script src="/js/loadimage/load-image.all.min.js"></script>
       <script>
       var agent = navigator.userAgent.toLowerCase();
       console.log(agent);
@@ -69,6 +68,22 @@ require_once $common_dir . "/header.php";
           $('#file_label').html(file_name);
           if (this.files && this.files[0]) {
               // 이미지 회전 적용 전
+              window.loadImage(this.files[0], function (img) {
+                  if (img.type === "error") {
+                    console.log("couldn't load image:", img);
+                  } else {
+                      window.EXIF.getData(img, function () {
+                          var orientation = EXIF.getTag(this, "Orientation");
+                          var canvas = window.loadImage.scale(img, {orientation: orientation || 0, canvas: true});
+                          document.getElementById("container").appendChild(canvas); 
+                          // or using jquery $("#container").append(canvas);
+                          $('#pi_img').removeClass("hiddenItem");
+                          $('#pi_img').attr('src', canvas.toDataURL());
+                          $("#submit_btn").removeAttr("disabled");
+                      });
+                  }
+              });
+              /*
               var reader = new FileReader();
               reader.onload = function(e) {
                   $('#pi_img').removeClass("hiddenItem");
@@ -76,6 +91,7 @@ require_once $common_dir . "/header.php";
                   $("#submit_btn").removeAttr("disabled");
               }
               reader.readAsDataURL(this.files[0]);
+              */
               /*
               // 이미지 회전 적용 (크롬 지원)
               var reader = new FileReader();
@@ -236,7 +252,8 @@ require_once $common_dir . "/header.php";
                     <input type="file" class="custom-file-input" id="pi_file" name="pi_file"/>
                     <label class="custom-file-label" id="file_label" for="pi_file">Choose File</label>
                     <p class="help-block">
-                      .JPG / .JPEG / .PNG 파일만 가능합니다.
+                      .JPG / .JPEG / .PNG 파일만 가능합니다. <br>
+                      사진은 업로드시 자동 회전되어 등록됩니다.
                     </p>
                   </div>
                 </div>
