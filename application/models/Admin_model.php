@@ -11,6 +11,7 @@ class Admin_model extends CI_Model
         if ($pi_data['pi_status'] === PI_STATUS_ACTIVE) { // 승인, 수정
             if ($pi_data['pi_update']) { // 수정
                 $pi_skillp = $this->playinfo_model->getSkillPoint($pi_data['pi_level'], $pi_data['pi_perfect'], $pi_data['pi_great'], $pi_data['pi_good'], $pi_data['pi_bad'], $pi_data['pi_miss'], $pi_data['pi_grade'], $pi_data['pi_break']);
+                $pi_xscore = $this->playinfo_model->getXScore($pi_data['pi_perfect'], $pi_data['pi_great'], $pi_data['pi_good'], $pi_data['pi_bad'], $pi_data['pi_miss'], $pi_data['pi_break']);
                 $sql = "UPDATE pr_playinfo SET pi_status = ?, pi_updatetime = now(), pi_skillp = ?, pi_grade = ?, pi_break = ?, pi_judge = ?, pi_score = ?, pi_perfect = ?, pi_great = ?, pi_good = ?, pi_bad = ?, pi_miss = ?, pi_maxcom = ?, pi_comment = ?, pi_cfrm_u_id = ? WHERE pi_seq = ?";
                 $res = $this->db->query($sql, array(PI_STATUS_ACTIVE, $pi_skillp, $pi_data['pi_grade'], $pi_data['pi_break'], $pi_data['pi_judge'], $pi_data['pi_score'], $pi_data['pi_perfect'], $pi_data['pi_great'], $pi_data['pi_good'], $pi_data['pi_bad'], $pi_data['pi_miss'], $pi_data['pi_maxcom'], $pi_data['pi_comment'], $pi_data['pi_cfrm_u_id'], $pi_data['pi_seq']));
             } else { // 승인
