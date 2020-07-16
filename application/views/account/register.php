@@ -16,31 +16,40 @@ var chk_nick = false;
 var chk_pw = false;
 $(function() {
     $("#reg_id").blur(function() {
-        if (this.value != "") {
-            $.ajax({
-                type : "POST",
-                url : "/account/check_id",
-                data: { "reg_id" : $('#reg_id').val() },
-                success : function(data) {	//data : checkSignup에서 넘겨준 결과값
-                    if($.trim(data)) {
-                        $("#reg_id_label").html("중복된 아이디입니다.");
-                        $("#reg_id_label").attr("style", "color:#e74a3b");
-                        $("#reg_id_label").removeAttr("display");
-                        $("#reg_id").removeClass("is-valid");
-                        $("#reg_id").addClass("is-invalid");
-                        chk_id = false;
-                    } else {
-                        $("#reg_id_label").html("사용 가능한 아이디입니다.");
-                        $("#reg_id_label").attr("style", "color:rgba(28, 200, 138, 0.9)");
-                        $("#reg_id_label").removeAttr("display");
-                        $("#reg_id").removeClass("is-invalid");
-                        $("#reg_id").addClass("is-valid");
-                        chk_id = true;
+        if (this.value.length >= 4) {
+            if (this.value != "") {
+                $.ajax({
+                    type : "POST",
+                    url : "/account/check_id",
+                    data: { "reg_id" : $('#reg_id').val() },
+                    success : function(data) {	//data : checkSignup에서 넘겨준 결과값
+                        if($.trim(data)) {
+                            $("#reg_id_label").html("중복된 아이디입니다.");
+                            $("#reg_id_label").attr("style", "color:#e74a3b");
+                            $("#reg_id_label").removeAttr("display");
+                            $("#reg_id").removeClass("is-valid");
+                            $("#reg_id").addClass("is-invalid");
+                            chk_id = false;
+                        } else {
+                            $("#reg_id_label").html("사용 가능한 아이디입니다.");
+                            $("#reg_id_label").attr("style", "color:rgba(28, 200, 138, 0.9)");
+                            $("#reg_id_label").removeAttr("display");
+                            $("#reg_id").removeClass("is-invalid");
+                            $("#reg_id").addClass("is-valid");
+                            chk_id = true;
+                        }
                     }
-                }
-            });
+                });
+            } else {
+                $("#reg_id_label").html("아이디를 입력하세요.");
+                $("#reg_id_label").attr("style", "color:#e74a3b");
+                $("#reg_id_label").removeAttr("display");
+                $("#reg_id").removeClass("is-valid");
+                $("#reg_id").addClass("is-invalid");
+                chk_id = false;
+            }
         } else {
-            $("#reg_id_label").html("아이디를 입력하세요.");
+            $("#reg_id_label").html("아이디는 4자 이상이어야 합니다.");
             $("#reg_id_label").attr("style", "color:#e74a3b");
             $("#reg_id_label").removeAttr("display");
             $("#reg_id").removeClass("is-valid");

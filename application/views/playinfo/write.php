@@ -67,7 +67,7 @@ require_once $common_dir . "/header.php";
           }
           $('#file_label').html(file_name);
           if (this.files && this.files[0]) {
-              // 이미지 회전 적용 전
+              // 이미지 회전 적용
               window.loadImage(this.files[0], function (img) {
                   if (img.type === "error") {
                     console.log("couldn't load image:", img);

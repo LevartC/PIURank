@@ -95,7 +95,6 @@ class Playinfo_model extends CI_Model
     }
     function uploadFile($src, $dest, $quality) {
         $info = getimagesize($src);
-        $is_rotate = false;
         if ($info['mime'] == 'image/jpeg') {
             $image = imagecreatefromjpeg($src);
             if(function_exists('exif_read_data')) {
@@ -104,14 +103,12 @@ class Playinfo_model extends CI_Model
                     switch ($exif['Orientation']) {
                         case 8:
                             $image = imagerotate($image,90,0);
-                            $is_rotate = true;
                         break;
                         case 3:
                             $image = imagerotate($image,180,0);
                         break;
                         case 6:
                             $image = imagerotate($image,-90,0);
-                            $is_rotate = true;
                         break;
                         default:
                         break;
@@ -129,34 +126,12 @@ class Playinfo_model extends CI_Model
         // Image Resize (기준보다 클 경우)
         $width = 1920;
         $height = 1080;
-        $ratio = $width / $height;
-        if ($is_rotate) {
-            $img_width = $info[0];
-            $img_height = $info[1];
-        } else {
-            $img_width = $info[1];
-            $img_height = $info[0];
-        }
+        $img_width = $info[1];
+        $img_height = $info[0];
         if ($img_width > $width || $img_height > $height) {
-            if ($img_width > $img_height) {
-                $img_ratio = $img_width / $img_height;
-                if ($img_ratio > $ratio) {
-                    $new_width = $width;
-                    $new_height = (int)($width / $img_ratio);
-                } else {
-                    $new_width = (int)($height * $img_ratio);
-                    $new_height = $height;
-                }
-            } else {
-                $img_ratio = $img_height / $img_width;
-                if ($img_ratio > $ratio) {
-                    $new_width = (int)($width / $img_ratio);
-                    $new_height = $width;
-                } else {
-                    $new_width = $height;
-                    $new_height = (int)($height * $img_ratio);
-                }
-            }
+            $img_ratio = $img_width / $img_height;
+            $new_width = (int)($height * $img_ratio);
+            $new_height = $height;
             $tmp = imagecreatetruecolor($new_width, $new_height);
             imagecopyresampled($tmp, $image, 0, 0, 0, 0, $new_width, $new_height, $img_width, $img_height);
             imagedestroy($image);
@@ -173,7 +148,7 @@ class Playinfo_model extends CI_Model
         $sql = "UPDATE pr_playinfo SET pi_enable = 0 WHERE pi_seq = ?";
         $res = $this->db->query($sql, array($pi_seq));
         if ($res) {
-            alert("성공적으로 삭제되었습니다.", "/");
+            alert("성공적으로 삭제되었습니다.", "/account/myplay");
         } else {
             alert("오류가 발생하였습니다.\r\n관리자에게 문의해주세요.");
         }
