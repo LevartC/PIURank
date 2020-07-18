@@ -12,18 +12,26 @@ class League extends CI_Controller {
 	}
 	public function aevileague()
 	{
-		if ($this->check_super()) {
+		if ($this->check_admin()) {
+			$current_tier = $this->input->get_post('al_tier');
+
 			$tier_data = $this->league_model->getTierData();
 			$league_data = $this->league_model->getWorkingLeague();
-			$league_chartdata = $this->league_model->getLeagueChartData();
-			$league_userdata = $this->league_model->getLeagueUserData();
+			$league_userdata = null;
+			$league_chartdata = null;
+			$league_playdata = null;
 			if ($league_data) {
-				$league_playdata = $this->league_model->getLeaguePlayInfo($league_data);
-			} else {
-				$league_playdata = null;
+				if ($current_tier && $current_tier != 'Overview') {
+					$league_userdata = $this->league_model->getLeagueUserData($league_data);
+					$league_chartdata = $this->league_model->getLeagueChartData($league_data, $current_tier);
+				} else {
+					$league_userdata = $this->league_model->getLeagueUserData($league_data);
+//					$league_playdata = $this->league_model->getLeaguePlayInfo($league_data, $league_chartdata);
+				}
 			}
 
 			$arr_data = array(
+				"current_tier" => $current_tier,
 				"tier_data" => $tier_data,
 				"league_data" => $league_data,
 				"league_chartdata" => $league_chartdata,
@@ -38,6 +46,13 @@ class League extends CI_Controller {
 
 	private function check_super() {
 		if (isset($this->session->u_class) && $this->session->u_class == 1) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	private function check_admin() {
+		if (isset($this->session->u_class) && $this->session->u_class <= 2) {
 			return true;
 		} else {
 			return false;

@@ -79,7 +79,7 @@ require_once $common_dir . "/header.php";
               <div class="row no-gutters align-items-center">
                 <div class="col mr-2">
                   <div class="font-weight-bold text-warning text-uppercase mb-1">YOUR LEAGUE TIER</div>
-                  <div class="h5 mb-0 font-weight-bold text-gray-800 text-uppercase"><?= $user_data ? ($user_data['u_al_tier'] ? $user_data['u_al_tier'] : "없음") : "로그인하세요." ?></div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800 text-uppercase"><?= $user_data ? ($user_data['u_tier'] ? $user_data['u_tier'] : "없음") : "로그인하세요." ?></div>
                 </div>
                 <div class="col-auto">
                   <i class="fas fa-comments fa-2x text-gray-300"></i>

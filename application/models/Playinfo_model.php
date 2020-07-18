@@ -14,12 +14,14 @@ class Playinfo_model extends CI_Model
         } else {
             $stat_where = " AND pi_status = ".$status;
         }
+        $order_sql = " ORDER BY pi_createtime DESC";
         if ($u_id) {
             $sql = "SELECT pr_users.u_nick, pr_playinfo.*, pr_charts.*, pr_songs.* FROM pr_playinfo inner join pr_users on pi_u_seq = u_seq inner join pr_charts on pi_c_seq = c_seq inner join pr_songs on c_s_seq = s_seq WHERE pi_enable = 1 AND u_id = ?" . $stat_where;
             array_push($bind_array, $u_id);
         } else {
             $sql = "SELECT pr_users.u_nick, pr_playinfo.*, pr_charts.*, pr_songs.* FROM pr_playinfo inner join pr_users on pi_u_seq = u_seq inner join pr_charts on pi_c_seq = c_seq inner join pr_songs on c_s_seq = s_seq WHERE pi_enable = 1" . $stat_where;
         }
+        $sql .= $order_sql;
         $res = count($bind_array) ? $this->db->query($sql, $bind_array) : $this->db->query($sql);
         $data = null;
         foreach($res->result_array() as $row) {
@@ -40,7 +42,7 @@ class Playinfo_model extends CI_Model
     }
     public function writeAction($pi_file, $pi_data) {
         try {
-            $upload_dir = get_root_dir() ."/pi_images";
+            $upload_dir = get_root_dir() . PI_IMAGE_PATH;
             $allowed_ext = array("jpg", "jpeg", "png", "gif");
 
             $error = $pi_file["error"];
@@ -95,6 +97,7 @@ class Playinfo_model extends CI_Model
     }
     function uploadFile($src, $dest, $quality) {
         $info = getimagesize($src);
+        $is_rotate = false;
         if ($info['mime'] == 'image/jpeg') {
             $image = imagecreatefromjpeg($src);
             if(function_exists('exif_read_data')) {
@@ -103,12 +106,14 @@ class Playinfo_model extends CI_Model
                     switch ($exif['Orientation']) {
                         case 8:
                             $image = imagerotate($image,90,0);
+                            $is_rotate = true;
                         break;
                         case 3:
                             $image = imagerotate($image,180,0);
                         break;
                         case 6:
                             $image = imagerotate($image,-90,0);
+                            $is_rotate = true;
                         break;
                         default:
                         break;
@@ -126,8 +131,13 @@ class Playinfo_model extends CI_Model
         // Image Resize (기준보다 클 경우)
         $width = 1920;
         $height = 1080;
-        $img_width = $info[1];
-        $img_height = $info[0];
+        if ($is_rotate) {
+            $img_width = $info[1];
+            $img_height = $info[0];
+        } else {
+            $img_width = $info[0];
+            $img_height = $info[1];
+        }
         if ($img_width > $width || $img_height > $height) {
             $img_ratio = $img_width / $img_height;
             $new_width = (int)($height * $img_ratio);

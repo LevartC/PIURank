@@ -57,9 +57,9 @@ $(document).on("change", "#pi_status", function(e){
             <table class="table table-hover border border-light">
               <thead class="table-light">
                 <tr>
-                  <th scope="col">날짜</th>
+                  <th scope="col" style="width:70px;min-width:70px;">날짜</th>
                   <th scope="col">제목</th>
-                  <th scope="col">상태</th>
+                  <th scope="col" style="width:10%;">상태</th>
                 </tr>
               </thead>
               <tbody>
@@ -89,9 +89,9 @@ $(document).on("change", "#pi_status", function(e){
           ?>
           <!-- DATE / TITLE / STATUS -->
             <tr class="table-<?= $status_type?> text-dark" href="#" data-toggle="modal" data-target="#piModal<?=$row['pi_seq']?>">
-              <th scope="row" style="min-width=40px;max-width:40px;width=40px;"> <?= date("m-d", strtotime($row['pi_createtime'])) ?></th>
+              <th scope="row"> <?= date("m-d", strtotime($row['pi_createtime'])) ?></th>
               <td><?=$row['s_title_kr']?></td>
-              <td style="min-width=40px;max-width:40px;width=40px;"><?=$status_str?></td>
+              <td><?=$status_str?></td>
             </tr>
           <!-- Playinfo Modal -->
           <div class="modal fade" id="piModal<?=$row['pi_seq']?>" tabindex="-1" role="dialog" aria-labelledby="piModalLabel<?= $row['pi_seq']?>" aria-hidden="true">
@@ -105,36 +105,36 @@ $(document).on("change", "#pi_status", function(e){
                       </div>
                       <div class="modal-body" style="font-size:0.8rem;">
                         <div class="card" style="width: 100%;">
-                        <img class="card-img-top" src="/pi_images/<?=$row['pi_filename']?>" alt="Playinfo Image">
+                        <img class="card-img-top" src="<?=PI_IMAGE_PATH?>/<?=$row['pi_filename']?>" alt="Playinfo Image">
                         <div class="card-body">
                           <h5 class="card-title text-dark d-flex justify-content-between text-center border border-dark rounded p-2">
-                            <div><?=$row['s_title']?><br>(<?=$row['s_title_kr']?>)</div>
-                            <div>스킬<br><?=get_sp_floor($row['pi_skillp'])?></div>
+                            <div class="col-8"><?=$row['s_title_kr']?></div>
+                            <div class="col-4">SKILL<br><?=get_sp_floor($row['pi_skillp'])?></div>
                           </h5>
                           <div class="text-center border border-dark rounded p-2 m-0 mb-2">
                             <pre class="text-<?= $status_type?>"><?= $row['pi_comment']?></pre>
                           </div>
-                          <div class="row text-center text-dark">
+                          <div class="row text-center text-dark" style="font-size:0.8rem;">
                             <div class="col-3 border border-secondary">BREAK</div>
-                            <div class="col-3 border border-secondary"><?= $row['pi_break']?></div>
+                            <div class="col-2 border border-secondary"><?= $row['pi_break']?></div>
                             <div class="col-3 border border-secondary">JUDGE</div>
-                            <div class="col-3 border border-secondary"><?= $row['pi_judge']?></div>
+                            <div class="col-4 border border-secondary"><?= $row['pi_judge']?></div>
                             <div class="col-3 border border-secondary">그레이드</div>
-                            <div class="col-3 border border-secondary"><?= $row['pi_grade']?></div>
+                            <div class="col-2 border border-secondary"><?= $row['pi_grade']?></div>
                             <div class="col-3 border border-secondary">스코어</div>
-                            <div class="col-3 border border-secondary"><?= $row['pi_score']?></div>
+                            <div class="col-4 border border-secondary"><?= $row['pi_score']?></div>
                             <div class="col-3 border border-secondary text-primary">퍼펙트</div>
-                            <div class="col-3 border border-secondary"><?= $row['pi_perfect']?></div>
+                            <div class="col-2 border border-secondary"><?= $row['pi_perfect']?></div>
                             <div class="col-3 border border-secondary text-success">그레이트</div>
-                            <div class="col-3 border border-secondary"><?= $row['pi_great']?></div>
+                            <div class="col-4 border border-secondary"><?= $row['pi_great']?></div>
                             <div class="col-3 border border-secondary text-warning">굿</div>
-                            <div class="col-3 border border-secondary"><?= $row['pi_good']?></div>
+                            <div class="col-2 border border-secondary"><?= $row['pi_good']?></div>
                             <div class="col-3 border border-secondary" style="color:purple">배드</div>
-                            <div class="col-3 border border-secondary"><?= $row['pi_bad']?></div>
+                            <div class="col-4 border border-secondary"><?= $row['pi_bad']?></div>
                             <div class="col-3 border border-secondary text-danger">미스</div>
-                            <div class="col-3 border border-secondary"><?= $row['pi_miss']?></div>
+                            <div class="col-2 border border-secondary"><?= $row['pi_miss']?></div>
                             <div class="col-3 border border-secondary">맥스콤보</div>
-                            <div class="col-3 border border-secondary"><?= $row['pi_maxcom']?></div>
+                            <div class="col-4 border border-secondary"><?= $row['pi_maxcom']?></div>
                           </div>
                         </div>
                       </div></div>

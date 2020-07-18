@@ -11,9 +11,13 @@ require_once $common_dir . "/header.php";
       <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
       <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
       <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/exif-js/2.1.0/exif.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-load-image/2.12.2/load-image.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-load-image/2.12.2/load-image-scale.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-load-image/2.12.2/load-image-orientation.min.js"></script>
+
       <script>
-      var agent = navigator.userAgent.toLowerCase();
-      console.log(agent);
       $("#coll_category").addClass("show");
       $("#nav_category").addClass("active");
       $("#nav_input_pi").addClass("active");
@@ -67,52 +71,11 @@ require_once $common_dir . "/header.php";
           }
           $('#file_label').html(file_name);
           if (this.files && this.files[0]) {
-              // 이미지 회전 적용
-              window.loadImage(this.files[0], function (img) {
-                  if (img.type === "error") {
-                    console.log("couldn't load image:", img);
-                  } else {
-                      window.EXIF.getData(img, function () {
-                          var orientation = EXIF.getTag(this, "Orientation");
-                          var canvas = window.loadImage.scale(img, {orientation: orientation || 0, canvas: true});
-                          document.getElementById("container").appendChild(canvas); 
-                          // or using jquery $("#container").append(canvas);
-                          $('#pi_img').removeClass("hiddenItem");
-                          $('#pi_img').attr('src', canvas.toDataURL());
-                          $("#submit_btn").removeAttr("disabled");
-                      });
-                  }
-              });
-              /*
-              var reader = new FileReader();
-              reader.onload = function(e) {
-                  $('#pi_img').removeClass("hiddenItem");
-                  $('#pi_img').attr('src', e.target.result);
-                  $("#submit_btn").removeAttr("disabled");
-              }
-              reader.readAsDataURL(this.files[0]);
-              */
-              /*
-              // 이미지 회전 적용 (크롬 지원)
-              var reader = new FileReader();
-              reader.onload = function(e) {
-                  var loadingImage = loadImage(
-                      e.target.result,
-                      function (img) {
-                          $('#pi_img').removeClass("hiddenItem");
-                          $('#pi_img').attr('src', img.src);
-                          $("#submit_btn").removeAttr("disabled");
-                      },
-                      { orientation:true }
-                  );
-              }
-              reader.readAsDataURL(this.files[0]);
-
-              // 이미지 회전 적용 (크롬 미지원)
+              // 이미지 회전 적용 (200718 크롬 지원 확인)
               var files = e.target.files;
               var fileType = files[0].type;
               loadImage(files[0], function(img, data) {
-                  (Canvas)img.toBlob(function(blob) {
+                  img.toBlob(function(blob) {
                     var rotateFile = new File([blob], files[0].name, {type:fileType});
                     var reader = new FileReader();
                     reader.onload = function(e) {
@@ -123,8 +86,6 @@ require_once $common_dir . "/header.php";
                     reader.readAsDataURL(rotateFile);
                   }, fileType)}, {orientation:true}
               );
-
-              */
           }
       });
 
@@ -228,6 +189,7 @@ require_once $common_dir . "/header.php";
             }
         });
       });
+      
       </script>
 
       <!-- Begin Page Content -->
@@ -253,7 +215,6 @@ require_once $common_dir . "/header.php";
                     <label class="custom-file-label" id="file_label" for="pi_file">Choose File</label>
                     <p class="help-block">
                       .JPG / .JPEG / .PNG 파일만 가능합니다. <br>
-                      사진은 업로드시 자동 회전되어 등록됩니다.
                     </p>
                   </div>
                 </div>
@@ -362,6 +323,7 @@ require_once $common_dir . "/header.php";
 
     <!-- End of Content Wrapper -->
     </div>
+    <div id="container"></div>
 
     <?php require_once $common_dir . "/body_bottom.php"; ?>
 

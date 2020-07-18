@@ -94,3 +94,5 @@ defined('USER_STATUS_WAITING')  OR define('USER_STATUS_WAITING', 1);
 defined('USER_STATUS_ACTIVE')   OR define('USER_STATUS_ACTIVE', 2);
 defined('USER_STATUS_DISABLED')  OR define('USER_STATUS_DISABLED', 3);
 defined('USER_STATUS_BANNED')   OR define('USER_STATUS_BANNED', 4);
+
+defined('PI_IMAGE_PATH')   OR define('PI_IMAGE_PATH', '/pi_images');

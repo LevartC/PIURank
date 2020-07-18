@@ -18,7 +18,7 @@ class League_model extends CI_Model
     }
 
     public function getTierData() {
-        $sql = "SELECT * FROM al_tier";
+        $sql = "SELECT * FROM al_tier ORDER BY t_min_mmr ASC";
         $res = $this->db->query($sql);
         $data = null;
         foreach($res->result_array() as $row) {
@@ -37,8 +37,11 @@ class League_model extends CI_Model
         return $data;
     }
 
-    public function getLeagueUserData() {
-        $sql = "SELECT u_id, u_nick, u_mmr, u_al_tier FROM pr_users WHERE u_al_tier IS NOT NULL ORDER BY u_al_tier";
+    public function getLeagueUserData($league_data = "") {
+        if (!$league_data) {
+            $league_data = $this->getWorkingLeague();
+        }
+        $sql = "SELECT u_nick, ls_mmr, ls_tier, t_color FROM pr_users inner join al_mmr ON u_seq = ls_u_seq inner join al_tier on ls_tier = t_name WHERE ls_li_season = '1' AND ls_li_degree = '1' ORDER BY ls_mmr DESC";
         $res = $this->db->query($sql);
         $data = null;
         foreach($res->result_array() as $row) {
@@ -47,12 +50,20 @@ class League_model extends CI_Model
         return $data;
     }
 
-    public function getLeagueChartData($league_data = "") {
+    public function getLeagueChartData($league_data = "", $tier_name = "") {
+        // 리그데이터 없을 시 현재 리그 데이터 불러오기
         if (!$league_data) {
             $league_data = $this->getWorkingLeague();
         }
-        $sql = "SELECT *, c_type+0 as charttype FROM al_charts AS lc inner join pr_charts as c on lc_c_seq = c_seq inner join pr_songs as s on c_s_seq = s_seq WHERE lc_li_season = '{$league_data['li_season']}' AND lc_li_degree = '{$league_data['li_degree']}'";
-        $res = $this->db->query($sql);
+        $sql = "SELECT *, c_type+0 as charttype FROM al_charts AS lc inner join pr_charts as c on lc_c_seq = c_seq inner join pr_songs as s on c_s_seq = s_seq WHERE lc_li_season = ? AND lc_li_degree = ?";
+        $bind_array = array($league_data['li_season'], $league_data['li_degree']);
+        // 티어이름 없을 시 전체 검색
+        if ($tier_name) {
+            $where_tier = " AND lc_t_name = ?";
+            $sql .= $where_tier;
+            $bind_array[] = $tier_name;
+        }
+        $res = $this->db->query($sql, $bind_array);
         $data = null;
         foreach($res->result_array() as $row) {
             $data[$row['lc_t_name']][] = $row;
@@ -60,19 +71,26 @@ class League_model extends CI_Model
         return $data;
     }
 
-    public function getLeaguePlayInfo($league_data = "") {
+    public function getLeaguePlayInfo($league_data = "", $tier_chart = "") {
         if (!$league_data) {
             $league_data = $this->getWorkingLeague();
         }
-        $sql = "SELECT MAX(pi_xscore) AS pi_x, u_seq, a.* from pr_playinfo as a
+        $sql = "SELECT MAX(pi_xscore) AS pi_x, u_seq, ppi.* from pr_playinfo as ppi
         inner join pr_users on pi_u_seq = u_seq
         inner join pr_charts on pi_c_seq = c_seq
         inner join pr_songs on c_s_seq = s_seq
         INNER JOIN al_charts ON lc_c_seq = c_seq
-        WHERE pi_status = 'Active' AND lc_li_season = '{$league_data['li_season']}' AND lc_li_degree = '{$league_data['li_degree']}' AND pi_createtime BETWEEN '{$league_data['li_starttime']}' AND '{$league_data['li_endtime']}' AND pi_enable = 1
-        GROUP BY u_seq, pi_c_seq
-        ORDER BY pi_u_seq ASC, pi_x DESC, pi_c_seq asc
-        ";
+        WHERE pi_status = 'Active' AND lc_li_season = ? AND lc_li_degree = ? AND pi_createtime BETWEEN ? AND ? AND pi_enable = 1";
+        if ($tier_chart) {
+            $where_chart = " AND (";
+            foreach ($tier_chart as $tier_row) {
+                if ($tier_row['lc_c_seq'])
+                $where_chart .= "(c_seq = '{$tier_row['lc_c_seq']}'" . $tier_row['use_hj'] ? " AND pi_judge = 'HJ'" : "" . ")";
+            }
+            $where_chart .= ")";
+        }
+        $sql .= " GROUP BY u_seq, pi_c_seq ORDER BY u_mmr DESC, pi_c_seq ASC";
+        $bind_array = array($league_data['li_season'], $league_data['li_degree'], $league_data['li_starttime'], $league_data['li_endtime']);
         $res = $this->db->query($sql);
         $data = null;
         foreach($res->result_array() as $row) {

@@ -22,7 +22,7 @@ class Account_model extends CI_Model
     }
     function getUserData($u_id) {
         if ($u_id) {
-            $sql = "SELECT u_id, u_nick, u_email, u_mmr, u_skillp, u_al_tier FROM pr_users WHERE u_id = ?";
+            $sql = "SELECT u_id, u_nick, u_email, u_mmr, u_skillp, u_tier FROM pr_users WHERE u_id = ?";
             $res = $this->db->query($sql, array($u_id));
             if ($row = $res->row_array()) {
                 return $row;

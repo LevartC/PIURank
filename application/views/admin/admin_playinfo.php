@@ -72,7 +72,7 @@ function formCheck(frm) {
           <!-- SONG TITLE / MODE / LEVEL -->
           <div class="row border border-secondary rounded mb-3 py-2">
             <div class="col-12 col-xl-4 pr_pi">
-              <img alt="Playinfo Image" src="/pi_images/<?=$row['pi_filename']?>" />
+              <img alt="Playinfo Image" src="<?=PI_IMAGE_PATH?>/<?=$row['pi_filename']?>" />
             </div>
             <div class="col-12 col-xl-8 mt-2 mb-2">
               <div class="form-row">
