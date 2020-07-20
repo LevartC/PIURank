@@ -49,8 +49,12 @@ require_once $common_dir . "/header.php";
           if (this.value) {
               var pathstr = this.value;
           } else {
-              alert("파일이 선택되지 않았습니다.");
               $("#submit_btn").attr("disabled", "");
+              $('#pi_img').addClass("hiddenItem");
+              $('#pi_img').removeAttr('src');
+              this.value = "";
+              this.files = null;
+              alert("파일이 선택되지 않았습니다.");
               return false;
           }
           var pathpoint = pathstr.lastIndexOf('.');
@@ -86,6 +90,16 @@ require_once $common_dir . "/header.php";
                     reader.readAsDataURL(rotateFile);
                   }, fileType)}, {orientation:true}
               );
+              /*
+              // 이미지 회전 적용 전
+              var reader = new FileReader();
+              reader.onload = function(e) {
+                  $('#pi_img').removeClass("hiddenItem");
+                  $('#pi_img').attr('src', e.target.result);
+                  $("#submit_btn").removeAttr("disabled");
+              }
+              reader.readAsDataURL(this.files[0]);
+              */
           }
       });
 

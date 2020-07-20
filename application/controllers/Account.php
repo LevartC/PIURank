@@ -110,5 +110,16 @@ class Account extends CI_Controller {
             }
         }
     }
+    public function pi_delete() {
+        if ($this->check_login()) {
+            $pi_seq = $this->input->get_post('num');
+            $u_id = $this->session->u_id;
+            if ($this->playinfo_model->deletePlayinfo($pi_seq, $u_id)) {
+                echo "Y";
+            }
+        } else {
+            echo "N";
+        }
+    }
 }
 ?>

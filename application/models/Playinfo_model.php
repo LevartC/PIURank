@@ -16,10 +16,10 @@ class Playinfo_model extends CI_Model
         }
         $order_sql = " ORDER BY pi_createtime DESC";
         if ($u_id) {
-            $sql = "SELECT pr_users.u_nick, pr_playinfo.*, pr_charts.*, pr_songs.* FROM pr_playinfo inner join pr_users on pi_u_seq = u_seq inner join pr_charts on pi_c_seq = c_seq inner join pr_songs on c_s_seq = s_seq WHERE pi_enable = 1 AND u_id = ?" . $stat_where;
+            $sql = "SELECT pr_users.u_nick, pr_playinfo.*, pr_charts.*, pr_songs.*, c_type+0 as charttype FROM pr_playinfo inner join pr_users on pi_u_seq = u_seq inner join pr_charts on pi_c_seq = c_seq inner join pr_songs on c_s_seq = s_seq WHERE pi_enable = 1 AND u_id = ?" . $stat_where;
             array_push($bind_array, $u_id);
         } else {
-            $sql = "SELECT pr_users.u_nick, pr_playinfo.*, pr_charts.*, pr_songs.* FROM pr_playinfo inner join pr_users on pi_u_seq = u_seq inner join pr_charts on pi_c_seq = c_seq inner join pr_songs on c_s_seq = s_seq WHERE pi_enable = 1" . $stat_where;
+            $sql = "SELECT pr_users.u_nick, pr_playinfo.*, pr_charts.*, pr_songs.*, c_type+0 as charttype FROM pr_playinfo inner join pr_users on pi_u_seq = u_seq inner join pr_charts on pi_c_seq = c_seq inner join pr_songs on c_s_seq = s_seq WHERE pi_enable = 1" . $stat_where;
         }
         $sql .= $order_sql;
         $res = count($bind_array) ? $this->db->query($sql, $bind_array) : $this->db->query($sql);
@@ -154,13 +154,13 @@ class Playinfo_model extends CI_Model
         }
     }
 
-    public function deletePlayinfo($pi_seq) {
-        $sql = "UPDATE pr_playinfo SET pi_enable = 0 WHERE pi_seq = ?";
-        $res = $this->db->query($sql, array($pi_seq));
+    public function deletePlayinfo($pi_seq, $u_id) {
+        $sql = "UPDATE pr_playinfo, pr_users SET pi_enable = 0 WHERE pi_seq = ? AND u_id = ?";
+        $res = $this->db->query($sql, array($pi_seq, $u_id));
         if ($res) {
-            alert("성공적으로 삭제되었습니다.", "/account/myplay");
+            return true;
         } else {
-            alert("오류가 발생하였습니다.\r\n관리자에게 문의해주세요.");
+            return false;
         }
 
     }

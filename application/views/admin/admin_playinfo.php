@@ -71,7 +71,7 @@ function formCheck(frm) {
           <form method="post" class="user" id="pi_form<?=$row['pi_seq']?>" name="pi_form<?=$row['pi_seq']?>" action="" onsubmit="return formCheck(this)">
           <!-- SONG TITLE / MODE / LEVEL -->
           <div class="row border border-secondary rounded mb-3 py-2">
-            <div class="col-12 col-xl-4 pr_pi">
+            <div class="col-12 col-xl-4 pr_pi" href="#" data-toggle="modal" data-target="#piModal<?=$row['pi_seq']?>">
               <img alt="Playinfo Image" src="<?=PI_IMAGE_PATH?>/<?=$row['pi_filename']?>" />
             </div>
             <div class="col-12 col-xl-8 mt-2 mb-2">
@@ -165,6 +165,22 @@ function formCheck(frm) {
             </div>
           </div>
           </form>
+          <!-- Image Modal -->
+          <div class="modal fade" id="piModal<?=$row['pi_seq']?>" tabindex="-1" role="dialog" aria-labelledby="piModalLabel<?= $row['pi_seq']?>" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="piModalLabel<?=$row['pi_seq']?>">플레이 이미지</h5>
+                  <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">×</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <img class="card-img-top" src="<?=PI_IMAGE_PATH?>/<?=$row['pi_filename']?>" alt="Image">
+                </div>
+              </div>
+            </div>
+          </div>
           <?php
               }
           }

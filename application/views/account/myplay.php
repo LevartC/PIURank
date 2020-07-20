@@ -12,6 +12,24 @@ $("#pi_status").val(pi_status).attr("selected", "selected");
 $(document).on("change", "#pi_status", function(e){
     $("#status_form").submit();
 });
+$(document).on("click", "#btn_pi_del", function(e){
+    if(confirm("이 기록을 삭제하시겠습니까?\n삭제한 기록은 복구할 수 없습니다.")) {
+        var num = $(this).val();
+        $.ajax({
+            type : "GET",
+            url : "/account/pi_delete",
+            data: { "num" : num },
+            success : function(data) {	//data : checkSignup에서 넘겨준 결과값
+                if($.trim(data) == "Y") {
+                    alert("삭제가 완료되었습니다.");
+                    location.reload();
+                } else {
+                    alert("삭제에 실패하였습니다.\n관리자에게 문의해주세요.");
+                }
+            }
+        });
+    }
+});
 </script>
 <body id="page-top">
 
@@ -59,7 +77,7 @@ $(document).on("change", "#pi_status", function(e){
                 <tr>
                   <th scope="col" style="width:70px;min-width:70px;">날짜</th>
                   <th scope="col">제목</th>
-                  <th scope="col" style="width:10%;">상태</th>
+                  <th scope="col" style="width:55px;min-width:55px;">상태</th>
                 </tr>
               </thead>
               <tbody>
@@ -104,42 +122,47 @@ $(document).on("change", "#pi_status", function(e){
                           </button>
                       </div>
                       <div class="modal-body" style="font-size:0.8rem;">
-                        <div class="card" style="width: 100%;">
-                        <img class="card-img-top" src="<?=PI_IMAGE_PATH?>/<?=$row['pi_filename']?>" alt="Playinfo Image">
-                        <div class="card-body">
-                          <h5 class="card-title text-dark d-flex justify-content-between text-center border border-dark rounded p-2">
-                            <div class="col-8"><?=$row['s_title_kr']?></div>
-                            <div class="col-4">SKILL<br><?=get_sp_floor($row['pi_skillp'])?></div>
-                          </h5>
-                          <div class="text-center border border-dark rounded p-2 m-0 mb-2">
-                            <pre class="text-<?= $status_type?>"><?= $row['pi_comment']?></pre>
-                          </div>
-                          <div class="row text-center text-dark" style="font-size:0.8rem;">
-                            <div class="col-3 border border-secondary">BREAK</div>
-                            <div class="col-2 border border-secondary"><?= $row['pi_break']?></div>
-                            <div class="col-3 border border-secondary">JUDGE</div>
-                            <div class="col-4 border border-secondary"><?= $row['pi_judge']?></div>
-                            <div class="col-3 border border-secondary">그레이드</div>
-                            <div class="col-2 border border-secondary"><?= $row['pi_grade']?></div>
-                            <div class="col-3 border border-secondary">스코어</div>
-                            <div class="col-4 border border-secondary"><?= $row['pi_score']?></div>
-                            <div class="col-3 border border-secondary text-primary">퍼펙트</div>
-                            <div class="col-2 border border-secondary"><?= $row['pi_perfect']?></div>
-                            <div class="col-3 border border-secondary text-success">그레이트</div>
-                            <div class="col-4 border border-secondary"><?= $row['pi_great']?></div>
-                            <div class="col-3 border border-secondary text-warning">굿</div>
-                            <div class="col-2 border border-secondary"><?= $row['pi_good']?></div>
-                            <div class="col-3 border border-secondary" style="color:purple">배드</div>
-                            <div class="col-4 border border-secondary"><?= $row['pi_bad']?></div>
-                            <div class="col-3 border border-secondary text-danger">미스</div>
-                            <div class="col-2 border border-secondary"><?= $row['pi_miss']?></div>
-                            <div class="col-3 border border-secondary">맥스콤보</div>
-                            <div class="col-4 border border-secondary"><?= $row['pi_maxcom']?></div>
+                        <div class="card" style="width:100%;">
+                          <img class="card-img-top" src="<?=PI_IMAGE_PATH?>/<?=$row['pi_filename']?>" alt="Playinfo Image">
+                          <div class="card-body">
+                            <h5 class="card-title text-dark d-flex justify-content-between text-center border border-dark rounded p-2">
+                              <div class="col-8"><?=$row['s_title_kr']?></div>
+                              <div class="col-4">SKILL<br><?=get_sp_floor($row['pi_skillp'])?></div>
+                            </h5>
+                            <div class="text-center border border-dark rounded p-2 m-0 mb-2">
+                              <pre class="text-<?= $status_type?>"><?= $row['pi_comment']?></pre>
+                            </div>
+                            <div class="row text-center text-dark" style="font-size:0.8rem;">
+                              <div class="col-3 border border-secondary font-weight-bold text-primary">퍼펙트</div>
+                              <div class="col-4 border border-secondary"><?= $row['pi_perfect']?></div>
+                              <div class="col-3 border border-secondary font-weight-bold" >난이도</div>
+                              <div class="col-2 border border-secondary"><?= get_type_index($row['charttype'])?><?=$row['c_level']?></div>
+                              <div class="col-3 border border-secondary font-weight-bold text-success">그레이트</div>
+                              <div class="col-4 border border-secondary"><?= $row['pi_great']?></div>
+                              <div class="col-3 border border-secondary font-weight-bold">BREAK</div>
+                              <div class="col-2 border border-secondary"><?= $row['pi_break']?></div>
+                              <div class="col-3 border border-secondary font-weight-bold text-warning">굿</div>
+                              <div class="col-4 border border-secondary"><?= $row['pi_good']?></div>
+                              <div class="col-3 border border-secondary font-weight-bold">JUDGE</div>
+                              <div class="col-2 border border-secondary"><?= $row['pi_judge']?></div>
+                              <div class="col-3 border border-secondary font-weight-bold" style="color:purple">배드</div>
+                              <div class="col-4 border border-secondary"><?= $row['pi_bad']?></div>
+                              <div class="col-3 border border-secondary font-weight-bold">그레이드</div>
+                              <div class="col-2 border border-secondary"><?= $row['pi_grade']?></div>
+                              <div class="col-3 border border-secondary font-weight-bold text-danger">미스</div>
+                              <div class="col-4 border border-secondary"><?= $row['pi_miss']?></div>
+                              <div class="col-3 border border-secondary font-weight-bold">영상</div>
+                              <div class="col-2 border border-secondary"><?= isset($row['pi_vodaddr']) ? "<a href='".$row['pi_vodaddr']."'>링크</a>" : "없음"?></div>  
+                              <div class="col-3 border border-secondary font-weight-bold">스코어</div>
+                              <div class="col-4 border border-secondary"><?= $row['pi_score']?></div>
+                              <div class="col-3 border border-secondary font-weight-bold">맥스콤보</div>
+                              <div class="col-2 border border-secondary"><?= $row['pi_maxcom']?></div>        
+                            </div>
                           </div>
                         </div>
-                      </div></div>
+                      </div>
                       <div class="modal-footer">
-                          <button id="btn_pi_del" class="btn btn-danger mr-auto" type="button">삭제</button>
+                          <button id="btn_pi_del" class="btn btn-danger mr-auto" type="button" value="<?=$row['pi_seq']?>">삭제</button>
                           <button class="btn btn-secondary ml-auto" type="button" data-dismiss="modal">닫기</button>
                       </div>
                   </div>
