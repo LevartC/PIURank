@@ -1,4 +1,4 @@
-<?php 
+<?php
 $common_dir = get_common_dir();
 //<!-- Page Header -->
 require_once $common_dir . "/header.php";
@@ -97,7 +97,7 @@ $(function() {
 });
 
 // 숫자만 입력
-$(document).on('keyup', '.number-only', function() { 
+$(document).on('keyup', '.number-only', function() {
     this.value = this.value.replace(/[^0-9]/g,'');
 });
 
@@ -176,13 +176,13 @@ function check_pw() {
 
 <!-- Page Wrapper -->
 <div id="wrapper">
-  
+
   <!-- Content Wrapper -->
   <div id="content-wrapper" class="d-flex flex-column">
 
     <!-- Main Content -->
     <div id="content">
-      
+
       <div class="container" style="max-width:750px">
 
         <div class="card o-hidden border-0 shadow-lg my-5" style="max-width:100%; margin:auto;">
@@ -258,7 +258,7 @@ function check_pw() {
 
   <!-- End of Page Wrapper -->
   </div>
-  
+
 </body>
 
 </html>

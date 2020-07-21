@@ -77,7 +77,7 @@ $(document).on("click", "#btn_pi_del", function(e){
                 <tr>
                   <th scope="col" style="width:70px;min-width:70px;">날짜</th>
                   <th scope="col">제목</th>
-                  <th scope="col" style="width:55px;min-width:55px;">상태</th>
+                  <th scope="col" style="width:60px;min-width:60px;">상태</th>
                 </tr>
               </thead>
               <tbody>

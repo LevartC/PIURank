@@ -90,11 +90,11 @@ require_once $common_dir . "/header.php";
               for($i = 0; $i < $lc_cnt; ++$i) {
                   $p_nick = $user_row['u_nick'];
                   $chart_row = $league_chartdata[$current_tier][$i];
-                  $play_row = isset($league_playdata[$p_nick][$chart_row['c_seq']]) ? $league_playdata[$p_nick][$chart_row['c_seq']] : null;
+                  $play_row = isset($league_playdata[$chart_row['c_seq']][$p_nick]) ? $league_playdata[$chart_row['c_seq']][$p_nick] : null;
       ?>
             <div class="col-md-6">
               <div class="row my-1 text-right" href="#" data-toggle="modal" data-target="#piModal<?=$play_row['pi_seq']?>">
-                <div class="col-12 border border-dark text-center"><?=$chart_row['s_artist_kr']?> - <?=$chart_row['s_title_kr']?> <?=get_type_index($chart_row['charttype'])?><?=$chart_row['c_level']?> <?=$chart_row['use_hj'] ? "[HJ]" : ""?></div>
+                <div class="col-12 border border-dark text-center"><?=$chart_row['s_artist_kr']?> - <?=$chart_row['s_title_kr']?> <?=get_type_index($chart_row['charttype'])?><?=$chart_row['c_level']?> <?=$chart_row['use_hj'] ? "[HJ]" : ""?> [Point <?=$play_row['point'] ?? 0?>]</div>
                 <div class="col-6 col-lg-4 border border-dark text-primary">PERFECT <?=$play_row ? $play_row['pi_perfect'] : 0?></div>
                 <div class="col-6 col-lg-4 border border-dark text-success">GREAT <?=$play_row ? $play_row['pi_great'] : 0?></div>
                 <div class="col-6 col-lg-4 border border-dark text-warning">GOOD <?=$play_row ? $play_row['pi_good'] : 0?></div>
