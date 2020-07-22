@@ -5,6 +5,7 @@ class League extends CI_Controller {
 	function __construct() {
 		parent::__construct();
 		$this->load->model("league_model");
+		$this->load->model("account_model");
     }
 
 	public function index()
@@ -16,6 +17,48 @@ class League extends CI_Controller {
 
 		$tier_data = $this->league_model->getTierData();
 		$league_data = $this->league_model->getWorkingLeague();
+		$prev_league_data = null;
+		$league_userdata = null;
+		$prev_userdata = null;
+		$league_chartdata = null;
+		$league_playdata = null;
+		if ($league_data) {
+			if ($current_tier && $current_tier != 'Overview') {
+				$league_userdata = $this->league_model->getLeagueUserData($league_data, $current_tier);
+				$league_chartdata = $this->league_model->getLeagueChartData($league_data, $current_tier);
+				if ($league_userdata && $league_chartdata) {
+					$league_playdata = $this->league_model->getLeaguePlayInfo($league_data, $league_chartdata, $current_tier, $league_userdata);
+				} else {
+					alert("유저 및 차트 정보가 존재하지 않습니다.");
+				}
+			} else {
+				$league_userdata = $this->league_model->getLeagueUserData($league_data);
+				if ($league_data['li_degree'] > '1') {
+					$prev_league_data = $this->league_model->getLeagueInfo($league_data['li_season'], ($league_data['li_degree']-1));
+					$prev_userdata = $this->league_model->getLeagueUserData($prev_league_data[0], 0, 0);
+				}
+			}
+		}
+
+		$arr_data = array(
+			"current_tier" => $current_tier,
+			"tier_data" => $tier_data,
+			"league_data" => $league_data,
+			"prev_league_data" => $prev_league_data,
+			"league_userdata" => $league_userdata,
+			"prev_userdata" => $prev_userdata,
+			"league_chartdata" => $league_chartdata,
+			"league_playdata" => $league_playdata,
+		);
+		$this->load->view('league/aevileague', $arr_data);
+	}
+
+	public function history() {
+		$current_al_info = explode('-', $this->input->get_post('al_info'));
+		$current_tier = $this->input->get_post('al_tier');
+
+		$tier_data = $this->league_model->getTierData();
+		$league_data = $this->league_model->getWorkingLeague();
 		$league_userdata = null;
 		$league_chartdata = null;
 		$league_playdata = null;
@@ -23,7 +66,11 @@ class League extends CI_Controller {
 			if ($current_tier && $current_tier != 'Overview') {
 				$league_userdata = $this->league_model->getLeagueUserData($league_data, $current_tier);
 				$league_chartdata = $this->league_model->getLeagueChartData($league_data, $current_tier);
-				$league_playdata = $this->league_model->getLeaguePlayInfo($league_data, $league_chartdata, $current_tier, $league_userdata);
+				if ($league_userdata && $league_chartdata) {
+					$league_playdata = $this->league_model->getLeaguePlayInfo($league_data, $league_chartdata, $current_tier, $league_userdata);
+				} else {
+					alert("유저 및 차트 정보가 존재하지 않습니다.");
+				}
 			} else {
 				$league_userdata = $this->league_model->getLeagueUserData($league_data);
 			}
@@ -40,13 +87,81 @@ class League extends CI_Controller {
 		$this->load->view('league/aevileague', $arr_data);
 	}
 
+	public function cleanup_match() {
+		if ($this->check_super()) {
+			$tier_data = $this->league_model->getTierData();
+			$league_data = $this->league_model->getLeagueInfo(1, 1);
+			foreach($tier_data as $tier_row) {
+				$tier_chartdata = $this->league_model->getLeagueChartData($league_data, $tier_row['t_name']);
+				// 불참인원 확인
+				$this->updateAvoidUser($league_data, $tier_chartdata, $tier_row['t_name']);
+				$tier_userdata = $this->league_model->getLeagueUserData($league_data, $tier_row['t_name']);
+				$tier_playdata = $this->league_model->getLeaguePlayInfo($league_data, $tier_chartdata, $tier_row['t_name'], $tier_userdata);
+				$total_points = null;
+				// 포인트 집계
+				foreach($tier_playdata as $c_array) {
+					foreach($c_array as $u_nick => $pi_row) {
+						if (isset($total_points[$u_nick])) {
+							$total_points[$u_nick] += $pi_row['point'];
+						} else {
+							$total_points[$u_nick] = $pi_row['point'];
+						}
+					}
+				}
+			// MMR = sqrt(총참가자/10) * ( (변동계수 * (꼴찌 - (2 * (참가순위 - 0.5))) / 꼴찌 ) + ((MMR평균 - 참가MMR) / 7.5) + 팽창 상수
+				// 포인트 랭킹 인덱스 생성
+				$rank_array = array_unique(array_values($total_points));
+				rsort($rank_array);
+				$rank_index = null;
+				foreach($rank_array as $rank_key => $rank_value) {
+					$rank_index["{$rank_value}"] = $rank_key+1;
+				}
+
+				// MMR 평균 계산
+				$mmr_avg = 0;
+				foreach($tier_userdata as $user_row) {
+					$mmr_avg += $user_row['ls_mmr'];
+				}
+				$lowest_rank = count($rank_array);			// 꼴등
+				$user_cnt = count($tier_userdata);			// 총 참가자
+				$mmr_avg = $mmr_avg / $user_cnt;			// MMR 평균
+				$exp_con = $tier_row['t_exp_con'];			// 팽창 상수
+				$deg_vc = $tier_row['t_deg_vc'];			// 변동 계수
+				$mmr_result = null;
+				$point_result = null;
+				$match_mmr = 0;
+				$avoider_mmr = 0;
+				// 유저별 최종 MMR 계산
+				foreach($tier_userdata as $user_row) {
+					$user_mmr = $user_row['ls_mmr'];									// 참가자 MMR
+					$user_rank = $rank_index["{$total_points[$user_row['u_nick']]}"];	// 참가자 포인트 순위
+					$match_mmr = (sqrt($user_cnt / 10)) * ($deg_vc * ($lowest_rank - (2 * ($user_rank - 0.5))) / $lowest_rank) + (($mmr_avg - $user_mmr) / 7.5) + $exp_con;
+					$user_seq = $this->account_model->getUserSeq($user_row['u_nick']);
+					$mmr_result[$user_seq] = ceil($user_mmr + $match_mmr);
+					$point_result[$user_seq] = $total_points[$user_row['u_nick']];
+					if ($rank_array[$lowest_rank-1] == $total_points[$user_row['u_nick']]) {
+						$avoider_mmr = (int)$match_mmr;
+					}
+				}
+				$next_league_data = array('li_season' => 1, 'li_degree' => 2);
+				$this->league_model->setNextLeagueMMR($league_data, $next_league_data, $mmr_result, $point_result, $avoider_mmr, $tier_row['t_name']);
+			}
+			if ($this->league_model->setTierMMR($league_data, $next_league_data)) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			alert("권한이 없습니다.");
+		}
+	}
+
 	// 불참인원 갱신 쿼리
 	private function updateAvoidUser($league_data, $tier_charts, $tier_name) {
-        $sql = "UPDATE al_mmr SET ls_attend = 0 WHERE ls_tier = 'Gold' and ls_u_seq NOT IN
-			(SELECT MAX(pi_xscore) AS pi_x, u_nick, ppi.* from pr_playinfo as ppi
+        $sql = "UPDATE al_mmr SET ls_attend = 0 WHERE ls_tier = ? and ls_u_seq NOT IN
+			(SELECT distinct(u_seq) from pr_playinfo as ppi
 			inner join pr_users on pi_u_seq = u_seq
 			inner join pr_charts on pi_c_seq = c_seq
-			inner join pr_songs on c_s_seq = s_seq
 			INNER JOIN al_charts ON lc_c_seq = c_seq
 			WHERE pi_status = 'Active' AND lc_li_season = ? AND lc_li_degree = ? AND pi_createtime BETWEEN ? AND ? AND pi_enable = 1";
 		$where_chart = " AND (";
@@ -69,28 +184,6 @@ class League extends CI_Controller {
 			return false;
 		}
 	}
-	public function cleanup_match() {
-		$tier_data = $this->league_model->getTierData();
-		$league_data = $this->league_model->getWorkingLeague();
-		foreach($tier_data as $tier_row) {
-			$tier_chartdata = $this->league_model->getLeagueChartData($league_data, $tier_row['t_name']);
-			// 불참인원 확인
-			$this->updateAvoidUser($league_data, $tier_chartdata, $tier_row['t_name']);
-			$tier_userdata = $this->league_model->getLeagueUserData($league_data, $tier_row['t_name']);
-			$tier_playdata = $this->league_model->getLeaguePlayInfo($league_data, $tier_chartdata, $tier_row['t_name'], $tier_userdata);
-			$total_points = null;
-			foreach($tier_playdata as $c_seq => $c_array) {
-				foreach($c_array as $u_nick => $pi_row) {
-					if (isset($total_points[$u_nick])) {
-						$total_points[$u_nick] += $pi_row['point'];
-					} else {
-						$total_points[$u_nick] = $pi_row['point'];
-					}
-				}
-			}
-		}
-	}
-
 	private function check_super() {
 		if (isset($this->session->u_class) && $this->session->u_class == 1) {
 			return true;

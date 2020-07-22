@@ -7,14 +7,23 @@ class League_model extends CI_Model
         parent::__construct();
     }
 
-    public function getLeagueInfo($season, $degree) {
-        $sql = "SELECT * FROM al_info WHERE ls_li_season = ? and ls_li_degree = ?";
-        $bind_array = array($season, $degree);
-        $res = $this->db->query($sql, $bind_array);
-        if ($row = $res->row_array()) {
-            return $row;
+    public function getLeagueInfo($season = 0, $degree = 0) {
+        if ($season && $degree) {
+            $sql = "SELECT * FROM al_info WHERE li_season = ? and li_degree = ?";
+            $bind_array = array($season, $degree);
+            $res = $this->db->query($sql, $bind_array);
+            foreach($res->result_array() as $row) {
+                $data[] = $row;
+            }
+            return $data;
         } else {
-            return null;
+            $sql = "SELECT * FROM al_info";
+            $res = $this->db->query($sql);
+            $data = null;
+            foreach($res->result_array() as $row) {
+                $data[] = $row;
+            }
+            return $data;
         }
     }
 
@@ -48,23 +57,28 @@ class League_model extends CI_Model
         return $data;
     }
 
-    public function getLeagueUserData($league_data = "", $tier_name = "") {
+    public function getLeagueUserData($league_data = "", $tier_name = "", $attend = 1) {
         if (!$league_data) {
             $league_data = $this->getWorkingLeague();
         }
         $bind_array = array($league_data['li_season'], $league_data['li_degree']);
-        $sql = "SELECT u_nick, ls_mmr, ls_tier, t_color FROM pr_users inner join al_mmr ON u_seq = ls_u_seq inner join al_tier on ls_tier = t_name WHERE ls_li_season = ? AND ls_li_degree = ? AND ls_attend = 1";
+        $sql = "SELECT u_nick, ls_mmr, ls_tier, t_color FROM pr_users inner join al_mmr ON u_seq = ls_u_seq inner join al_tier on ls_tier = t_name WHERE ls_li_season = ? AND ls_li_degree = ?";
         // 티어이름 없을 시 전체 검색
         if ($tier_name) {
             $where_tier = " AND ls_tier = ?";
             $sql .= $where_tier;
             $bind_array[] = $tier_name;
         }
+        if ($attend) {
+            $where_tier = "  AND ls_attend = ?";
+            $sql .= $where_tier;
+            $bind_array[] = $attend;
+        }
         $sql .= " ORDER BY ls_mmr DESC";
         $res = $this->db->query($sql, $bind_array);
         $data = null;
         foreach($res->result_array() as $row) {
-            $data[] = $row;
+            $data[$row['u_nick']] = $row;
         }
         return $data;
     }
@@ -131,6 +145,7 @@ class League_model extends CI_Model
             $data[$row['pi_c_seq']][$row['u_nick']] = $row;
             $xscore[$row['pi_c_seq']][$row['u_nick']] = $row['pi_x'];
         }
+        // 포인트 계산
         foreach($xscore as $c_seq => $c_array) {
             $i = 0;
             $tie_score = 0;
@@ -160,5 +175,52 @@ class League_model extends CI_Model
         }
         return $data;
     }
+
+    public function setNextLeagueMMR($prev_league_data, $next_league_data, $mmr_result, $point_result, $avoider_mmr, $avoider_tier_name) {
+        $sql = "REPLACE INTO al_mmr(ls_li_season, ls_li_degree, ls_u_seq, ls_mmr, ls_point) VALUES";
+        $values_array = null;
+        $bind_array = null;
+        foreach($mmr_result as $mmr_u_seq => $mmr_value) {
+            $values_array[] = "(?,?,?,?,?)";
+            $bind_array[] = $next_league_data['li_season'];
+            $bind_array[] = $next_league_data['li_degree'];
+            $bind_array[] = $mmr_u_seq;
+            $bind_array[] = $mmr_value;
+            $bind_array[] = $point_result[$mmr_u_seq];
+        }
+        $values_str = implode(",", $values_array);
+        $sql .= $values_str;
+        if ($this->db->query($sql, $bind_array)) {
+            $avoider_mmr = $avoider_mmr < 0 ? -$avoider_mmr : 0;
+            $sql = "REPLACE INTO al_mmr(ls_li_season, ls_li_degree, ls_u_seq, ls_mmr)
+            SELECT ?, ?, ls_u_seq, (ls_mmr-{$avoider_mmr}) as ls_mmr FROM al_mmr
+            WHERE ls_li_season = ? AND ls_li_degree = ? AND ls_tier = ? AND ls_attend = 0";
+            $bind_array = array($next_league_data['li_season'], $next_league_data['li_degree'], $prev_league_data['li_season'], $prev_league_data['li_degree'], $avoider_tier_name);
+            if ($this->db->query($sql, $bind_array)) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    public function setTierMMR($prev_league_data, $next_league_data) {
+        $sql = "UPDATE al_mmr, al_tier SET ls_tier = t_name WHERE ls_mmr > t_min_mmr AND ls_mmr <= t_max_mmr";
+        if ($this->db->query($sql)) {
+            $sql = "UPDATE al_mmr AS a, (SELECT ls_u_seq, ls_point FROM al_mmr WHERE ls_li_season = ? AND ls_li_degree = ?) AS b SET a.ls_point = b.ls_point WHERE a.ls_li_season = ? AND a.ls_li_degree = ? AND a.ls_u_seq = b.ls_u_seq";
+            $bind_array = array($next_league_data['li_season'], $next_league_data['li_degree'], $prev_league_data['li_season'], $prev_league_data['li_degree']);
+            if ($this->db->query($sql, $bind_array)) {
+                $sql = "UPDATE al_mmr SET ls_point = 0 WHERE ls_li_season = ? AND ls_li_degree = ?";
+                $bind_array = array($next_league_data['li_season'], $next_league_data['li_degree']);
+                if ($this->db->query($sql, $bind_array)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 }
 ?>

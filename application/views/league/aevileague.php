@@ -6,7 +6,6 @@ require_once $common_dir . "/header.php";
 
 <script>
     $(document).ready(function(e) {
-        
     });
     $(document).on("change", "#al_tier", function(e) {
         $("#tier_select_form").submit();
@@ -74,7 +73,7 @@ require_once $common_dir . "/header.php";
       </div>
       <?php
           // 각 유저별 플레이 정보
-          foreach($league_userdata as $user_row) {
+          foreach($league_userdata as $u_nick => $user_row) {
       ?>
       <div class="card border-primary mb-3" style="max-width:100%">
         <div class="card-header text-dark bg-white">
@@ -141,21 +140,38 @@ require_once $common_dir . "/header.php";
           </div>
           <div class="card-body p-2">
             <table class="table table-hover border border-light">
-              <thead class="table-light">
+              <thead class="table-light text-center">
                 <tr>
                   <th scope="col">NAME</th>
-                  <th scope="col">현재 MMR</th>
+                  <th scope="col">MMR</th>
                   <th scope="col">현재 티어</th>
                 </tr>
               </thead>
               <tbody>
                 <?php
-                foreach($league_userdata as $user_row) {
+                if ($league_userdata) {
+                    foreach($league_userdata as $user_row) {
+                        $mmr_str = "";
+                        $mmr_diff = 0;
+                        if (isset($prev_userdata[$user_row['u_nick']])) {
+                            $mmr_diff = $user_row['ls_mmr'] - $prev_userdata[$user_row['u_nick']]['ls_mmr'];
+                            $mmr_diff = $mmr_diff > 0 ? "<b><span style='color:blue;'>+" . $mmr_diff . "</span></b>" : "<b><span style='color:red;'>". $mmr_diff . "</span></b>";
+                            $mmr_str = $prev_userdata[$user_row['u_nick']]['ls_mmr'] . " → " . $user_row['ls_mmr'];
+                        } else {
+                            $mmr_str = $user_row['ls_mmr'];
+                        }
+                ?>
+                <tr class="text-center">
+                  <th scope="row" style="color:black;"><?=$user_row['u_nick']?></th>
+                  <td><?= $mmr_str ?> (<?= $mmr_diff ?>)</td>
+                  <td style="color:<?=$user_row['t_color']?>;"><?=$user_row['ls_tier']?></td>
+                </tr>
+                <?php
+                    }
+                } else {
                 ?>
                 <tr>
-                  <th scope="row" style="color:black;"><?=$user_row['u_nick']?></th>
-                  <td><?=$user_row['ls_mmr']?></td>
-                  <td style="color:<?=$user_row['t_color']?>;"><?=$user_row['ls_tier']?></td>
+                  <th class="text-center" colspan="3">유저 정보가 존재하지 않습니다.</th>
                 </tr>
                 <?php
                 }

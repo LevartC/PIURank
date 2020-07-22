@@ -6,15 +6,22 @@ class Account_model extends CI_Model
 	function __construct() {
 		parent::__construct();
     }
-    
-    function getUserSeq($u_id) {
+
+    public function getUserSeq($u_id) {
         if ($u_id) {
             $sql = "SELECT u_seq FROM pr_users WHERE u_id = ?";
             $res = $this->db->query($sql, array($u_id));
             if ($row = $res->row_array()) {
                 return $row['u_seq'];
             } else {
-                return null;
+                // 없을 경우 닉네임에서 한번 더 찾아봄
+                $sql = "SELECT u_seq FROM pr_users WHERE u_nick = ?";
+                $res = $this->db->query($sql, array($u_id));
+                if ($row = $res->row_array()) {
+                    return $row['u_seq'];
+                } else {
+                    return null;
+                }
             }
         } else {
             return null;
