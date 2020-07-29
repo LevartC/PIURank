@@ -13,10 +13,18 @@ class League extends CI_Controller {
 	}
 	public function aevileague()
 	{
-		$current_tier = $this->input->get_post('al_tier');
+		$current_league = explode('-', $this->input->get_post('league'));
+		$current_season = $current_league[0] ?? null;
+		$current_degree = $current_league[1] ?? null;
+		$current_tier = $this->input->get_post('tier');
 
 		$tier_data = $this->league_model->getTierData();
-		$league_data = $this->league_model->getWorkingLeague();
+		$all_league_data = $this->league_model->getAllLeague();
+		if ($current_season && $current_degree) {
+			$league_data = $this->league_model->getLeagueInfo($current_season, $current_degree);
+		} else {
+			$league_data = $this->league_model->getWorkingLeague();
+		}
 		$prev_league_data = null;
 		$league_userdata = null;
 		$prev_userdata = null;
@@ -35,7 +43,7 @@ class League extends CI_Controller {
 				$league_userdata = $this->league_model->getLeagueUserData($league_data);
 				if ($league_data['li_degree'] > '1') {
 					$prev_league_data = $this->league_model->getLeagueInfo($league_data['li_season'], ($league_data['li_degree']-1));
-					$prev_userdata = $this->league_model->getLeagueUserData($prev_league_data[0], 0, 0);
+					$prev_userdata = $this->league_model->getLeagueUserData($prev_league_data, 0, 0);
 				}
 			}
 		}
@@ -49,16 +57,24 @@ class League extends CI_Controller {
 			"prev_userdata" => $prev_userdata,
 			"league_chartdata" => $league_chartdata,
 			"league_playdata" => $league_playdata,
+			"all_league_data" => $all_league_data,
 		);
 		$this->load->view('league/aevileague', $arr_data);
 	}
 
 	public function history() {
-		$current_al_info = explode('-', $this->input->get_post('al_info'));
-		$current_tier = $this->input->get_post('al_tier');
+		$current_league = explode('-', $this->input->get_post('league'));
+		$current_season = $current_league[0] ?? null;
+		$current_degree = $current_league[1] ?? null;
+		$current_tier = $this->input->get_post('tier');
 
 		$tier_data = $this->league_model->getTierData();
-		$league_data = $this->league_model->getWorkingLeague();
+		$all_league_data = $this->league_model->getAllLeague();
+		if ($current_season && $current_degree) {
+			$league_data = $this->league_model->getLeagueInfo($current_season, $current_degree);
+		} else {
+			$league_data = $this->league_model->getWorkingLeague();
+		}
 		$league_userdata = null;
 		$league_chartdata = null;
 		$league_playdata = null;
@@ -83,8 +99,13 @@ class League extends CI_Controller {
 			"league_chartdata" => $league_chartdata,
 			"league_userdata" => $league_userdata,
 			"league_playdata" => $league_playdata,
+			"all_league_data" => $all_league_data,
 		);
 		$this->load->view('league/aevileague', $arr_data);
+	}
+
+	public function super_menu() {
+		$this->load->view('league/super_menu');
 	}
 
 	public function cleanup_match() {
@@ -147,6 +168,7 @@ class League extends CI_Controller {
 				$this->league_model->setNextLeagueMMR($league_data, $next_league_data, $mmr_result, $point_result, $avoider_mmr, $tier_row['t_name']);
 			}
 			if ($this->league_model->setTierMMR($league_data, $next_league_data)) {
+				alert("성공");
 				return true;
 			} else {
 				return false;

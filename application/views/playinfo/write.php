@@ -18,8 +18,6 @@ require_once $common_dir . "/header.php";
       <script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-load-image/2.12.2/load-image-orientation.min.js"></script>
 
       <script>
-      $("#coll_category").addClass("show");
-      $("#nav_category").addClass("active");
       $("#nav_input_pi").addClass("active");
 
       function formCheck(fm) {

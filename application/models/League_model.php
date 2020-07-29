@@ -7,24 +7,29 @@ class League_model extends CI_Model
         parent::__construct();
     }
 
-    public function getLeagueInfo($season = 0, $degree = 0) {
+    public function getLeagueInfo($season, $degree) {
         if ($season && $degree) {
             $sql = "SELECT * FROM al_info WHERE li_season = ? and li_degree = ?";
             $bind_array = array($season, $degree);
             $res = $this->db->query($sql, $bind_array);
-            foreach($res->result_array() as $row) {
-                $data[] = $row;
+            if ($row = $res->row_array()) {
+                return $row;
+            } else {
+                return null;
             }
-            return $data;
         } else {
-            $sql = "SELECT * FROM al_info";
-            $res = $this->db->query($sql);
-            $data = null;
-            foreach($res->result_array() as $row) {
-                $data[] = $row;
-            }
-            return $data;
+            return null;
         }
+    }
+
+    public function getAllLeague() {
+        $sql = "SELECT * FROM al_info ORDER BY li_degree DESC, li_season DESC";
+        $res = $this->db->query($sql);
+        $data = null;
+        foreach($res->result_array() as $row) {
+            $data[] = $row;
+        }
+        return $data;
     }
 
     public function getWorkingLeague() {
@@ -117,7 +122,7 @@ class League_model extends CI_Model
         INNER JOIN al_charts ON lc_c_seq = c_seq
         WHERE pi_status = 'Active' AND lc_li_season = ? AND lc_li_degree = ? AND pi_createtime BETWEEN ? AND ? AND pi_enable = 1";
         if ($tier_name) {
-            $sql .= " AND pi_u_seq IN (SELECT ls_u_seq FROM al_mmr WHERE ls_li_season = lc_li_season AND lc_li_degree = lc_li_degree AND ls_tier = ?)";
+            $sql .= " AND pi_u_seq IN (SELECT ls_u_seq FROM al_mmr WHERE ls_li_season = lc_li_season AND ls_li_degree = lc_li_degree AND ls_tier = ?)";
         }
         if ($tier_charts) {
             $where_chart = " AND (";
@@ -145,32 +150,34 @@ class League_model extends CI_Model
             $data[$row['pi_c_seq']][$row['u_nick']] = $row;
             $xscore[$row['pi_c_seq']][$row['u_nick']] = $row['pi_x'];
         }
-        // 포인트 계산
-        foreach($xscore as $c_seq => $c_array) {
-            $i = 0;
-            $tie_score = 0;
-            $tie_point = 0;
-            foreach($c_array as $u_nick => $x_value) {
-                if ($tie_score) {
-                    $data[$c_seq][$u_nick]['point'] = $tie_point;
-                } else {
-                    $tie_score = count(array_keys($c_array, $x_value));
-                    if ($tie_score === 1) {
-                        $point = $user_cnt - $i;
-                        $data[$c_seq][$u_nick]['point'] = $point;
-                    } else {
-                        $point = $user_cnt - $i;
-                        // 평균 계산
-                        $tie_point = 0;
-                        for ($x = 0; $x < $tie_score; ++$x) {
-                            $tie_point += $point - $x;
-                        }
-                        $tie_point = $tie_point / $tie_score;
+        if ($xscore) {
+            // 포인트 계산
+            foreach($xscore as $c_seq => $c_array) {
+                $i = 0;
+                $tie_score = 0;
+                $tie_point = 0;
+                foreach($c_array as $u_nick => $x_value) {
+                    if ($tie_score) {
                         $data[$c_seq][$u_nick]['point'] = $tie_point;
+                    } else {
+                        $tie_score = count(array_keys($c_array, $x_value));
+                        if ($tie_score === 1) {
+                            $point = $user_cnt - $i;
+                            $data[$c_seq][$u_nick]['point'] = $point;
+                        } else {
+                            $point = $user_cnt - $i;
+                            // 평균 계산
+                            $tie_point = 0;
+                            for ($x = 0; $x < $tie_score; ++$x) {
+                                $tie_point += $point - $x;
+                            }
+                            $tie_point = $tie_point / $tie_score;
+                            $data[$c_seq][$u_nick]['point'] = $tie_point;
+                        }
                     }
+                    $tie_score--;
+                    $i++;
                 }
-                $tie_score--;
-                $i++;
             }
         }
         return $data;

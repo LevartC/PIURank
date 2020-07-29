@@ -25,4 +25,5 @@
   <script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
   <!-- Custom scripts for all pages-->
   <script src="/js/sb-admin-2.js"></script>
+  <script data-ad-client="ca-pub-4289762154121249" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 </head>

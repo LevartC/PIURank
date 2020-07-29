@@ -75,6 +75,13 @@
                     <span>기록 입력</span>
                 </a>
             </li>
+            <div class="topbar-divider d-none d-lg-block"></div>
+            <li class="nav-item" id="nav_aevileague">
+                <a class="nav-link" href="/league/aevileague">
+                    <i class="fab fa-battle-net"></i>
+                    <span>AEVILEAGUE</span>
+                </a>
+            </li>
 <?php
 if (isset($_SESSION['u_class']) && $_SESSION['u_class'] == '1') {
 ?>
@@ -90,22 +97,6 @@ if (isset($_SESSION['u_class']) && $_SESSION['u_class'] == '1') {
             </li>
 <?php
 }
-?>
-            <div class="topbar-divider d-none d-lg-block"></div>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    ON-BATTLE
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <!--
-                    <a class="dropdown-item" href="/league/main">메인</a>
-                    -->
-                    <a class="dropdown-item" href="/league/aevileague">Aevileague</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">-</a>
-                </div>
-            </li>
-<?php
 if (isset($_SESSION['u_class']) && $_SESSION['u_class'] <= '2') {
 ?>
             <div class="topbar-divider d-none d-lg-block"></div>

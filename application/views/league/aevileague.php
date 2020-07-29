@@ -7,32 +7,57 @@ require_once $common_dir . "/header.php";
 <script>
     $(document).ready(function(e) {
     });
-    $(document).on("change", "#al_tier", function(e) {
-        $("#tier_select_form").submit();
+    $(document).on("change", ".league_select", function(e) {
+        $("#league_select_form").submit();
     });
 </script>
 <!-- Body head -->
 <?php require_once $common_dir . "/body_head.php"; ?>
     <!-- Topbar -->
     <?php require_once $common_dir . "/body_topbar.php"; ?>
-
+    <script>
+      $("#nav_aevileague").addClass("active");
+    </script>
     <!-- Begin Page Content -->
     <div class="container-fhd mt-4">
 
       <!-- Page Heading -->
-      <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">AEVILEAGUE</h1>
-        <form class="user" method="get" id="tier_select_form" name="tier_select_form">
-          <select class="form-control float-right" id="al_tier" name="al_tier">
-            <option>Overview</option>
-            <?php
-            foreach($tier_data as $tier_row) {
+      <div class="align-items-center justify-content-between mb-4">
+        <form class="user" method="get" id="league_select_form" name="league_select_form">
+          <div class="row">
+            <div class="col-12 col-sm-6 mb-2">
+              <h1 class="h3 mb-0 text-gray-800">AEVILEAGUE</h1>
+            </div>
+            <?php 
+            if (isset($all_league_data)) {
             ?>
-            <option <?=$tier_row['t_name'] == $current_tier ? "selected" : ""?>><?=$tier_row['t_name']?></option>
+            <div class="col-6 col-sm-3">
+              <select class="form-control league_select" id="league" name="league">
+                <?php
+                foreach($all_league_data as $league_row) {
+                ?>
+                <option value="<?=$league_row['li_season']?>-<?=$league_row['li_degree']?>" <?=($league_row['li_season'] == $league_data['li_season'] && $league_row['li_degree'] == $league_data['li_degree']) ? "selected" : ""?>>시즌 <?=$league_row['li_season']?> - <?=$league_row['li_degree']?></option>
+                <?php
+                }
+                ?>
+              </select>
+            </div>
             <?php
             }
             ?>
-          </select>
+            <div class="col-6 col-sm-3">
+              <select class="form-control league_select" id="tier" name="tier">
+                <option>Overview</option>
+                <?php
+                foreach($tier_data as $tier_row) {
+                ?>
+                <option <?=$tier_row['t_name'] == $current_tier ? "selected" : ""?>><?=$tier_row['t_name']?></option>
+                <?php
+                }
+                ?>
+              </select>
+            </div>
+          </div>
         </form>
       </div>
 
@@ -82,10 +107,6 @@ require_once $common_dir . "/header.php";
         <div class="card-body p-2">
           <div class="row p-0 m-0">
       <?php
-              // 순위 정하기
-              for($i = 0; $i < $lc_cnt; ++$i) {
-
-              }
               for($i = 0; $i < $lc_cnt; ++$i) {
                   $p_nick = $user_row['u_nick'];
                   $chart_row = $league_chartdata[$current_tier][$i];
@@ -144,7 +165,7 @@ require_once $common_dir . "/header.php";
                 <tr>
                   <th scope="col">NAME</th>
                   <th scope="col">MMR</th>
-                  <th scope="col">현재 티어</th>
+                  <th scope="col">TIER</th>
                 </tr>
               </thead>
               <tbody>
@@ -152,10 +173,10 @@ require_once $common_dir . "/header.php";
                 if ($league_userdata) {
                     foreach($league_userdata as $user_row) {
                         $mmr_str = "";
-                        $mmr_diff = 0;
+                        $mmr_diff = "(0)";
                         if (isset($prev_userdata[$user_row['u_nick']])) {
                             $mmr_diff = $user_row['ls_mmr'] - $prev_userdata[$user_row['u_nick']]['ls_mmr'];
-                            $mmr_diff = $mmr_diff > 0 ? "<b><span style='color:blue;'>+" . $mmr_diff . "</span></b>" : "<b><span style='color:red;'>". $mmr_diff . "</span></b>";
+                            $mmr_diff = "<b><span style='" . ($mmr_diff > 0 ? "color:blue;'>(+" : "color:red;'>(") . $mmr_diff . ")</span></b>";
                             $mmr_str = $prev_userdata[$user_row['u_nick']]['ls_mmr'] . " → " . $user_row['ls_mmr'];
                         } else {
                             $mmr_str = $user_row['ls_mmr'];
@@ -163,7 +184,7 @@ require_once $common_dir . "/header.php";
                 ?>
                 <tr class="text-center">
                   <th scope="row" style="color:black;"><?=$user_row['u_nick']?></th>
-                  <td><?= $mmr_str ?> (<?= $mmr_diff ?>)</td>
+                  <td><?= $mmr_str ?> <?= $mmr_diff ?></td>
                   <td style="color:<?=$user_row['t_color']?>;"><?=$user_row['ls_tier']?></td>
                 </tr>
                 <?php
