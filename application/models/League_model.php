@@ -137,7 +137,7 @@ class League_model extends CI_Model
             $where_array = implode(" OR ", $where_array);
             $where_chart .= $where_array . ")";
         }
-        $sql .= $where_chart . " GROUP BY pi_xscore, pi_c_seq, pi_u_seq ORDER BY pi_c_seq ASC";
+        $sql .= $where_chart . " GROUP BY pi_xscore, pi_c_seq, pi_u_seq ORDER BY pi_c_seq ASC, pi_xscore DESC";
         $bind_array = array($league_data['li_season'], $league_data['li_degree'], $league_data['li_starttime'], $league_data['li_endtime']);
         if ($tier_name) {
             array_push($bind_array, $tier_name);
@@ -220,7 +220,7 @@ class League_model extends CI_Model
             $sql = "UPDATE al_mmr AS a, (SELECT ls_u_seq, ls_point FROM al_mmr WHERE ls_li_season = ? AND ls_li_degree = ?) AS b SET a.ls_point = b.ls_point WHERE a.ls_li_season = ? AND a.ls_li_degree = ? AND a.ls_u_seq = b.ls_u_seq";
             $bind_array = array($next_league_data['li_season'], $next_league_data['li_degree'], $prev_league_data['li_season'], $prev_league_data['li_degree']);
             if ($this->db->query($sql, $bind_array)) {
-                $sql = "UPDATE al_mmr SET ls_point = 0 WHERE ls_li_season = ? AND ls_li_degree = ?";
+                $sql = "UPDATE pr_users, al_mmr SET u_mmr = ls_mmr, u_tier = ls_tier, ls_point = 0 WHERE ls_li_season = ? AND ls_li_degree = ? AND u_seq = ls_u_seq";
                 $bind_array = array($next_league_data['li_season'], $next_league_data['li_degree']);
                 if ($this->db->query($sql, $bind_array)) {
                     return true;
@@ -228,6 +228,16 @@ class League_model extends CI_Model
             }
         }
         return false;
+    }
+    
+    public function refreshMMR($li_season, $li_degree) {
+        $sql = "UPDATE pr_users, al_mmr SET u_mmr = ls_mmr, u_tier = ls_tier WHERE ls_li_season = ? AND ls_li_degree = ? AND u_seq = ls_u_seq";
+        $bind_array = array($li_season, $li_degree);
+        if ($this->db->query($sql, $bind_array)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public function setLeagueChart($season, $degree, $tier, $c_seq, $use_hj) {
