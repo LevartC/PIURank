@@ -62,48 +62,6 @@ class League extends CI_Controller {
 		$this->load->view('league/aevileague', $arr_data);
 	}
 
-	public function history() {
-		$current_league = explode('-', $this->input->get_post('league'));
-		$current_season = $current_league[0] ?? null;
-		$current_degree = $current_league[1] ?? null;
-		$current_tier = $this->input->get_post('tier');
-
-		$tier_data = $this->league_model->getTierData();
-		$all_league_data = $this->league_model->getAllLeague();
-		if ($current_season && $current_degree) {
-			$league_data = $this->league_model->getLeagueInfo($current_season, $current_degree);
-		} else {
-			$league_data = $this->league_model->getWorkingLeague();
-		}
-		$league_userdata = null;
-		$league_chartdata = null;
-		$league_playdata = null;
-		if ($league_data) {
-			if ($current_tier && $current_tier != 'Overview') {
-				$league_userdata = $this->league_model->getLeagueUserData($league_data, $current_tier);
-				$league_chartdata = $this->league_model->getLeagueChartData($league_data, $current_tier);
-				if ($league_userdata && $league_chartdata) {
-					$league_playdata = $this->league_model->getLeaguePlayInfo($league_data, $league_chartdata, $current_tier, $league_userdata);
-				} else {
-					alert("유저 및 차트 정보가 존재하지 않습니다.");
-				}
-			} else {
-				$league_userdata = $this->league_model->getLeagueUserData($league_data);
-			}
-		}
-
-		$arr_data = array(
-			"current_tier" => $current_tier,
-			"tier_data" => $tier_data,
-			"league_data" => $league_data,
-			"league_chartdata" => $league_chartdata,
-			"league_userdata" => $league_userdata,
-			"league_playdata" => $league_playdata,
-			"all_league_data" => $all_league_data,
-		);
-		$this->load->view('league/aevileague', $arr_data);
-	}
-
 	public function super_menu() {
 		if ($this->check_super()) {
 			$tier_data = $this->league_model->getTierData();
@@ -145,7 +103,7 @@ class League extends CI_Controller {
 			$league_data = $this->league_model->getLeagueInfo($season, $degree);
 			foreach($tier_data as $tier_row) {
 				$tier_chartdata = $this->league_model->getLeagueChartData($league_data, $tier_row['t_name']);
-				// 불참인원 확인
+				// 불참인원 확인 및 제외
 				$this->updateAvoidUser($league_data, $tier_chartdata, $tier_row['t_name']);
 				$tier_userdata = $this->league_model->getLeagueUserData($league_data, $tier_row['t_name']);
 				$tier_playdata = $this->league_model->getLeaguePlayInfo($league_data, $tier_chartdata, $tier_row['t_name'], $tier_userdata);
@@ -185,8 +143,10 @@ class League extends CI_Controller {
 				$avoider_mmr = 0;
 				// 유저별 최종 MMR 계산
 				foreach($tier_userdata as $user_row) {
-					$user_mmr = $user_row['ls_mmr'];									// 참가자 MMR
-					$user_rank = $rank_index["{$total_points[$user_row['u_nick']]}"];	// 참가자 포인트 순위
+					$user_mmr = $user_row['ls_mmr'];		// 참가자 MMR
+					// 참가자 포인트 순위
+					$user_index = $total_points[$user_row['u_nick']] ?? null;
+					$user_rank = $user_index ? $rank_index["{$user_index}"] : $lowest_rank;
 					$match_mmr = (sqrt($user_cnt / 10)) * ($deg_vc * ($lowest_rank - (2 * ($user_rank - 0.5))) / $lowest_rank) + (($mmr_avg - $user_mmr) / 7.5) + $exp_con;
 					$user_seq = $this->account_model->getUserSeq($user_row['u_nick']);
 					$mmr_result[$user_seq] = ceil($user_mmr + $match_mmr);

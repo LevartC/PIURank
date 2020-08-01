@@ -99,10 +99,14 @@ require_once $common_dir . "/header.php";
       <?php
           // 각 유저별 플레이 정보
           foreach($league_userdata as $u_nick => $user_row) {
+              $total_point = 0.0;
+              for($i = 0; $i < $lc_cnt; ++$i) {
+                  $total_point += isset($league_playdata[$league_chartdata[$current_tier][$i]['c_seq']][$user_row['u_nick']]) ? $league_playdata[$league_chartdata[$current_tier][$i]['c_seq']][$user_row['u_nick']]['point'] : 0;
+              }
       ?>
       <div class="card border-primary mb-3" style="max-width:100%">
         <div class="card-header text-dark bg-white">
-          <h3 class="m-0 p-0"><?=$user_row['u_nick']?> (<?=$user_row['ls_mmr']?>)</h2>
+          <h3 class="m-0 p-0"><?=$user_row['u_nick']?> (<?=$user_row['ls_mmr']?>) [<?=number_format($total_point, 1)?>]</h2>
         </div>
         <div class="card-body p-2">
           <div class="row p-0 m-0">

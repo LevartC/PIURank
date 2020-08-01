@@ -137,7 +137,7 @@ class League_model extends CI_Model
             $where_array = implode(" OR ", $where_array);
             $where_chart .= $where_array . ")";
         }
-        $sql .= $where_chart . " GROUP BY pi_xscore ORDER BY pi_c_seq ASC";
+        $sql .= $where_chart . " GROUP BY pi_xscore, pi_c_seq, pi_u_seq ORDER BY pi_c_seq ASC";
         $bind_array = array($league_data['li_season'], $league_data['li_degree'], $league_data['li_starttime'], $league_data['li_endtime']);
         if ($tier_name) {
             array_push($bind_array, $tier_name);
