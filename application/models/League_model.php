@@ -115,7 +115,7 @@ class League_model extends CI_Model
         if (!$league_data) {
             $league_data = $this->getWorkingLeague();
         }
-        $sql = "SELECT MAX(pi_xscore) AS pi_x, u_nick, ppi.* from pr_playinfo as ppi
+        $sql = "SELECT u_nick, ppi.* from pr_playinfo as ppi
         inner join pr_users on pi_u_seq = u_seq
         inner join pr_charts on pi_c_seq = c_seq
         inner join pr_songs on c_s_seq = s_seq
@@ -137,18 +137,19 @@ class League_model extends CI_Model
             $where_array = implode(" OR ", $where_array);
             $where_chart .= $where_array . ")";
         }
-        $sql .= $where_chart . " GROUP BY pi_u_seq, pi_c_seq ORDER BY pi_c_seq ASC, pi_x DESC, u_nick ASC";
+        $sql .= $where_chart . " GROUP BY pi_xscore ORDER BY pi_c_seq ASC";
         $bind_array = array($league_data['li_season'], $league_data['li_degree'], $league_data['li_starttime'], $league_data['li_endtime']);
         if ($tier_name) {
             array_push($bind_array, $tier_name);
         }
+        $sql = "SELECT * FROM (". $sql .") AS a GROUP BY pi_c_seq, pi_u_seq ORDER BY pi_c_seq ASC, pi_xscore DESC, u_nick ASC";
         $res = $this->db->query($sql, $bind_array);
         $data = null;
         $xscore = null;
         $user_cnt = count($tier_userdata);
         foreach($res->result_array() as $row) {
             $data[$row['pi_c_seq']][$row['u_nick']] = $row;
-            $xscore[$row['pi_c_seq']][$row['u_nick']] = $row['pi_x'];
+            $xscore[$row['pi_c_seq']][$row['u_nick']] = $row['pi_xscore'];
         }
         if ($xscore) {
             // 포인트 계산
@@ -227,6 +228,16 @@ class League_model extends CI_Model
             }
         }
         return false;
+    }
+
+    public function setLeagueChart($season, $degree, $tier, $c_seq, $use_hj) {
+        $sql = "INSERT INTO al_charts(lc_li_season, lc_li_degree, lc_t_name, lc_c_seq, use_hj) VALUES(?,?,?,?,?)";
+        $bind_array = array($season, $degree, $tier, $c_seq, $use_hj);
+        if ($this->db->query($sql, $bind_array)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }

@@ -105,13 +105,44 @@ class League extends CI_Controller {
 	}
 
 	public function super_menu() {
-		$this->load->view('league/super_menu');
+		if ($this->check_super()) {
+			$tier_data = $this->league_model->getTierData();
+			$arr_data = array(
+				"tier_data" => $tier_data,
+			);
+			$this->load->view('league/super_menu', $arr_data);
+		} else {
+			alert("권한이 없습니다.");
+		}
+	}
+
+	public function add_chart() {
+		if ($this->check_super()) {
+			$season = $this->input->post('al_li_season');
+			$degree = $this->input->post('al_li_degree');
+			$tier = $this->input->post('tier');
+			$c_seq = $this->input->post('al_c_seq');
+			$use_hj = $this->input->post('al_usehj') ?? 0;
+			if ($season && $degree && $tier && $c_seq) {
+				if ($this->league_model->setLeagueChart($season, $degree, $tier, $c_seq, $use_hj)) {
+					alert("차트 입력에 성공하였습니다.");
+				} else {
+					alert("차트 입력에 실패하였습니다.\n관리자에게 문의하세요.");
+				}
+			} else {
+				alert("입력값이 정확하지 않습니다.");
+			}
+		} else {
+			alert("권한이 없습니다.");
+		}
 	}
 
 	public function cleanup_match() {
 		if ($this->check_super()) {
+			$season = $this->input->post('li_season') ? (int)$this->input->post('li_season') : 1;
+			$degree = $this->input->post('li_degree') ? (int)$this->input->post('li_degree') : 2;
 			$tier_data = $this->league_model->getTierData();
-			$league_data = $this->league_model->getLeagueInfo(1, 1);
+			$league_data = $this->league_model->getLeagueInfo($season, $degree);
 			foreach($tier_data as $tier_row) {
 				$tier_chartdata = $this->league_model->getLeagueChartData($league_data, $tier_row['t_name']);
 				// 불참인원 확인
@@ -164,7 +195,7 @@ class League extends CI_Controller {
 						$avoider_mmr = (int)$match_mmr;
 					}
 				}
-				$next_league_data = array('li_season' => 1, 'li_degree' => 2);
+				$next_league_data = array('li_season' => $season, 'li_degree' => $degree+1);
 				$this->league_model->setNextLeagueMMR($league_data, $next_league_data, $mmr_result, $point_result, $avoider_mmr, $tier_row['t_name']);
 			}
 			if ($this->league_model->setTierMMR($league_data, $next_league_data)) {

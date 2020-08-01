@@ -120,7 +120,7 @@ require_once $common_dir . "/header.php";
                 <div class="col-6 col-lg-4 border border-dark text-warning">GOOD <?=$play_row ? $play_row['pi_good'] : 0?></div>
                 <div class="col-6 col-lg-4 border border-dark" style="color:purple">BAD <?=$play_row ? $play_row['pi_bad'] : 0?></div>
                 <div class="col-6 col-lg-4 border border-dark text-danger">MISS <?=$play_row ? $play_row['pi_miss'] : 0?></div>
-                <div class="col-6 col-lg-4 border border-dark" style="color:black">XSCORE <?=$play_row ? $play_row['pi_x'] : 0?></div>
+                <div class="col-6 col-lg-4 border border-dark" style="color:black">XSCORE <?=$play_row ? $play_row['pi_xscore'] : 0?></div>
               </div>
             </div>
       <?php
