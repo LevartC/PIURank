@@ -80,7 +80,7 @@ $db['default'] = array(
 	'password' => 'fodzld',
 	'database' => 'piurank',
 	'dbdriver' => 'mysqli',
-	'port' => '3307',
+	'port' => '3306',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
 	'db_debug' => (ENVIRONMENT !== 'production'),
