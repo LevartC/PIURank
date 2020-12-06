@@ -7,27 +7,48 @@ class Playinfo_model extends CI_Model
         parent::__construct();
     }
 
-    function getPlayinfo($status = "", $u_id = null) {
+    function getPlayinfo($status = "", $u_id = null, $page = 0, $page_rows = 10) {
         $bind_array = array();
-        if (!$status) {
-            $stat_where = "";
-        } else {
-            $stat_where = " AND pi_status = ".$status;
+        $sql = "SELECT pr_users.u_nick, pr_playinfo.*, pr_charts.*, pr_songs.*, c_type+0 as charttype FROM pr_playinfo inner join pr_users on pi_u_seq = u_seq inner join pr_charts on pi_c_seq = c_seq inner join pr_songs on c_s_seq = s_seq WHERE pi_enable = 1";
+        if ($status) {
+            $sql .= " AND pi_status = ?";
+            array_push($bind_array, $status);
         }
-        $order_sql = " ORDER BY pi_createtime DESC";
         if ($u_id) {
-            $sql = "SELECT pr_users.u_nick, pr_playinfo.*, pr_charts.*, pr_songs.*, c_type+0 as charttype FROM pr_playinfo inner join pr_users on pi_u_seq = u_seq inner join pr_charts on pi_c_seq = c_seq inner join pr_songs on c_s_seq = s_seq WHERE pi_enable = 1 AND u_id = ?" . $stat_where;
+            $sql .= " AND u_id = ?";
             array_push($bind_array, $u_id);
-        } else {
-            $sql = "SELECT pr_users.u_nick, pr_playinfo.*, pr_charts.*, pr_songs.*, c_type+0 as charttype FROM pr_playinfo inner join pr_users on pi_u_seq = u_seq inner join pr_charts on pi_c_seq = c_seq inner join pr_songs on c_s_seq = s_seq WHERE pi_enable = 1" . $stat_where;
         }
-        $sql .= $order_sql;
+        $sql .= " ORDER BY pi_createtime DESC";
+        if ($page && $page_rows) {
+            $lim_start = ($page - 1) * $page_rows;
+            $lim_end = $page_rows;
+            $sql .= " LIMIT {$lim_start}, {$lim_end}";
+        }
         $res = count($bind_array) ? $this->db->query($sql, $bind_array) : $this->db->query($sql);
         $data = null;
         foreach($res->result_array() as $row) {
             $data[] = $row;
         }
         return $data;
+    }
+    function getPlayinfoCount($status = "", $u_id = null) {
+        $bind_array = array();
+        $sql = "SELECT count(*) as cnt FROM pr_playinfo inner join pr_users on pi_u_seq = u_seq inner join pr_charts on pi_c_seq = c_seq inner join pr_songs on c_s_seq = s_seq WHERE pi_enable = 1";
+        if ($status) {
+            $sql .= " AND pi_status = ?";
+            array_push($bind_array, $status);
+        }
+        if ($u_id) {
+            $sql .= " AND u_id = ?";
+            array_push($bind_array, $u_id);
+        }
+        $sql .= " ORDER BY pi_createtime DESC";
+        $res = count($bind_array) ? $this->db->query($sql, $bind_array) : $this->db->query($sql);
+        $cnt = 0;
+        if ($row = $res->row_array()) {
+            $cnt = $row['cnt'];
+        }
+        return $cnt;
     }
 
     public function searchFile($c_title) {

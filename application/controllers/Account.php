@@ -34,10 +34,44 @@ class Account extends CI_Controller {
             if ($this->input->post('pi_status') !== null) {
                 $this->piStatus = (int)$this->input->post('pi_status');
             }
-            $this->piData = $this->playinfo_model->getPlayinfo($this->piStatus, $this->session->u_id);
-            $this->load->view('account/myplay');
+            $cnt = $this->playinfo_model->getPlayinfoCount($this->piStatus, $this->session->u_id);
+            $page = $this->input->post_get('page');
+            $page_rows = 10;
+            if ($page < 1) {
+                $page = 1;
+            }
+            $last_page = $cnt % $page_rows == 0 ? (int)($cnt / $page_rows) : (int)($cnt / $page_rows) + 1;
+            if ($page > $last_page) {
+                $page = $last_page;
+            }
+            $this->piData = $this->playinfo_model->getPlayinfo($this->piStatus, $this->session->u_id, $page, $page_rows);
+            $view_data = array(
+                'page' => $page,
+                'page_rows' => $page_rows,
+                'last_page' => $last_page,
+                'page_cnt' => $cnt,
+            );
+            $this->load->view('account/myplay', $view_data);
         } else {
             alert("로그인 정보가 없습니다.");
+        }
+    }
+    public function get_playinfo() {
+        if ($this->check_login()) {
+            $page = (int)$this->input->get_post("page");
+            $rows = (int)$this->input->get_post("rows");
+            $cnt = $this->playinfo_model->getPlayinfoCount($this->piStatus, $this->session->u_id);
+            if ($page < 1) {
+                $page = 1;
+            }
+            $last_page = $cnt % $rows == 0 ? (int)($cnt / $rows) : (int)($cnt / $rows) + 1;
+            if ($page > $last_page) {
+                $page = $last_page;
+            }
+            $pi_data = $this->playinfo_model->getPlayinfo($this->piStatus, $this->session->u_id, $page, $rows);
+            echo json_encode($pi_data);
+        } else {
+            echo "error : 로그인 정보가 없습니다.";
         }
     }
 
@@ -116,6 +150,8 @@ class Account extends CI_Controller {
             $u_id = $this->session->u_id;
             if ($this->playinfo_model->deletePlayinfo($pi_seq, $u_id)) {
                 echo "Y";
+            } else {
+                echo "N";
             }
         } else {
             echo "N";

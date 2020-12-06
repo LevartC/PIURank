@@ -10,6 +10,7 @@ $("#pi_status").val(pi_status).attr("selected", "selected");
 
 });
 $(document).on("change", "#pi_status", function(e){
+    $("#page").val("1");
     $("#status_form").submit();
 });
 $(document).on("click", "#btn_pi_del", function(e){
@@ -19,7 +20,7 @@ $(document).on("click", "#btn_pi_del", function(e){
             type : "GET",
             url : "/account/pi_delete",
             data: { "num" : num },
-            success : function(data) {	//data : checkSignup에서 넘겨준 결과값
+            success : function(data) {
                 if($.trim(data) == "Y") {
                     alert("삭제가 완료되었습니다.");
                     location.reload();
@@ -50,7 +51,8 @@ $(document).on("click", "#btn_pi_del", function(e){
               <h1 class="h3 mb-0 text-gray-800">내 기록</h1>
             </div>
             <div>
-              <form method="post" id="status_form" name="status_form" class="user" action="myplay">
+              <form method="post" id="status_form" name="status_form" class="user page_form" action="myplay">
+              <input type="hidden" id="page" name="page" value=""></input>
               <select class="form-control" id="pi_status" name="pi_status">
                 <option value="<?=PI_STATUS_ALL?>">전체</option>
                 <option value="<?=PI_STATUS_WAITING?>">대기</option>
@@ -152,11 +154,11 @@ $(document).on("click", "#btn_pi_del", function(e){
                               <div class="col-3 border border-secondary font-weight-bold text-danger">미스</div>
                               <div class="col-4 border border-secondary"><?= $row['pi_miss']?></div>
                               <div class="col-3 border border-secondary font-weight-bold">영상</div>
-                              <div class="col-2 border border-secondary"><?= isset($row['pi_vodaddr']) ? "<a href='".$row['pi_vodaddr']."'>링크</a>" : "없음"?></div>  
+                              <div class="col-2 border border-secondary"><?= isset($row['pi_vodaddr']) ? "<a href='".$row['pi_vodaddr']."'>링크</a>" : "없음"?></div>
                               <div class="col-3 border border-secondary font-weight-bold">스코어</div>
                               <div class="col-4 border border-secondary"><?= $row['pi_score']?></div>
                               <div class="col-3 border border-secondary font-weight-bold">맥스콤보</div>
-                              <div class="col-2 border border-secondary"><?= $row['pi_maxcom']?></div>        
+                              <div class="col-2 border border-secondary"><?= $row['pi_maxcom']?></div>
                             </div>
                           </div>
                         </div>
@@ -177,7 +179,7 @@ $(document).on("click", "#btn_pi_del", function(e){
           <?php
           }
           ?>
-
+          <?php include $common_dir . "/table_paging.php"; ?>
         </div>
         <!-- /.container-fluid -->
 

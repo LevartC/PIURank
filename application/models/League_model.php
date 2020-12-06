@@ -23,7 +23,7 @@ class League_model extends CI_Model
     }
 
     public function getAllLeague() {
-        $sql = "SELECT * FROM al_info ORDER BY li_degree DESC, li_season DESC";
+        $sql = "SELECT * FROM al_info ORDER BY li_season DESC, li_degree DESC";
         $res = $this->db->query($sql);
         $data = null;
         foreach($res->result_array() as $row) {
@@ -82,8 +82,10 @@ class League_model extends CI_Model
         $sql .= " ORDER BY ls_mmr DESC";
         $res = $this->db->query($sql, $bind_array);
         $data = null;
-        foreach($res->result_array() as $row) {
-            $data[$row['u_nick']] = $row;
+        if ($res->num_rows() > 0) {
+            foreach($res->result_array() as $row) {
+                $data[$row['u_nick']] = $row;
+            }
         }
         return $data;
     }
@@ -198,7 +200,7 @@ class League_model extends CI_Model
         }
         $values_str = implode(",", $values_array);
         $sql .= $values_str;
-        if ($this->db->query($sql, $bind_array)) {
+        if (!$mmr_result || $this->db->query($sql, $bind_array)) {
             $avoider_mmr = $avoider_mmr < 0 ? -$avoider_mmr : 0;
             $sql = "REPLACE INTO al_mmr(ls_li_season, ls_li_degree, ls_u_seq, ls_mmr)
             SELECT ?, ?, ls_u_seq, (ls_mmr-{$avoider_mmr}) as ls_mmr FROM al_mmr

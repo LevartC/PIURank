@@ -1,4 +1,4 @@
-<?php 
+<?php
 $common_dir = get_common_dir();
 //<!-- Page Header -->
 require_once $common_dir . "/header.php";

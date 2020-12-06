@@ -86,12 +86,12 @@
 if (isset($_SESSION['u_class']) && $_SESSION['u_class'] == '1') {
 ?>
             <div class="topbar-divider d-none d-lg-block"></div>
-            <li class="nav-item dropdown">
+            <li class="nav-item dropdown" id="nav_ranking">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fas fa-crown"></i> RANKING
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="/ranking/total">전체 랭킹</a>
+                    <a class="dropdown-item" href="/ranking/total">전체 스킬 랭킹</a>
                     <a class="dropdown-item" href="/ranking/song">곡별 랭킹</a>
                 </div>
             </li>

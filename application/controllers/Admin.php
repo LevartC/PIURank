@@ -116,7 +116,7 @@ class Admin extends CI_Controller {
         }
     }
 
-    
+
 	public function super_menu() {
 		if ($this->check_super()) {
 			$tier_data = $this->league_model->getTierData();
@@ -148,85 +148,108 @@ class Admin extends CI_Controller {
 		} else {
 			alert("권한이 없습니다.");
 		}
-	}
+    }
 
+	public function update_avoid($season, $degree) {
+        if (!($season >= 0 || $degree >= 0)) {
+            alert("시즌과 차수를 정확히 입력해주세요.");
+            return false;
+        }
+        $tier_data = $this->league_model->getTierData();
+        $league_data = $this->league_model->getLeagueInfo($season, $degree);
+        foreach($tier_data as $tier_row) {
+            $tier_chartdata = $this->league_model->getLeagueChartData($league_data, $tier_row['t_name']);
+            // 불참인원 확인 및 제외
+            $this->updateAvoidUser($league_data, $tier_chartdata, $tier_row['t_name']);
+        }
+    }
     // 매치 갱신 후 적용
 	public function cleanup_match() {
 		if ($this->check_super()) {
-			$season = $this->input->post('li_season') ? (int)$this->input->post('li_season') : 1;
-			$degree = $this->input->post('li_degree') ? (int)$this->input->post('li_degree') : 2;
+			$season = (int)$this->input->post('li_season');
+            $degree = (int)$this->input->post('li_degree');
+            if (!($season >= 0 || $degree >= 0)) {
+                alert("시즌과 차수를 정확히 입력해주세요.");
+                return false;
+            }
 			$tier_data = $this->league_model->getTierData();
 			$league_data = $this->league_model->getLeagueInfo($season, $degree);
 			foreach($tier_data as $tier_row) {
 				$tier_chartdata = $this->league_model->getLeagueChartData($league_data, $tier_row['t_name']);
 				// 불참인원 확인 및 제외
 				$this->updateAvoidUser($league_data, $tier_chartdata, $tier_row['t_name']);
-				$tier_userdata = $this->league_model->getLeagueUserData($league_data, $tier_row['t_name']);
-				$tier_playdata = $this->league_model->getLeaguePlayInfo($league_data, $tier_chartdata, $tier_row['t_name'], $tier_userdata);
-				$total_points = null;
-				// 포인트 집계
-				foreach($tier_playdata as $c_array) {
-					foreach($c_array as $u_nick => $pi_row) {
-						if (isset($total_points[$u_nick])) {
-							$total_points[$u_nick] += $pi_row['point'];
-						} else {
-							$total_points[$u_nick] = $pi_row['point'];
-						}
-					}
-				}
-			// MMR = sqrt(총참가자/10) * ( (변동계수 * (꼴찌 - (2 * (참가순위 - 0.5))) / 꼴찌 ) + ((MMR평균 - 참가MMR) / 7.5) + 팽창 상수
-				// 포인트 랭킹 인덱스 생성
-				$rank_array = array_unique(array_values($total_points));
-				rsort($rank_array);
-                $rank_index = null;
-                $rank_plus = 1;
-                $tie_cnt = 0;
-				foreach($rank_array as $rank_key => $rank_value) {
-                    $rank_index["{$rank_value}"] = $rank_key + $rank_plus;
-                    $tie_cnt = count(array_keys($total_points, $rank_value));
-                    $rank_plus += $tie_cnt - 1;
-				}
+                $tier_userdata = $this->league_model->getLeagueUserData($league_data, $tier_row['t_name']);
+                if ($tier_userdata) {
+                    $tier_playdata = $this->league_model->getLeaguePlayInfo($league_data, $tier_chartdata, $tier_row['t_name'], $tier_userdata);
+                    $total_points = null;
+                    // 포인트 집계
+                    foreach($tier_playdata as $c_array) {
+                        foreach($c_array as $u_nick => $pi_row) {
+                            if (isset($total_points[$u_nick])) {
+                                $total_points[$u_nick] += $pi_row['point'];
+                            } else {
+                                $total_points[$u_nick] = $pi_row['point'];
+                            }
+                        }
+                    }
+                // MMR = sqrt(총참가자/10) * ( (변동계수 * (꼴찌 - (2 * (참가순위 - 0.5))) / 꼴찌 ) + ((MMR평균 - 참가MMR) / 7.5) + 팽창 상수
+                    // 포인트 랭킹 인덱스 생성
+                    $rank_array = array_unique(array_values($total_points));
+                    rsort($rank_array);
+                    $rank_index = null;
+                    $rank_plus = 1;
+                    $tie_cnt = 0;
+                    foreach($rank_array as $rank_key => $rank_value) {
+                        $rank_index["{$rank_value}"] = $rank_key + $rank_plus;
+                        $tie_cnt = count(array_keys($total_points, $rank_value));
+                        $rank_plus += $tie_cnt - 1;
+                    }
 
-				// MMR 평균 계산
-				$mmr_avg = 0;
-				foreach($tier_userdata as $user_row) {
-					$mmr_avg += $user_row['ls_mmr'];
-				}
-                $lowest_rank = end($rank_index);	        // 꼴등
-                $user_cnt = count($tier_userdata);			// 총 참가자
-                $mmr_avg = $mmr_avg / $user_cnt;			// MMR 평균
-                $exp_con = (int)$tier_row['t_exp_con'];		// 팽창 상수
-                $deg_vc = (int)$tier_row['t_deg_vc'];		// 변동 계수
-				$mmr_result = null;
-				$point_result = null;
-				$match_mmr = 0;
-                $avoider_mmr = 0;
-                echo $tier_row['t_name'];
-                echo " : ";
-                echo "꼴등 {$lowest_rank}등 / ";
-                echo "총 참가자 {$user_cnt}명 / ";
-                echo "MMR 평균 {$mmr_avg} / ";
-                echo "팽창상수 {$exp_con} / ";
-                echo "변동계수 {$deg_vc} <br/>";
-				// 유저별 최종 MMR 계산
-				foreach($tier_userdata as $user_row) {
-                    echo $user_row['u_nick'];
+                    // MMR 평균 계산
+                    $mmr_avg = 0;
+                    foreach($tier_userdata as $user_row) {
+                        $mmr_avg += $user_row['ls_mmr'];
+                    }
+                    $lowest_rank = end($rank_index);	        // 꼴등
+                    $user_cnt = count($tier_userdata);			// 총 참가자
+                    $mmr_avg = $mmr_avg / $user_cnt;			// MMR 평균
+                    $exp_con = (int)$tier_row['t_exp_con'];		// 팽창 상수
+                    $deg_vc = (int)$tier_row['t_deg_vc'];		// 변동 계수
+                    $mmr_result = null;
+                    $point_result = null;
+                    $match_mmr = 0;
+                    $avoider_mmr = 0;
+                    echo $tier_row['t_name'];
                     echo " : ";
-					$user_mmr = $user_row['ls_mmr'];		// 참가자 MMR
-					// 참가자 포인트 순위
-					$user_index = $total_points[$user_row['u_nick']] ?? null;
-                    $user_rank = $user_index ? $rank_index["{$user_index}"] : $lowest_rank;
-                    echo $total_points[$user_row['u_nick']] . "점 / " . $user_rank ."위 / ";
-					$match_mmr = (sqrt($user_cnt / 10)) * ($deg_vc * ($lowest_rank - (2 * ($user_rank - 0.5))) / $lowest_rank) + (($mmr_avg - $user_mmr) / 7.5) + $exp_con;
-                    echo $match_mmr ." 변동 <br/>";
-                    $user_seq = $this->account_model->getUserSeq($user_row['u_nick']);
-					$mmr_result[$user_seq] = ceil($user_mmr + $match_mmr);
-					$point_result[$user_seq] = $total_points[$user_row['u_nick']];
-					if ($total_points[$user_row['u_nick']] == end($rank_array)) {
-						$avoider_mmr = (int)$match_mmr;
-					}
+                    echo "꼴등 {$lowest_rank}등 / ";
+                    echo "총 참가자 {$user_cnt}명 / ";
+                    echo "MMR 평균 {$mmr_avg} / ";
+                    echo "팽창상수 {$exp_con} / ";
+                    echo "변동계수 {$deg_vc} <br/>";
+                    // 유저별 최종 MMR 계산
+                    foreach($tier_userdata as $user_row) {
+                        echo $user_row['u_nick'];
+                        echo " : ";
+                        $user_mmr = $user_row['ls_mmr'];		// 참가자 MMR
+                        // 참가자 포인트 순위
+                        $user_index = $total_points[$user_row['u_nick']] ?? null;
+                        $user_rank = $user_index ? $rank_index["{$user_index}"] : $lowest_rank;
+                        echo $total_points[$user_row['u_nick']] . "점 / " . $user_rank ."위 / ";
+                        $match_mmr = (sqrt($user_cnt / 10)) * ($deg_vc * ($lowest_rank - (2 * ($user_rank - 0.5))) / $lowest_rank) + (($mmr_avg - $user_mmr) / 7.5) + $exp_con;
+                        echo $match_mmr ." 변동 <br/>";
+                        $user_seq = $this->account_model->getUserSeq($user_row['u_nick']);
+                        $mmr_result[$user_seq] = ceil($user_mmr + $match_mmr);
+                        $point_result[$user_seq] = $total_points[$user_row['u_nick']];
+                        if ($total_points[$user_row['u_nick']] == end($rank_array)) {
+                            $avoider_mmr = (int)$match_mmr;
+                        }
+                    }
+                    echo "<br>";
+                } else {
+                    $mmr_result = null;
+                    $point_result = null;
+                    $avoider_mmr = 0;
                 }
-                echo "<br>";
 				$next_league_data = array('li_season' => $season, 'li_degree' => $degree+1);
 				$this->league_model->setNextLeagueMMR($league_data, $next_league_data, $mmr_result, $point_result, $avoider_mmr, $tier_row['t_name']);
 			}
@@ -242,12 +265,13 @@ class Admin extends CI_Controller {
 
 	// 불참인원 갱신 쿼리
 	private function updateAvoidUser($league_data, $tier_charts, $tier_name) {
-        $sql = "UPDATE al_mmr SET ls_attend = 0 WHERE ls_tier = ? and ls_u_seq NOT IN
+        $sql = "UPDATE al_mmr SET ls_attend = 0 WHERE ls_tier = ? AND ls_li_season = ? AND ls_li_degree = ? AND ls_u_seq NOT IN
 			(SELECT distinct(u_seq) from pr_playinfo as ppi
 			inner join pr_users on pi_u_seq = u_seq
 			inner join pr_charts on pi_c_seq = c_seq
 			INNER JOIN al_charts ON lc_c_seq = c_seq
-			WHERE pi_status = 'Active' AND lc_li_season = ? AND lc_li_degree = ? AND pi_createtime BETWEEN ? AND ? AND pi_enable = 1";
+            INNER JOIN al_info ON li_season = lc_li_season AND li_degree = lc_li_degree
+			WHERE pi_status = 'Active' AND lc_li_season = ? AND lc_li_degree = ? AND pi_createtime BETWEEN li_starttime AND li_endtime AND pi_enable = 1";
 		$where_chart = " AND (";
 		$where_array = array();
 		foreach ($tier_charts as $tc_array) {
@@ -260,7 +284,7 @@ class Admin extends CI_Controller {
 		$where_array = implode(" OR ", $where_array);
 		$where_chart .= $where_array . "))";
         $sql .= $where_chart;
-        $bind_array = array($tier_name, $league_data['li_season'], $league_data['li_degree'], $league_data['li_starttime'], $league_data['li_endtime']);
+        $bind_array = array($tier_name, $league_data['li_season'], $league_data['li_degree'], $league_data['li_season'], $league_data['li_degree']);
 		$res = $this->db->query($sql, $bind_array);
 		if ($res) {
 			return true;
