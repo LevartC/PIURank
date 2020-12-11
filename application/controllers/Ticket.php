@@ -10,7 +10,13 @@ class Ticket extends CI_Controller {
 
 	public function index()
 	{
-		$this->load->view('ticket/studio');
+		$year = $this->input->get_post('y') ?? date('Y');
+		$month = $this->input->get_post('m') ?? date('m');
+		$view_data = array(
+			'year' => $year,
+			'month' => $month,
+		);
+		$this->load->view('ticket/studio', $view_data);
 	}
 	public function total()
 	{

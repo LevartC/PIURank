@@ -4,12 +4,29 @@ $common_dir = get_common_dir();
 //<!-- Page Header -->
 require_once $common_dir . "/header.php";
 ?>
+<style>
+
+.table-td-hover tbody td:hover {
+  color: #858796;
+  background-color: rgba(0, 0, 0, 0.075);
+}
+
+</style>
 <!-- Body head -->
 <?php require_once $common_dir . "/body_head.php"; ?>
     <!-- Topbar -->
     <?php require_once $common_dir . "/body_topbar.php"; ?>
     <script>
     $("#nav_home").addClass("active");
+
+    var year = <?=$year?>;
+    var month = <?=$month?>;
+
+    $(document).on("click", ".move_month", function(e) {
+        e.preventDefault();
+        month += parseInt($(this).attr("tabindex"));
+        location.href = "ticket?y="+year+"&m="+month;
+    });
     </script>
 
       <!-- Begin Page Content -->
@@ -20,10 +37,67 @@ require_once $common_dir . "/header.php";
         <h1 class="h3 mb-0 text-gray-800">예약하기</h1>
       </div>
 
-      <!-- Content Row -->
-      <div class="row">
-
+      <?php
+        $date = "$year-$month-01"; // 현재 날짜
+        $ts = strtotime($date); // 현재 날짜의 타임스탬프
+        $start_week = date('w', $ts); // 1. 시작 요일
+        $total_day = date('t', $ts); // 2. 현재 달의 총 날짜
+        $total_week = ceil(($total_day + $start_week) / 7);  // 3. 현재 달의 총 주차
+        $week_color = array('red', 'black', 'black', 'black', 'black', 'black', 'blue');
+      ?>
+      <div class="d-flex justify-content-center mx-auto mb-4">
+        <a class="page-link move_month" href="" tabindex="-1"><</a>
+        <h1 class="h3 mb-0 text-gray-800">&nbsp;<?=date("Y년 m월", $ts)?>&nbsp;</h1>
+        <a class="page-link move_month" href="" tabindex="1">></a>
       </div>
+      <table class="table table-td-hover text-center">
+        <thead>
+          <th style="color:red">일</th>
+          <th style="color:black">월</th>
+          <th style="color:black">화</th>
+          <th style="color:black">수</th>
+          <th style="color:black">목</th>
+          <th style="color:black">금</th>
+          <th style="color:blue">토</th>
+        </thead>
+        <tbody>
+        <?php for ($n = 1, $i = 0; $i < $total_week; $i++): ?>
+          <tr>
+            <!-- 1일부터 7일 (한 주) -->
+            <?php for ($k = 0; $k < 7; $k++): ?>
+              <td style="color:<?=$week_color[$k]?>" data-toggle="modal" data-target="#tkModal<?=$n?>">
+                <?php if ( ($n > 1 || $k >= $start_week) && ($total_day >= $n) ): ?>
+                  <?= $n ?>
+                  <!-- Ticket Modal -->
+                  <div class="modal fade" id="tkModal<?= $n ?>" tabindex="-1" role="dialog" aria-labelledby="tkModalLabel<?= $n ?>" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="tkModalLabel<?= $n ?>"><?= $month ?>월 <?= $n ?>일 예약</h5>
+                          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">×</span>
+                          </button>
+                        </div>
+                        <div class="modal-body" style="font-size:0.8rem;">
+                          <div class="card" style="width:100%;">
+                            <div class="card-body">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button id="btn_pi_del" class="btn btn-danger mr-auto" type="button" value="<?=$row['pi_seq']?>">삭제</button>
+                          <button class="btn btn-secondary ml-auto" type="button" data-dismiss="modal">닫기</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                <?php $n++; endif ?>
+              </td>
+            <?php endfor; ?>
+          </tr>
+        <?php endfor; ?>
+        </tbody>
+      </table>
 
     </div>
     <!-- /.container-fluid -->

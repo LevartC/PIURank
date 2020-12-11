@@ -1,7 +1,8 @@
 <script>
-    $(document).on("click", ".page-link", function(e){
+    $(document).on("click", ".page_link", function(e){
+        e.preventDefault();
         var page_val = parseInt($(this).html());
-        var page = $("#page").val() == "" ? 1 : $("#page").val();
+        var page = $("#page").val() == "" ? 1 : parseInt($("#page").val());
         if (page_val > 0) {
             $("#page").val(page_val);
         } else {
@@ -23,21 +24,45 @@ if ($page > 0) {
   $prev_disabled = $page > 1 ? "" : "disabled";
   $next_disabled = $page < $last_page ? "" : "disabled";
   ?>
+  <?php
+  if ($page_min != 1) {
+  ?>
+  <li class="page-item">
+    <a class="page-link page_link" href="">1</a>
+  </li>
+  <li class="page-item disabled">
+    <a class="page-link">...</a>
+  </li>
+  <?php
+  }
+  ?>
   <li class="page-item <?=$prev_disabled?>">
-    <a class="page-link" href="#" tabindex="-1">Prev</a>
+    <a class="page-link page_link" href="" tabindex="-1">Prev</a>
   </li>
   <?php
   for ($i = $page_min; $i <= $page_max; ++$i) {
   ?>
   <li class="page-item <?= ($i == $page) ? "active" : "" ?>">
-    <a class="page-link" href="#" value="<?= $i ?>"><?= $i ?></a>
+    <a class="page-link page_link" href=""><?= $i ?></a>
   </li>
   <?php
   }
   ?>
   <li class="page-item <?=$next_disabled?>">
-    <a class="page-link" href="#" tabindex="1">Next</a>
+    <a class="page-link page_link" href="" tabindex="1">Next</a>
   </li>
+  <?php
+  if ($page_max != $last_page) {
+  ?>
+  <li class="page-item disabled">
+    <a class="page-link">...</a>
+  </li>
+  <li class="page-item">
+    <a class="page-link page_link" href=""><?= $last_page ?></a>
+  </li>
+  <?php
+  }
+  ?>
 </ul>
 <?php
 }
