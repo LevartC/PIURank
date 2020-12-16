@@ -16,6 +16,24 @@ class Ticket extends CI_Controller {
 			'year' => $year,
 			'month' => $month,
 		);
+		$this->load->view('ticket/calendar', $view_data);
+	}
+	public function studio()
+	{
+		$year = $this->input->get_post('y') ?? null;
+		$month = $this->input->get_post('m') ?? null;
+		$day = $this->input->get_post('d') ?? null;
+
+		$date = date("Y-m-d", strtotime("{$year}-{$month}-{$day}"));
+		if (!($year && $month && $day)) {
+			alert("날짜를 정확히 입력해주세요.");
+		}
+		$resv_data = $this->ticket_model->getReservationInfo($year, $month, $day);
+		$view_data = array(
+			'year' => $year,
+			'month' => $month,
+			'resv_data' => $resv_data,
+		);
 		$this->load->view('ticket/studio', $view_data);
 	}
 	public function total()

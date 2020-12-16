@@ -4,14 +4,6 @@ $common_dir = get_common_dir();
 //<!-- Page Header -->
 require_once $common_dir . "/header.php";
 ?>
-<style>
-
-.table-td-hover tbody td:hover {
-  color: #858796;
-  background-color: rgba(0, 0, 0, 0.075);
-}
-
-</style>
 <!-- Body head -->
 <?php require_once $common_dir . "/body_head.php"; ?>
     <!-- Topbar -->
@@ -21,6 +13,38 @@ require_once $common_dir . "/header.php";
 
     var year = <?=$year?>;
     var month = <?=$month?>;
+    var day = <?=$day?>;
+
+    var is_selecting = 0;
+    $(document).on("click", ".ticket_btn", function(e) {
+        e.preventDefault();
+        var grp = $(this).attr("group");
+        var start_idx = $(this).attr("index");
+        var end_idx = (start_idx + 12) < 36 ? start_idx : 36;
+        switch(is_selecting) {
+            case 0:
+                $(".grp_"+grp).attr("disabled", "true");
+                for (var i=start_idx; i<end_idx; ++i) {
+                    var obj_str = "#btn_"+grp+""+i;
+                    if ($(obj_str).val() == "1") {
+                        break;
+                    } else {
+                        $(obj_str).removeAttr("disabled");
+                    }
+                }
+                is_selecting = 1;
+            break;
+            case 1:
+                for (var i=start_idx+1; i<end_idx; ++i) {
+                    var obj_str = "#btn_"+grp+""+i;
+                    $(obj_str).attr("disabled", "true");
+                }
+                $("#ticket_submit").removeAttr("disabled");
+                is_selecting = 2;
+            break;
+            case 2:
+        }
+    });
 
     $(document).on("click", ".move_month", function(e) {
         e.preventDefault();
@@ -36,38 +60,12 @@ require_once $common_dir . "/header.php";
       <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">예약하기</h1>
       </div>
-
       <?php
-        $date = "$year-$month-01"; // 현재 날짜
-        $ts = strtotime($date); // 현재 날짜의 타임스탬프
-        $start_week = date('w', $ts); // 1. 시작 요일
-        $total_day = date('t', $ts); // 2. 현재 달의 총 날짜
-        $total_week = ceil(($total_day + $start_week) / 7);  // 3. 현재 달의 총 주차
-        $week_color = array('red', 'black', 'black', 'black', 'black', 'black', 'blue');
+        $yesterday = date("Ymd", strtotime("{$year}-{$month}-{$n} -1 days"));
+        $today = date("Ymd", strtotime("{$year}-{$month}-{$n}"));
+        $tomorrow = date("Ymd", strtotime("{$year}-{$month}-{$n} +1 days"));
       ?>
-      <div class="d-flex justify-content-center mx-auto mb-4">
-        <a class="page-link move_month" href="" tabindex="-1"><</a>
-        <h1 class="h3 mb-0 text-gray-800">&nbsp;<?=date("Y년 m월", $ts)?>&nbsp;</h1>
-        <a class="page-link move_month" href="" tabindex="1">></a>
-      </div>
-      <table class="table table-td-hover text-center">
-        <thead>
-          <th style="color:red">일</th>
-          <th style="color:black">월</th>
-          <th style="color:black">화</th>
-          <th style="color:black">수</th>
-          <th style="color:black">목</th>
-          <th style="color:black">금</th>
-          <th style="color:blue">토</th>
-        </thead>
-        <tbody>
-        <?php for ($n = 1, $i = 0; $i < $total_week; $i++): ?>
-          <tr>
-            <!-- 1일부터 7일 (한 주) -->
-            <?php for ($k = 0; $k < 7; $k++): ?>
-              <td style="color:<?=$week_color[$k]?>" data-toggle="modal" data-target="#tkModal<?=$n?>">
-                <?php if ( ($n > 1 || $k >= $start_week) && ($total_day >= $n) ): ?>
-                  <?= $n ?>
+                  <div data-toggle="modal" data-target="#tkModal<?=$n?>"><span style="color:<?=$week_color[$k]?>"><?= $n ?></span></div>
                   <!-- Ticket Modal -->
                   <div class="modal fade" id="tkModal<?= $n ?>" tabindex="-1" role="dialog" aria-labelledby="tkModalLabel<?= $n ?>" aria-hidden="true">
                     <div class="modal-dialog" role="document">
@@ -81,24 +79,57 @@ require_once $common_dir . "/header.php";
                         <div class="modal-body" style="font-size:0.8rem;">
                           <div class="card" style="width:100%;">
                             <div class="card-body">
+                              <div class="row">
+                                <div class="col-12">
+                                  <h3 class="select_ment">시작 시각을 선택해주세요.</h3>
+                                </div>
+                                <div class="col-3">
+                                  <span style="font-size:1rem; color:black;"><?= date("n월 j일", strtotime($yesterday))?></span><br>
+                                  <div class="btn-group-vertical">
+                                    <?php for ($q = 12; $q < 24; ++$q) :
+                                      $chk_disabled = $resv_data["{$yesterday}{$q}"] ?? "";
+                                    ?>
+                                    <button type="button" id="btn_<?=$today?><?=$q-24?>" class="btn btn-warning ticket_btn grp_<?=$today?>" group="<?=$today?>" index="<?=$q-24?>" <?=$chk_disabled?>><?=$q?>:00
+                                    <?php endfor; ?>
+                                  </div>
+                                </div>
+                                <div class="col-6">
+                                  <span style="font-size:1rem; color:black;"><?= date("n월 j일", strtotime($today))?></span><br>
+                                  <div class="btn-group-vertical">
+                                    <?php for ($q = 0; $q < 12; ++$q) :
+                                      $chk_disabled = $resv_data["{$today}{$q}"] ?? "";
+                                    ?>
+                                    <button type="button" id="btn_<?=$today?><?=$q?>" class="btn btn-primary ticket_btn grp_<?=$today?>" group="<?=$today?>" index="<?=$q?>" value="<?=$chk_disabled ? 1 : 0?>" <?=$chk_disabled?>><?=$q?>:00
+                                    <?php endfor; ?>
+                                  </div>
+                                  <div class="btn-group-vertical">
+                                    <?php for ($q = 12; $q < 24; ++$q) :
+                                      $chk_disabled = $resv_data["{$today}{$q}"] ?? "";
+                                    ?>
+                                    <button type="button" id="btn_<?=$today?><?=$q?>" class="btn btn-primary ticket_btn grp_<?=$today?>" group="<?=$today?>" index="<?=$q?>" value="<?=$chk_disabled ? 1 : 0?>" <?=$chk_disabled?>><?=$q?>:00
+                                    <?php endfor; ?>
+                                  </div>
+                                </div>
+                                <div class="col-3">
+                                  <span style="font-size:1rem; color:black;"><?= date("n월 j일", strtotime($tomorrow))?></span><br>
+                                  <div class="btn-group-vertical">
+                                    <?php for ($q = 0; $q < 12; ++$q) :
+                                      $chk_disabled = $resv_data["{$tomorrow}{$q}"] ?? "";
+                                    ?>
+                                    <button type="button" id="btn_<?=$today?><?=$q+24?>" class="btn btn-success ticket_btn grp_<?=$today?>" group="<?=$today?>" index="<?=$q+24?>" value="<?=$chk_disabled ? 1 : 0?>" <?=$chk_disabled?>><?=$q?>:00
+                                    <?php endfor; ?>
+                                  </div>
+                                </div>
+                              </div>
                             </div>
                           </div>
                         </div>
                         <div class="modal-footer">
-                          <button id="btn_pi_del" class="btn btn-danger mr-auto" type="button" value="<?=$row['pi_seq']?>">삭제</button>
                           <button class="btn btn-secondary ml-auto" type="button" data-dismiss="modal">닫기</button>
                         </div>
                       </div>
                     </div>
                   </div>
-                <?php $n++; endif ?>
-              </td>
-            <?php endfor; ?>
-          </tr>
-        <?php endfor; ?>
-        </tbody>
-      </table>
-
     </div>
     <!-- /.container-fluid -->
 
