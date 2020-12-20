@@ -25,6 +25,14 @@ require_once $common_dir . "/header.php";
     $(document).on("click", ".move_month", function(e) {
         e.preventDefault();
         month += parseInt($(this).attr("tabindex"));
+        if (month > 12) {
+            month -= 12;
+            year++;
+        }
+        if (month < 1) {
+            month += 12;
+            year--;
+        }
         location.href = "ticket?y="+year+"&m="+month;
     });
     $(document).on("click", ".select_date", function(e) {

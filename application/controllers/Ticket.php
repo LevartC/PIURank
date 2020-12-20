@@ -32,6 +32,7 @@ class Ticket extends CI_Controller {
 		$view_data = array(
 			'year' => $year,
 			'month' => $month,
+			'day' => $day,
 			'resv_data' => $resv_data,
 		);
 		$this->load->view('ticket/studio', $view_data);
