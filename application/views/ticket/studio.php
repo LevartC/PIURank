@@ -16,8 +16,14 @@ require_once $common_dir . "/header.php";
     var day = <?=$day?>;
 
     var is_selecting = 0;
+    var sel_machine = null;
 
     $(document).on("click", "#step1_next", function(e) {
+        sel_machine = [];
+        $("input[name='machines[]']:checked").each(function() {
+            sel_machine.push($(this).val());
+        });
+        $("#step_1").addClass("d-none");
         $("#step_2").removeClass("d-none");
     });
 
@@ -30,6 +36,23 @@ require_once $common_dir . "/header.php";
         switch(is_selecting) {
             case 0:
                 $(".grp_"+grp).attr("disabled", "true");
+                $.ajax({
+                  type : "POST",
+                  url : "getReservation",
+                  data: { "machines" : sel_machine, "year" : year, "month" : month, "day" : day },
+                  dataType: "JSON",
+                  error : function(data) {
+                      console.log(data);
+                      alert("예약 정보 불러오기에 실패했습니다. 다시 시도해주세요.");
+                      location.reload();
+                  },
+                  success : function(data) {
+                      console.log(data);
+                      if (data) {
+                          
+                      }
+                  }
+                });
                 for (var i=start_idx; i<end_idx; ++i) {
                     var obj_str = "#btn_"+grp+""+i;
                     if ($(obj_str).val() == "1") {
@@ -47,7 +70,8 @@ require_once $common_dir . "/header.php";
                     $(obj_str).attr("disabled", "true");
                 }
                 is_selecting = 2;
-                $("#step_3").css("display", "flex");
+                $("#step_2").addClass("d-none");
+                $("#step_3").removeClass("d-none");
             break;
             default:
             break;
@@ -71,18 +95,18 @@ require_once $common_dir . "/header.php";
       </div>
 
       <!-- Page Heading -->
-      <div class="row align-items-center text-center mb-5">
+      <div id="step_1" class="row align-items-center text-center mb-5">
         <div class="col-12 mb-2">
           <h3>기체를 선택해주세요.</h3>
         </div>
         <div class="col">
-          <button type="button" class="btn btn-primary">LX - W</button>
+          <input type="checkbox" name="machines[]" value="W" class="form-control"><span class="text-primary">LX-W</span></input>
         </div>
         <div class="col">
-          <button type="button" class="btn btn-success">LX - G</button>
+          <input type="checkbox" name="machines[]" value="G" class="form-control text-success"><span class="text-success">LX-G</span></input>
         </div>
         <div class="col">
-          <button type="button" class="btn btn-info">FX</button>
+          <input type="checkbox" name="machines[]" value="F" class="form-control text-info"><span class="text-info">FX</span></input>
         </div>
         <div class="col-12 my-3">
           <button id="step1_next" type="button" class="btn btn-secondary btn-block">다음</button>
@@ -94,45 +118,62 @@ require_once $common_dir . "/header.php";
         $tomorrow = date("Ymd", strtotime("{$year}-{$month}-{$day} +1 days"));
       ?>
       <div id="step_2" class="row align-items-center text-center d-none">
-        <div class="col-12 m-0">
+        <div class="col-12 mb-2">
           <h3 id="select_ment">시작 시각을 선택해주세요.</h3>
         </div>
-        <div class="col m-0 p-0">
-          <span style="font-size:1rem; color:black;"><?= date("n월 j일", strtotime($yesterday))?></span><br>
+        <div class="col-3 m-0">
+          <span style="font-size:1rem; color:black;"><?= date("n/j", strtotime($yesterday))?></span><br>
+        </div>
+        <div class="col-6 m-0">
+          <span style="font-size:1rem; color:black;"><?= date("n/j", strtotime($today))?></span><br>
+        </div>
+        <div class="col-3 m-0">
+          <span style="font-size:1rem; color:black;"><?= date("n/j", strtotime($tomorrow))?></span><br>
+        </div>
+        <div class="col-3 m-0 p-0">
           <div class="btn-group-vertical">
             <?php for ($q = 12; $q < 24; ++$q) :
               $chk_disabled = $resv_data["{$yesterday}{$q}"] ?? "";
             ?>
-            <button type="button" id="btn_<?=$today?><?=$q-24?>" class="btn btn-warning ticket_btn grp_<?=$today?>" group="<?=$today?>" index="<?=$q-24?>" <?=$chk_disabled?>><?=$q?>:00
+            <button type="button" id="btn_<?=$today?><?=$q-24?>" class="btn btn-warning ticket_btn grp_<?=$today?>" group="<?=$today?>" index="<?=$q-24?>" <?=$chk_disabled?>><?=$q?>시
             <?php endfor; ?>
           </div>
         </div>
-        <div class="col m-0 p-0">
-          <span style="font-size:1rem; color:black;"><?= date("n월 j일", strtotime($today))?></span><br>
+        <div class="col-6 m-0 p-0">
           <div class="btn-group-vertical">
             <?php for ($q = 0; $q < 12; ++$q) :
               $chk_disabled = $resv_data["{$today}{$q}"] ?? "";
             ?>
-            <button type="button" id="btn_<?=$today?><?=$q?>" class="btn btn-primary ticket_btn grp_<?=$today?>" group="<?=$today?>" index="<?=$q?>" value="<?=$chk_disabled ? 1 : 0?>" <?=$chk_disabled?>><?=$q?>:00
+            <button type="button" id="btn_<?=$today?><?=$q?>" class="btn btn-primary ticket_btn grp_<?=$today?>" group="<?=$today?>" index="<?=$q?>" value="<?=$chk_disabled ? 1 : 0?>" <?=$chk_disabled?>><?=$q?>시
             <?php endfor; ?>
           </div>
           <div class="btn-group-vertical">
             <?php for ($q = 12; $q < 24; ++$q) :
               $chk_disabled = $resv_data["{$today}{$q}"] ?? "";
             ?>
-            <button type="button" id="btn_<?=$today?><?=$q?>" class="btn btn-primary ticket_btn grp_<?=$today?>" group="<?=$today?>" index="<?=$q?>" value="<?=$chk_disabled ? 1 : 0?>" <?=$chk_disabled?>><?=$q?>:00
+            <button type="button" id="btn_<?=$today?><?=$q?>" class="btn btn-primary ticket_btn grp_<?=$today?>" group="<?=$today?>" index="<?=$q?>" value="<?=$chk_disabled ? 1 : 0?>" <?=$chk_disabled?>><?=$q?>시
             <?php endfor; ?>
           </div>
         </div>
-        <div class="col m-0 p-0">
-          <span style="font-size:1rem; color:black;"><?= date("n월 j일", strtotime($tomorrow))?></span><br>
+        <div class="col-3 m-0 p-0">
           <div class="btn-group-vertical">
             <?php for ($q = 0; $q < 12; ++$q) :
               $chk_disabled = $resv_data["{$tomorrow}{$q}"] ?? "";
             ?>
-            <button type="button" id="btn_<?=$today?><?=$q+24?>" class="btn btn-success ticket_btn grp_<?=$today?>" group="<?=$today?>" index="<?=$q+24?>" value="<?=$chk_disabled ? 1 : 0?>" <?=$chk_disabled?>><?=$q?>:00
+            <button type="button" id="btn_<?=$today?><?=$q+24?>" class="btn btn-success ticket_btn grp_<?=$today?>" group="<?=$today?>" index="<?=$q+24?>" value="<?=$chk_disabled ? 1 : 0?>" <?=$chk_disabled?>><?=$q?>시
             <?php endfor; ?>
           </div>
+        </div>
+      </div>
+      <div id="step_3" class="row align-items-center text-center d-none">
+        <div class="col-12 mb-2">
+          <h3 id="select_ment">정보를 입력해주세요.</h3>
+        </div>
+        <div class="col-4">
+          예약시각
+        </div>
+        <div class="col-8" id="ticket_time">
+          16:00 ~ 18:00
         </div>
       </div>
     </div>

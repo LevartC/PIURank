@@ -28,7 +28,7 @@ class Ticket extends CI_Controller {
 		if (!($year && $month && $day)) {
 			alert("날짜를 정확히 입력해주세요.");
 		}
-		$resv_data = $this->ticket_model->getReservationInfo($year, $month, $day);
+		$resv_data = $this->ticket_model->getReservationInfo($year, $month, $day, $machines);
 		$view_data = array(
 			'year' => $year,
 			'month' => $month,
@@ -36,6 +36,17 @@ class Ticket extends CI_Controller {
 			'resv_data' => $resv_data,
 		);
 		$this->load->view('ticket/studio', $view_data);
+	}
+	public function getReservation() {
+		$machines = $this->input->post_get('machines');
+		$year = $this->input->post_get('year') ?? null;
+		$month = $this->input->post_get('month') ?? null;
+		$day = $this->input->post_get('day') ?? null;
+		$resv_data = null;
+		if ($machines) {
+			$resv_data = $this->ticket_model->getReservationInfo($year, $month, $day, $machines);
+		}
+		echo json_encode($resv_data);
 	}
 	public function total()
 	{
