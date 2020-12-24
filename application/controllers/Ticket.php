@@ -28,12 +28,10 @@ class Ticket extends CI_Controller {
 		if (!($year && $month && $day)) {
 			alert("날짜를 정확히 입력해주세요.");
 		}
-		$resv_data = $this->ticket_model->getReservationInfo($year, $month, $day, $machines);
 		$view_data = array(
 			'year' => $year,
 			'month' => $month,
 			'day' => $day,
-			'resv_data' => $resv_data,
 		);
 		$this->load->view('ticket/studio', $view_data);
 	}
