@@ -105,7 +105,7 @@ class Ticket_model extends CI_Model
     }
 
     public function searchTicket($tc_name, $tc_tel) {
-        $sql = "SELECT tc_type, tc_starttime, tc_endtime, tc_price FROM dv_ticket WHERE tc_starttime > now() AND tc_name = ? AND tc_tel = ?";
+        $sql = "SELECT tc_type, tc_starttime, tc_endtime, tc_price, tc_deposit FROM dv_ticket WHERE tc_starttime > now() AND tc_name = ? AND tc_tel = ? ORDER BY tc_starttime";
         $bind_array = array($tc_name, $tc_tel);
         $res = $this->db->query($sql, $bind_array);
         $res_data = null;
@@ -229,7 +229,7 @@ class Ticket_model extends CI_Model
  - 예약 당일 취소는 불가능하며, 취소 요청은 개별 문의 바랍니다.
  - 다음 예약자를 위해 예약 종료 10분 전부터 퇴실 준비를 해주세요.
  - 예약한 기체 외에 다른 기체나 방에 접근하지 말아주세요. (예: LX기체 이용시 FX방 접근 금지)
- - LX를 1대만 대여할 시 나머지 1대를 다른 사람이 예약하여 같은 공간에서 이용하게 될 수 있습니다.
+ - LX 기체를 1대만 대여할 시 나머지 1대를 다른 팀에서 예약하여 같은 공간에서 이용하게 될 수 있습니다.
  - 개인 장비로 방송하실 때는 설치 및 철거 시간을 고려하여 예약해주세요.
  - 스튜디오 안에서 음주, 흡연을 하지 말아주세요.
  - 발판의 위치를 임의로 움직이지 말아주시고, 발판에 눕거나 앉지 말아주세요.

@@ -115,7 +115,7 @@ class Ticket extends CI_Controller {
 			$res_str = null;
 			if ($ticket_str) {
 				foreach($ticket_str as $tc_row) {
-					$res_str[] = $tc_row['mc_name'] . " : " . date("Y년 n월 j일 G시 부터", strtotime($tc_row['tc_starttime'])) . "<br>" . date("Y년 n월 j일 G시 까지", strtotime($tc_row['tc_endtime'])) . " - {$tc_row['tc_price']} 원";
+					$res_str[] = $tc_row['mc_name'] . " : " . date("Y년 n월 j일 G시 부터", strtotime($tc_row['tc_starttime'])) . "<br>" . date("Y년 n월 j일 G시 까지", strtotime($tc_row['tc_endtime'])) . "<br>가격 : {$tc_row['tc_price']} 원 <span class=" . ($tc_row['tc_deposit'] ? "'text-primary'>(입금완료)" : "'text-secondary'>(입금대기)") . "</span>";
 				}
 			}
 			echo json_encode($res_str);
