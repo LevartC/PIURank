@@ -123,6 +123,16 @@ class Admin extends CI_Controller {
         }
     }
 
+    public function ticket_all() {
+        if ($this->check_studio()) {
+            $ticket_data = $this->ticket_model->getTicketInfo(true);
+            $view_data = array(
+                "ticket_data" => $ticket_data,
+            );
+            $this->load->view('admin/admin_ticketinfo', $view_data);
+        }
+    }
+
     public function ticket() {
         if ($this->check_studio()) {
             $ticket_data = $this->ticket_model->getTicketInfo();

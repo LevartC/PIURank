@@ -118,8 +118,11 @@ class Ticket_model extends CI_Model
         return $res_data;
     }
 
-    public function getTicketInfo() {
+    public function getTicketInfo($all = false) {
         $sql = "SELECT * FROM dv_ticket WHERE tc_endtime > now() AND tc_tel != '0' ORDER BY tc_starttime, tc_type";
+        if ($all) {
+            $sql = "SELECT * FROM dv_ticket WHERE tc_tel != '0' ORDER BY tc_starttime, tc_type";
+        }
         $res = $this->db->query($sql);
         $res_data = null;
         if ($res->num_rows()) {
