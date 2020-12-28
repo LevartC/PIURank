@@ -95,7 +95,7 @@ class Ticket extends CI_Controller {
 			$price_data = $this->ticket_model->getPrice($machines, $date, $start_idx, $end_idx);
 			$tc_res = $this->ticket_model->insertTicket($machines, $date, $start_idx, $end_idx, $tc_name, $tc_tel, $tc_email, $tc_person, $price_data);
 			if ($tc_res) {
-				$this->account_model->sendEmail($machines, $date, $start_idx, $end_idx, $tc_name, $tc_tel, $tc_email, $tc_person, $price_data);
+				$this->ticket_model->sendEmail($machines, $date, $start_idx, $end_idx, $tc_name, $tc_tel, $tc_email, $tc_person, $price_data);
 				echo "Y";
 			} else {
 				echo "N";
@@ -124,14 +124,5 @@ class Ticket extends CI_Controller {
 		}
 	}
 
-	public function total()
-	{
-		$this->load->view('ranking/total');
-	}
-
-	public function song()
-	{
-		$this->load->view('ranking/song');
-	}
 }
 ?>

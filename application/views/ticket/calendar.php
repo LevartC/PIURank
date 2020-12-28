@@ -167,6 +167,9 @@ require_once $common_dir . "/header.php";
                 <span class="text-primary"><i class="fas fa-bus"></i> 148</span>
                 <span class="text-success"><i class="fas fa-bus"></i> 4319</span>
                 <span style="color:lightgreen"><i class="fas fa-bus"></i>서초16</span>
+                <br>
+                - 물은 기본 제공됩니다.
+                - 주차 가능합니다.
               </div>
               <div class="modal-footer">
                   <button class="btn btn-secondary ml-auto" type="button" data-dismiss="modal">닫기</button>

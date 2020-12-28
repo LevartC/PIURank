@@ -14,7 +14,8 @@ require_once $common_dir . "/header.php";
 </style>
 <script>
 $(document).on("click", ".tc_cancel", function(e) {
-    if (confirm("해당 예약을 취소하시겠습니까?")) {
+    var str = $(this).attr("str");
+    if (confirm(str + " 예약을 취소하시겠습니까?")) {
         var seq = $(this).val();
         $.ajax({
             type : "POST",
@@ -34,6 +35,39 @@ $(document).on("click", ".tc_cancel", function(e) {
                 } else if (rtn == "N") {
                     console.log(data);
                     alert("취소에 실패하였습니다. 관리자에게 문의해주세요.");
+                } else {
+                    console.log(data);
+                    alert("알 수 없는 오류가 발생했습니다. 관리자에게 문의해주세요.");
+                }
+                location.reload();
+            }
+        });
+    }
+});
+$(document).on("click", ".tc_deposit", function(e) {
+    var str = $(this).attr("str");
+    if (confirm(str + " 예약을 입금확인 처리하시겠습니까?")) {
+        var seq = $(this).val();
+        var deposit = $(this).attr("deposit");
+        $.ajax({
+            type : "POST",
+            url : "setDeposit",
+            data: {
+                "seq" : seq,
+                "deposit" : deposit,
+            },
+            error : function(data) {
+                console.log(data);
+                alert("알 수 없는 오류가 발생했습니다. 관리자에게 문의해주세요.");
+                location.reload();
+            },
+            success : function(data) {
+                var rtn = data[data.length-1];
+                if (rtn == "Y") {
+                    alert("입금확인 처리가 완료되었습니다.");
+                } else if (rtn == "N") {
+                    console.log(data);
+                    alert("입금확인 처리에 실패하였습니다. 관리자에게 문의해주세요.");
                 } else {
                     console.log(data);
                     alert("알 수 없는 오류가 발생했습니다. 관리자에게 문의해주세요.");
@@ -79,11 +113,15 @@ $(document).on("click", ".tc_cancel", function(e) {
                 </td>
                 <td>
                   <?=$ticket_row['tc_name']?> (<?=$ticket_row['mc_name']?>)<br>
-                  <?=$ticket_row['tc_tel']?>
+                  <?=$ticket_row['tc_tel']?><br>
+                  <?=!$ticket_row['tc_deposit'] ? "입금대기" : "입금완료"?>
                 </td>
                 <td>
-                  <?=$ticket_row['tc_person']?>명&nbsp;<button type="button" value="<?=$ticket_row['tc_seq']?>" class="btn btn-xs btn-danger tc_cancel">취소</button><br>
-                  <?=number_format($ticket_row['tc_price'])?>원
+                  <?=$ticket_row['tc_person']?>명&nbsp;<button type="button" value="<?=$ticket_row['tc_seq']?>" str="<?=$ticket_row['tc_name']?>(<?=$ticket_row['mc_name']?>)" class="btn btn-xs btn-danger tc_cancel">취소</button><br>
+                  <?=number_format($ticket_row['tc_price'])?>원<br>
+                  <?php if (!$ticket_row['tc_deposit']) { ?>
+                    <button type="button" value="<?=$ticket_row['tc_seq']?>" str="<?=$ticket_row['tc_name']?>(<?=$ticket_row['mc_name']?>)" class="btn btn-xs btn-success tc_deposit">입금확인</button>
+                  <?php } ?>
                 </td>
               </tr>
               <?php

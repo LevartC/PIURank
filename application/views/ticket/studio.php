@@ -346,6 +346,7 @@ require_once $common_dir . "/header.php";
                   - 예약한 기체 외에 <span class="text-orange text-bold">다른 기체나 방에 접근하지 말아주세요.</span> (예: LX기체 이용시 FX방 접근 금지)<br>
                   - LX를 1대만 대여할 시 나머지 1대를 다른 사람이 예약하여 <span class="text-success text-bold">같은 공간에서 이용</span>하게 될 수 있습니다.<br>
                   - 개인 장비로 방송하실 때는 <span class="text-purple text-bold">설치 및 철거 시간을 고려</span>하여 예약해주세요.<br>
+                  - 스튜디오 안에서 <span class="text-danger text-bold">음주, 흡연을 하지 말아주세요.</span><br>
                   - 발판의 <span class="text-primary text-bold">위치를 임의로</span> 움직이지 말아주시고, 발판에 <span class="text-info text-bold">눕거나 앉지</span> 말아주세요.<br>
                   - 스튜디오의 벽이나 물건에 <span class="text-black text-bold">낙서</span>를 하지 말아주세요.<br>
                   - 퇴실시 놓고 가시는 물건은 없으신지 확인해주세요. <span class="text-orange text-bold">디비전 스튜디오는 개인 분실물에 대하여 책임을 지지 않습니다.</span><br>

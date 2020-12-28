@@ -66,36 +66,30 @@ class Ticket_model extends CI_Model
         return $price_info;
     }
 
-    public function insertTicket($machines, $date, $start_idx, $end_idx, $tc_name, $tc_tel, $tc_person, $tc_price) {
+    public function insertTicket($machines, $date, $start_idx, $end_idx, $tc_name, $tc_tel, $tc_email, $tc_person, $tc_price) {
         $t_start = strtotime("{$date} {$start_idx} hours");
         $t_end = strtotime("{$date} {$end_idx} hours");
         $tc_start = date("Y-m-d H:i:s", $t_start);
         $tc_end = date("Y-m-d H:i:s", $t_end);
 
+        $this->db->trans_start();
         foreach($machines as $m_val) {
             if ($this->checkTicket($m_val, $tc_start, $tc_end)) {
-                $sql = "INSERT INTO dv_ticket(tc_type, tc_name, tc_tel, tc_starttime, tc_endtime, tc_person, tc_price) VALUES(?,?,?,?,?,?,?)";
-                $bind_array = array($m_val, $tc_name, $tc_tel, $tc_start, $tc_end, $tc_person, $tc_price[$m_val]);
+                $sql = "INSERT INTO dv_ticket(tc_type, tc_name, tc_tel, tc_email, tc_starttime, tc_endtime, tc_person, tc_price) VALUES(?,?,?,?,?,?,?,?)";
+                $bind_array = array($m_val, $tc_name, $tc_tel, $tc_email, $tc_start, $tc_end, $tc_person, $tc_price[$m_val]);
                 $res = $this->db->query($sql, $bind_array);
-                if (!$res) {
+                $sql2 = "INSERT INTO dv_ticket_ready(tc_type, tc_name, tc_tel, tc_email, tc_starttime, tc_endtime, tc_person, tc_price) VALUES(?,?,?,?,?,?,?,?)";
+                $res2 = $this->db->query($sql2, $bind_array);
+                if (!($res && $res2)) {
+                    $this->db->trans_off();
                     return false;
                 }
             } else {
+                $this->db->trans_off();
                 return false;
             }
         }
-        foreach($machines as $m_val) {
-            if ($this->checkTicket($m_val, $tc_start, $tc_end)) {
-                $sql = "INSERT INTO dv_ticket(tc_type, tc_name, tc_tel, tc_starttime, tc_endtime, tc_person, tc_price) VALUES(?,?,?,?,?,?,?)";
-                $bind_array = array($m_val, $tc_name, $tc_tel, $tc_start, $tc_end, $tc_person, $tc_price[$m_val]);
-                $res = $this->db->query($sql, $bind_array);
-                if (!$res) {
-                    return false;
-                }
-            } else {
-                return false;
-            }
-        }
+        $this->db->trans_complete();
         return $res;
     }
 
@@ -141,7 +135,8 @@ class Ticket_model extends CI_Model
         $machine_name = array(
 			"W" => "LX-W",
 			"G" => "LX-G",
-			"F" => "FX-정인",
+            "F" => "FX-정인",
+			"total" => "총합",
         );
         if (isset($machine_name[$tc_type])) {
             return $machine_name[$tc_type];
@@ -151,72 +146,108 @@ class Ticket_model extends CI_Model
     }
 
     public function deleteTicket($tc_seq) {
-        $sql = "DELETE FROM dv_ticket WHERE tc_seq = ?";
+        $this->db->trans_start();
         $bind_array = array($tc_seq);
-        $res = $this->db->query($sql, $bind_array);
-        if ($res) {
+        $sql1 = "DELETE FROM dv_ticket WHERE tc_seq = ?";
+        $res1 = $this->db->query($sql1, $bind_array);
+        $sql2 = "UPDATE dv_ticket_ready SET tc_disabled = 1 WHERE tc_seq = ?";
+        $res2 = $this->db->query($sql2, $bind_array);
+        if ($res1 && $res2) {
+            $this->db->trans_complete();
             return true;
         } else {
+            $this->db->trans_off();
             return false;
         }
     }
-    
-    public function sendEmail($machines, $date, $start_idx, $end_idx, $tc_name, $tc_tel, $tc_person, $price_data) {
-        $this->load->library('PHPMailer');
-        $mail = new PHPMailer(true);
+
+    public function setDeposit($tc_seq) {
+        $this->db->trans_start();
+        $bind_array = array($tc_seq);
+        $sql1 = "UPDATE dv_ticket SET tc_deposit = sysdate() WHERE tc_seq = ?";
+        $res1 = $this->db->query($sql1, $bind_array);
+        $sql2 = "UPDATE dv_ticket_ready SET tc_deposit = sysdate() WHERE tc_seq = ?";
+        $res2 = $this->db->query($sql2, $bind_array);
+        if ($res1 && $res2) {
+            $this->db->trans_complete();
+            return true;
+        } else {
+            $this->db->trans_off();
+            return false;
+        }
+    }
+
+
+    public function sendEmail($machines, $date, $start_idx, $end_idx, $tc_name, $tc_tel, $tc_email, $tc_person, $price_data) {
+        $this->load->library('PHPMailer_Lib');
+        $mail = $this->phpmailer_lib->load();
 
         try {
             $t_start = strtotime("{$date} {$start_idx} hours");
             $t_end = strtotime("{$date} {$end_idx} hours");
             $start_date = date('Y-m-d H시', $t_start);
             $end_date = date('Y-m-d H시', $t_end);
+            $krt_start = date('Y-m-d H시', $t_start);
+            $krt_end = date('Y-m-d H시', $t_end);
             // 기본 설정
             $mail->SMTPDebug = 0;
             $mail->isSMTP();
             $mail->Host = "smtp.piurank.com";
             $mail->SMTPAuth = true;
-            $mail->Username = $this->load->config('mailer_id');
-            $mail->Password = $this->load->config('mailer_pw');
+            $mail->Username = $this->config->item('mailer_id');
+            $mail->Password = $this->config->item('mailer_pw');
             $mail->SMTPSecure = "ssl";
             $mail->Port = 465;
             $mail->CharSet = "utf-8";
 
             // 관리자에게 전송
             $mail->setFrom("ticket@piurank.com", "DIVISION STUDIO 관리자");
-            $mail->addAddress("eodmalt@gmail.com", "WINDFORCE");
-            $mail->addAddress("", "GIMGIMGI");
+            $mail->addAddress("ticket@piurank.com", "DIVISION STUDIO 관리자");
+            $mail->addAddress("eodmalt@piurank.com", "WINDFORCE");
             $mail->isHTML(false); // HTML 태그 사용 여부
-            $mail->Subject = "{$start_date} ~ {$end_date} ({$tc_name} / {$tc_tel})예약 접수됨";  // 메일 제목
+            $mail->Subject = "{$start_date} ~ {$end_date} ({$tc_name} / {$tc_tel})예약 접수됨";
             $mail->Body = "
-            예약시각 : {$start_date} ~ {$end_date}
-            이름(입금자명) : {$tc_name}
-            연락처 : {$tc_tel}
-            이메일 : {$tc_email}
-            인원 : {$tc_person}
-            가격 :
-            ";
-            $mc_name = array();
-            foreach ($tc_price as $price_key => $price_row) {
-                $mc_name[] = $this->getMachineName($price_key);
+예약시각 : {$krt_start} 부터 {$krt_end} 까지
+이름(입금자명) : {$tc_name}
+연락처 : {$tc_tel}
+이메일 : {$tc_email}
+인원 : {$tc_person}
+가격
+";
+            $mc_price = array();
+            foreach ($machines as $mc_code) {
+                $mc_price[] = $this->getMachineName($mc_code) . " - {$price_data[$mc_code]}원";
             }
-            $mail->Body .= implode(" / ", $mc_name);
+            $mail->Body .= implode(PHP_EOL, $mc_price);
+            $mail->Body .= "
 
-            // Gmail로 메일을 발송하기 위해서는 CA인증이 필요하다.
-            // CA 인증을 받지 못한 경우에는 아래 설정하여 인증체크를 해지하여야 한다.
-            /*
-            $mail -> SMTPOptions = array(
-                "ssl" => array(
-                "verify_peer" => false
-                , "verify_peer_name" => false
-                , "allow_self_signed" => true
-                )
-            );
-            */
+< 총합 {$price_data['total']}원 >
+입금계좌 : 우리은행 1002-954-983411 (예금주 : 박소담)
+
+[주의사항 - 반드시 확인해주세요!]
+ - 예약시각에 맞춰 대여가 시작됩니다. 늦지 않게 도착해주세요.
+ - 예약 당일 취소는 불가능하며, 취소 요청은 개별 문의 바랍니다.
+ - 다음 예약자를 위해 예약 종료 10분 전부터 퇴실 준비를 해주세요.
+ - 예약한 기체 외에 다른 기체나 방에 접근하지 말아주세요. (예: LX기체 이용시 FX방 접근 금지)
+ - LX를 1대만 대여할 시 나머지 1대를 다른 사람이 예약하여 같은 공간에서 이용하게 될 수 있습니다.
+ - 개인 장비로 방송하실 때는 설치 및 철거 시간을 고려하여 예약해주세요.
+ - 스튜디오 안에서 음주, 흡연을 하지 말아주세요.
+ - 발판의 위치를 임의로 움직이지 말아주시고, 발판에 눕거나 앉지 말아주세요.
+ - 스튜디오의 벽이나 물건에 낙서를 하지 말아주세요.
+ - 퇴실시 놓고 가시는 물건은 없으신지 확인해주세요. 디비전 스튜디오는 개인 분실물에 대하여 책임을 지지 않습니다.
+ - 스튜디오에 비치된 공용 물품을 소중히 사용해주세요. 물품 도난 및 파손시 민/형사 책임을 물을 수 있습니다.
+ ";
             // 메일 전송
-            $mail -> send();
+            $mail->send();
+
+            $mail->clearAddresses();
+            $mail->addAddress($tc_email, $tc_name);
+            $mail->Subject = "DIVISION STUDIO 예약이 접수되었습니다.";
+            // 메일 전송
+            $mail->send();
 
         } catch (Exception $e) {
-            echo "Message could not be sent. Mailer Error : ", $mail -> ErrorInfo;
+            echo "Message could not be sent. Mailer Error : ", $mail->ErrorInfo;
         }
     }
 }

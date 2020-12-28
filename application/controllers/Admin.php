@@ -145,6 +145,19 @@ class Admin extends CI_Controller {
         }
         echo "N";
 	}
+	public function setDeposit() {
+        if ($this->check_studio()) {
+            $tc_seq = $this->input->post_get('seq') ?? null;
+            if ($tc_seq) {
+                $set_res = $this->ticket_model->setDeposit($tc_seq);
+                if ($set_res) {
+                    echo "Y";
+                    return;
+                }
+            }
+        }
+        echo "N";
+	}
 
 	public function super_menu() {
 		if ($this->check_super()) {
