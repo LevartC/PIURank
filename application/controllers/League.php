@@ -62,19 +62,5 @@ class League extends CI_Controller {
 		$this->load->view('league/aevileague', $arr_data);
 	}
 
-	private function check_super() {
-		if (isset($this->session->u_class) && $this->session->u_class == 1) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	private function check_admin() {
-		if (isset($this->session->u_class) && $this->session->u_class <= 2) {
-			return true;
-		} else {
-			return false;
-		}
-	}
 }
 ?>

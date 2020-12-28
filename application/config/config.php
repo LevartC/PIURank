@@ -521,3 +521,7 @@ $config['rewrite_short_tags'] = FALSE;
 | Array:		array('10.0.1.200', '192.168.5.0/24')
 */
 $config['proxy_ips'] = '';
+
+// PHPMailer 발송시 사용할 아이디 / 패스워드
+$config['mailer_id'] = 'ticket';
+$config['mailer_pw'] = 'xlzptaoslwj';

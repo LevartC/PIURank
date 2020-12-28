@@ -1,4 +1,5 @@
 <?php 
+$head_title = "기록 관리자";
 $common_dir = get_common_dir();
 //<!-- Page Header -->
 require_once $common_dir . "/header.php";

@@ -9,6 +9,10 @@ require_once $common_dir . "/header.php";
     <?php require_once $common_dir . "/body_topbar.php"; ?>
     <script>
     $("#nav_home").addClass("active");
+
+    $(document).on("click", "#ticket_link", function(e) {
+        location.href = "/ticket";
+    });
     </script>
 
       <!-- Begin Page Content -->
@@ -21,7 +25,22 @@ require_once $common_dir . "/header.php";
       <!-- Content Row -->
       <div class="row">
 
-        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-12 mb-4">
+          <div class="card border-left-secondary shadow h-100 py-2" id="ticket_link">
+            <div class="card-body">
+              <div class="row no-gutters text-center align-items-center">
+                <div class="col mr-2">
+                  <div class="font-weight-bold text-blueviolet text-uppercase mb-1">DIVISION STUDIO OPEN!</div>
+                  <div class="h5 mb-0 text-blueviolet font-weight-bold text-gray-800">지금 예약하기 (클릭)</div>
+                </div>
+                <div class="col-auto">
+                  <i class="fas fa-ticket-alt fa-3x text-blueviolet"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="col-xl-3 col-md-6 mb-4">
           <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-body">
@@ -38,7 +57,6 @@ require_once $common_dir . "/header.php";
           </div>
         </div>
 
-        <!-- Earnings (Monthly) Card Example -->
         <div class="col-xl-3 col-md-6 mb-4">
           <div class="card border-left-success shadow h-100 py-2">
             <div class="card-body">
@@ -55,7 +73,6 @@ require_once $common_dir . "/header.php";
           </div>
         </div>
 
-        <!-- Earnings (Monthly) Card Example -->
         <div class="col-xl-3 col-md-6 mb-4">
           <div class="card border-left-info shadow h-100 py-2">
             <div class="card-body">
@@ -72,7 +89,6 @@ require_once $common_dir . "/header.php";
           </div>
         </div>
 
-        <!-- Pending Requests Card Example -->
         <div class="col-xl-3 col-md-6 mb-4">
           <div class="card border-left-warning shadow h-100 py-2">
             <div class="card-body">

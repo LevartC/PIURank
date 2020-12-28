@@ -69,6 +69,13 @@
                 <span>HOME</span></a>
             </li>
             <div class="topbar-divider d-none d-lg-block"></div>
+            <li class="nav-item" id="nav_ticket">
+                <a class="nav-link" href="/ticket">
+                    <i class="fas fa-fw fa-ticket-alt"></i>
+                    <span>DIVISION STUDIO 예약하기</span>
+                </a>
+            </li>
+            <div class="topbar-divider d-none d-lg-block"></div>
             <li class="nav-item" id="nav_input_pi">
                 <a class="nav-link" href="/playinfo/write">
                     <i class="fas fa-fw fa-table"></i>
@@ -97,7 +104,7 @@ if (isset($_SESSION['u_class']) && $_SESSION['u_class'] == '1') {
             </li>
 <?php
 }
-if (isset($_SESSION['u_class']) && $_SESSION['u_class'] <= '2') {
+if (isset($_SESSION['u_class']) && $_SESSION['u_class'] <= '3') {
 ?>
             <div class="topbar-divider d-none d-lg-block"></div>
             <li class="nav-item dropdown">
@@ -105,9 +112,20 @@ if (isset($_SESSION['u_class']) && $_SESSION['u_class'] <= '2') {
                     관리자
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <?php
+                if ($_SESSION['u_class'] == '1' || $_SESSION['u_class'] == '2') {
+                ?>
                     <a class="dropdown-item" href="/admin/playinfo">기록 관리자</a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">-</a>
+                <?php
+                }
+                if ($_SESSION['u_class'] == '1' || $_SESSION['u_class'] == '3') {
+                ?>
+                    <a class="dropdown-item" href="/admin/ticket">DIVISION STUDIO 예약 관리자</a>
+                    <div class="dropdown-divider"></div>
+                <?php
+                }
+                ?>
                 </div>
             </li>
 <?php

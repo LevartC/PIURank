@@ -1,4 +1,5 @@
 <?php
+$head_title = "기록 등록하기";
 $common_dir = get_common_dir();
 //<!-- Page Header -->
 require_once $common_dir . "/header.php";

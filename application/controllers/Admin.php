@@ -10,6 +10,7 @@ class Admin extends CI_Controller {
         $this->load->model('account_model');
         $this->load->model('playinfo_model');
         $this->load->model('league_model');
+        $this->load->model('ticket_model');
         $pi_data = null;
     }
 
@@ -71,6 +72,8 @@ class Admin extends CI_Controller {
             );
             if ($this->admin_model->setPlayinfo($pi_data)) {
                 alert("승인을 완료하였습니다.");
+            } else {
+                alert("승인에 실패하였습니다. 관리자에게 문의해주세요.");
             }
         }
     }
@@ -98,6 +101,8 @@ class Admin extends CI_Controller {
             );
             if ($this->admin_model->setPlayinfo($pi_data)) {
                 alert("수정 후 승인을 완료하였습니다.");
+            } else {
+                alert("수정 후 승인에 실패하였습니다. 관리자에게 문의해주세요.");
             }
         }
     }
@@ -113,9 +118,33 @@ class Admin extends CI_Controller {
             if ($this->admin_model->setPlayinfo($pi_data)) {
                 alert("거부를 완료하였습니다.");
             }
+        } else {
+            alert("거부에 실패하였습니다. 관리자에게 문의해주세요.");
         }
     }
 
+    public function ticket() {
+        if ($this->check_studio()) {
+            $ticket_data = $this->ticket_model->getTicketInfo();
+            $view_data = array(
+                "ticket_data" => $ticket_data,
+            );
+            $this->load->view('admin/admin_ticketinfo', $view_data);
+        }
+    }
+	public function delTicket() {
+        if ($this->check_studio()) {
+            $tc_seq = $this->input->post_get('seq') ?? null;
+            if ($tc_seq) {
+                $del_res = $this->ticket_model->deleteTicket($tc_seq);
+                if ($del_res) {
+                    echo "Y";
+                    return;
+                }
+            }
+        }
+        echo "N";
+	}
 
 	public function super_menu() {
 		if ($this->check_super()) {
@@ -295,6 +324,14 @@ class Admin extends CI_Controller {
 
     private function check_admin() {
         if (isset($this->session->u_class) && $this->session->u_class <= 2) {
+            return true;
+        } else {
+            alert("권한이 없습니다.");
+            return false;
+        }
+    }
+    private function check_studio() {
+        if (isset($this->session->u_class) && ($this->session->u_class == 3 || $this->session->u_class == 1)) {
             return true;
         } else {
             alert("권한이 없습니다.");

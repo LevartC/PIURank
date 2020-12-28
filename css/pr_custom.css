@@ -86,19 +86,46 @@ pre {
     margin: 0;
 }
 
+.text-large {
+    font-size:large !important;
+}
+
+.text-black {
+    color: #000 !important;
+}
+
 .text-silver {
-    color: #c0c0c0;
+    color: #c0c0c0 !important;
 }
 
 .text-bronze {
-    color: #CD7F32;
+    color: #CD7F32 !important;
+}
+
+.text-orange {
+    color: orange !important;
+}
+
+.text-purple {
+    color: purple !important;
+}
+
+.text-violet {
+    color: #ee82ee !important;
+}
+
+.text-blueviolet {
+    color: blueviolet !important;
 }
 
 .border-left-silver {
     border-left: 0.25rem solid #c0c0c0 !important;
 }
-  
+
 .border-left-bronze {
     border-left: 0.25rem solid #CD7F32 !important;
 }
 
+.text-bold {
+    font-weight:bold !important;
+}
