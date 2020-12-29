@@ -161,7 +161,7 @@ require_once $common_dir . "/header.php";
                 주소 : 서울시 서초구 서초대로 72 서창빌딩 B1<br>
                 - 내방역 4번 출구에서 직진, 도보 3분 거리<br>
                 - 이수역 5번 출구에서 <span class="text-success"><i class="fas fa-bus"></i> 4319</span> <span style="color:lightgreen"><i class="fas fa-bus"></i>서초16</span> 이용,
-                <br>&nbsp;&nbsp;2정거장 이동
+                <br>&nbsp;&nbsp;2정거장 이동 후 하차
                 <br>
                 - 인접 버스 : 
                 <span class="text-primary"><i class="fas fa-bus"></i> 148</span>

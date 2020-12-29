@@ -348,7 +348,7 @@ require_once $common_dir . "/header.php";
                   </button>
                 </div>
                 <div class="modal-body text-left" style="font-size:0.9rem;">
-                  - 이용 요금은 <span class="text-purple text-bold">대여 시작 전</span>에 입금해주세요.<br>
+                  - 이용 요금은 <span class="text-purple text-bold">대여 시작 전에 입금</span>해주세요.<br>
                   - <span class="text-primary text-bold">예약시각에 맞춰 대여가 시작</span>됩니다. 늦지 않게 도착해주세요.<br>
                   - <span class="text-orange text-bold">무단 불참시 향후 예약이 불가</span>할 수 있습니다.<br>
                   - <span class="text-danger text-bold">예약 당일 취소는 불가능</span>하며, 취소 요청은 개별 문의 바랍니다.<br>

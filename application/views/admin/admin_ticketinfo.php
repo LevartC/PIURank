@@ -124,7 +124,7 @@ $(document).on("click", ".tc_sentsms", function(e) {
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h4 mb-0 text-gray-800">DIVISION STUDIO 예약정보</h1>
           </div>
-          <table class="table text-center my-2 text-black" style="font-size:0.7rem;">
+          <table class="table table-bordered text-center my-2 text-black" style="font-size:0.7rem;">
             <thead>
               <th scope="col">예약시각</th>
               <th scope="col">이름<br>연락처</th>
