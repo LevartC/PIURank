@@ -57,41 +57,49 @@ require_once $common_dir . "/header.php";
             alert("인원을 입력해주세요.");
             return;
         }
-        $.ajax({
-            type : "POST",
-            url : "setTicket",
-            data: {
-                "machines" : sel_machine,
-                "year" : year,
-                "month" : month,
-                "day" : day,
-                "tc_name" : tc_name,
-                "tc_tel" : tc_tel,
-                "tc_email" : tc_email,
-                "tc_person" : tc_person,
-                "start_idx" : start_btn.attr("index"),
-                "end_idx" : end_btn.attr("index"),
-            },
-            error : function(data) {
-                console.log(data);
-                alert("예약에 실패하였습니다. 관리자에게 문의해주세요.");
-                location.reload();
-            },
-            success : function(data) {
-                loadComplete();
-                var rtn = data[data.length-1];
-                if (rtn == "Y") {
-                    alert("예약이 완료되었습니다.");
-                  location.href = "/ticket";
-                } else if (rtn == "N") {
+        // 사회적 거리두기 강화로 5인 이상 예약 불가
+        var tc_person_int = parseInt(tc_person);
+        if (tc_person_int > 4) {
+            alert("현재 사회적 거리두기 시행으로 인해 한 팀당 5인 이상은 예약하실 수 없습니다.");
+            return;
+        }
+        if (confirm("안내한 주의사항에 동의하며, 예약을 신청하시겠습니까?")) {
+            $.ajax({
+                type : "POST",
+                url : "setTicket",
+                data: {
+                    "machines" : sel_machine,
+                    "year" : year,
+                    "month" : month,
+                    "day" : day,
+                    "tc_name" : tc_name,
+                    "tc_tel" : tc_tel,
+                    "tc_email" : tc_email,
+                    "tc_person" : tc_person,
+                    "start_idx" : start_btn.attr("index"),
+                    "end_idx" : end_btn.attr("index"),
+                },
+                error : function(data) {
+                    console.log(data);
                     alert("예약에 실패하였습니다. 관리자에게 문의해주세요.");
-                  location.reload();
-                } else {
-                    alert("알 수 없는 오류가 발생했습니다. 관리자에게 문의해주세요.");
-                  location.reload();
+                    location.reload();
+                },
+                success : function(data) {
+                    loadComplete();
+                    var rtn = data[data.length-1];
+                    if (rtn == "Y") {
+                        alert("예약이 완료되었습니다.");
+                      location.href = "/ticket";
+                    } else if (rtn == "N") {
+                        alert("예약에 실패하였습니다. 관리자에게 문의해주세요.");
+                      location.reload();
+                    } else {
+                        alert("알 수 없는 오류가 발생했습니다. 관리자에게 문의해주세요.");
+                      location.reload();
+                    }
                 }
-            }
-        });
+            });
+        }
     });
 
     $(document).on("click", "#step1_next", function(e) {
@@ -307,7 +315,7 @@ require_once $common_dir . "/header.php";
           이메일
         </div>
         <div class="col-8 my-2 d-block">
-          <input class="form-control form-control-user ticket_form" type="email" id="tc_email" name="tc_email" placeholder="이메일로 예약내역이 발송됩니다." required=""> </input>
+          <input class="form-control form-control-user ticket_form" style="font-size:0.8rem" type="email" id="tc_email" name="tc_email" placeholder="이메일로 예약내역이 발송됩니다." required=""> </input>
         </div>
         <div class="col-4 my-2 align-items-center justify-content-center">
           인 원
@@ -339,8 +347,10 @@ require_once $common_dir . "/header.php";
                   <span aria-hidden="true">×</span>
                   </button>
                 </div>
-                <div class="modal-body text-left" style="font-size:1rem;">
+                <div class="modal-body text-left" style="font-size:0.9rem;">
+                  - 이용 요금은 <span class="text-purple text-bold">대여 시작 전</span>에 입금해주세요.<br>
                   - <span class="text-primary text-bold">예약시각에 맞춰 대여가 시작</span>됩니다. 늦지 않게 도착해주세요.<br>
+                  - <span class="text-orange text-bold">무단 불참시 향후 예약이 불가</span>할 수 있습니다.<br>
                   - <span class="text-danger text-bold">예약 당일 취소는 불가능</span>하며, 취소 요청은 개별 문의 바랍니다.<br>
                   - 다음 예약자를 위해 예약 종료 <span class="text-info text-bold">10분 전부터 퇴실 준비</span>를 해주세요.<br>
                   - 예약한 기체 외에 <span class="text-orange text-bold">다른 기체나 방에 접근하지 말아주세요.</span> (예: LX기체 이용시 FX방 접근 금지)<br>
@@ -348,6 +358,7 @@ require_once $common_dir . "/header.php";
                   - 개인 장비로 방송하실 때는 <span class="text-purple text-bold">설치 및 철거 시간을 고려</span>하여 예약해주세요.<br>
                   - 스튜디오 안에서 <span class="text-danger text-bold">음주, 흡연을 하지 말아주세요.</span><br>
                   - 발판의 <span class="text-primary text-bold">위치를 임의로</span> 움직이지 말아주시고, 발판에 <span class="text-info text-bold">눕거나 앉지</span> 말아주세요.<br>
+                  - 발판의 봉에 매달리거나 무리한 힘을 사용하지 말아주세요.<br>
                   - 스튜디오의 벽이나 물건에 <span class="text-black text-bold">낙서</span>를 하지 말아주세요.<br>
                   - 퇴실시 놓고 가시는 물건은 없으신지 확인해주세요. <span class="text-orange text-bold">디비전 스튜디오는 개인 분실물에 대하여 책임을 지지 않습니다.</span><br>
                   - 스튜디오에 비치된 공용 물품을 소중히 사용해주세요. <span class="text-danger text-bold">물품 도난 및 파손시 민/형사 책임</span>을 물을 수 있습니다.<br>

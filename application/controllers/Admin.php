@@ -132,7 +132,6 @@ class Admin extends CI_Controller {
             $this->load->view('admin/admin_ticketinfo', $view_data);
         }
     }
-
     public function ticket() {
         if ($this->check_studio()) {
             $ticket_data = $this->ticket_model->getTicketInfo();
@@ -160,6 +159,19 @@ class Admin extends CI_Controller {
             $tc_seq = $this->input->post_get('seq') ?? null;
             if ($tc_seq) {
                 $set_res = $this->ticket_model->setDeposit($tc_seq);
+                if ($set_res) {
+                    echo "Y";
+                    return;
+                }
+            }
+        }
+        echo "N";
+	}
+	public function setSentSms() {
+        if ($this->check_studio()) {
+            $tc_seq = $this->input->post_get('seq') ?? null;
+            if ($tc_seq) {
+                $set_res = $this->ticket_model->setSentSms($tc_seq);
                 if ($set_res) {
                     echo "Y";
                     return;

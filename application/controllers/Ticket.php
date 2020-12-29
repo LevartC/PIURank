@@ -123,6 +123,5 @@ class Ticket extends CI_Controller {
 			echo "이름과 연락처를 올바르게 입력해주세요.";
 		}
 	}
-
 }
 ?>
