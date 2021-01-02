@@ -140,8 +140,8 @@ require_once $common_dir . "/header.php";
         <?php endfor; ?>
         </tbody>
       </table>
-      <div class="my-2">
-        <button class="btn btn-block btn-primary" type="button" data-toggle="modal" data-target="#map_modal">스튜디오 오시는 길</button>
+      <div class="my-2 d-flex">
+        <button class="btn btn-primary" style="width:55%;" type="button" data-toggle="modal" data-target="#map_modal">스튜디오 오시는 길</button>
         <div class="modal fade" id="map_modal" tabindex="-1" role="dialog" aria-labelledby="map_modal" aria-hidden="true">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -178,9 +178,8 @@ require_once $common_dir . "/header.php";
             </div>
           </div>
         </div>
-      </div>
-      <div class="my-2">
-        <button class="btn btn-block btn-success" type="button" data-toggle="modal" data-target="#modal_checkTicket">예약 확인하기</button>
+        &nbsp;
+        <button class="btn btn-success" style="width:45%;" type="button" data-toggle="modal" data-target="#modal_checkTicket">예약 확인하기</button>
         <div class="modal fade" id="modal_checkTicket" tabindex="-1" role="dialog" aria-labelledby="modal_checkTicket" aria-hidden="true">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -217,6 +216,228 @@ require_once $common_dir . "/header.php";
                   <div class="col-12 my-2" id="ticket_infotext">
                   </div>
                 </div>
+              </div>
+              <div class="modal-footer">
+                  <button class="btn btn-secondary ml-auto" type="button" data-dismiss="modal">닫기</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="my-2 d-flex">
+        <button class="btn border-secondary" style="width:33%; background-color:white; color:black;" type="button" data-toggle="modal" data-target="#lx_w_info">LX-W<br>소개</button>
+        <div class="modal fade" id="lx_w_info" tabindex="-1" role="dialog" aria-labelledby="lx_w_info" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title text-black">LX-W 기체 소개</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+                </button>
+              </div>
+              <div class="modal-body text-left" style="font-size:0.8rem; color:black;">
+                <img src="/img/lx_w.jpg" style="width:100%"></img><br><br>
+                <span style="font-size:1rem; color:darkblue;">&nbsp;[ Version : PIU XX ]</span><br>
+                &nbsp;WINDFORCE의 LX 기체입니다. (좌측에 위치)<br>
+                &nbsp;호평이 자자하던 (故)강남 KONG과 같은 기종의 모니터이며,<br>
+                &nbsp;상태가 우수하던 (故)이수 짱오락실과 유사한 발판 상태로 세팅하였습니다.<br>
+                <br><span style="font-size:1rem">
+                [특징]<br>
+                - 타격감
+                <div class="row">
+                  <div class="col-2 text-center">
+                    낮음
+                  </div>
+                  <div class="col-8 my-auto">
+                    <div class="progress">
+                      <div class="progress-bar" role="progressbar" style="width:80%;" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+                  <div class="col-2 text-center">
+                    높음
+                  </div>
+                </div>
+                - 민감도
+                <div class="row">
+                  <div class="col-2 text-center">
+                    낮음
+                  </div>
+                  <div class="col-8 my-auto">
+                    <div class="progress">
+                      <div class="progress-bar bg-success" role="progressbar" style="width:70%;" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+                  <div class="col-2 text-center">
+                    높음
+                  </div>
+                </div>
+                - 발판 단차 (턱 높이)
+                <div class="row">
+                  <div class="col-2 text-center">
+                    낮음
+                  </div>
+                  <div class="col-8 my-auto">
+                    <div class="progress">
+                      <div class="progress-bar bg-info" role="progressbar" style="width:60%;" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+                  <div class="col-2 text-center">
+                    무턱
+                  </div>
+                </div>
+                </span>
+              </div>
+              <div class="modal-footer">
+                  <button class="btn btn-secondary ml-auto" type="button" data-dismiss="modal">닫기</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        &nbsp;
+        <button class="btn border-secondary" style="width:33%; background-color:black; color:white;" type="button" data-toggle="modal" data-target="#lx_g_info">LX-G<br>소개</button>
+        <div class="modal fade" id="lx_g_info" tabindex="-1" role="dialog" aria-labelledby="lx_g_info" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title text-black">LX-G 기체 소개</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+                </button>
+              </div>
+              <div class="modal-body text-left" style="font-size:0.8rem; color:black;">
+                <img src="/img/lx_g.jpg" style="width:100%"></img><br><br>
+                <span style="font-size:1rem; color:darkblue;">&nbsp;[ Version : PIU XX ]</span><br>
+                &nbsp;GIMGIMGI의 LX 기체입니다. (우측에 위치)<br>
+                &nbsp;호평이 자자하던 (故)강남 KONG과 같은 기종의 모니터이며,<br>
+                &nbsp;발판 단차가 거의 없는 무턱으로 튜닝되어 있습니다.<br>
+                <br><span style="font-size:1rem">
+                [특징]<br>
+                - 타격감
+                <div class="row">
+                  <div class="col-2 text-center">
+                    낮음
+                  </div>
+                  <div class="col-8 my-auto">
+                    <div class="progress">
+                      <div class="progress-bar" role="progressbar" style="width:60%;" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+                  <div class="col-2 text-center">
+                    높음
+                  </div>
+                </div>
+                - 민감도
+                <div class="row">
+                  <div class="col-2 text-center">
+                    낮음
+                  </div>
+                  <div class="col-8 my-auto">
+                    <div class="progress">
+                      <div class="progress-bar bg-success" role="progressbar" style="width:70%;" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+                  <div class="col-2 text-center">
+                    높음
+                  </div>
+                </div>
+                - 발판 단차 (턱 높이)
+                <div class="row">
+                  <div class="col-2 text-center">
+                    낮음
+                  </div>
+                  <div class="col-8 my-auto">
+                    <div class="progress">
+                      <div class="progress-bar bg-info" role="progressbar" style="width:85%;" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+                  <div class="col-2 text-center">
+                    무턱
+                  </div>
+                </div>
+                </span>
+              </div>
+              <div class="modal-footer">
+                  <button class="btn btn-secondary ml-auto" type="button" data-dismiss="modal">닫기</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        &nbsp;
+        <button class="btn btn-info" style="width:33%;" type="button" data-toggle="modal" data-target="#fx_j_info">FX-정인<br>소개</button>
+        <div class="modal fade" id="fx_j_info" tabindex="-1" role="dialog" aria-labelledby="fx_j_info" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title text-black">FX-정인 기체 소개</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+                </button>
+              </div>
+              <div class="modal-body text-left" style="font-size:0.8rem; color:black;">
+                <img src="/img/fx_j.jpg" style="width:100%"></img><br><br>
+                <span style="font-size:1rem; color:darkblue;">&nbsp;[ Version : PIU XX ]</span><br>
+                &nbsp;WINDFORCE의 FX 기체입니다. (독립된 공간에 설치됨)<br>
+                &nbsp;(구)정인게임장의 고유 모니터 채용 등 기존의 단점을 없애고 장점만을 계승하였으며,<br>
+                &nbsp;심혈을 기울여 세팅한 WINDFORCE의 튜닝 노하우가 담겨 있는 발판을 경험하실 수 있습니다.<br>
+                <br><span style="font-size:1rem">
+                [특징]<br>
+                - 소음
+                <div class="row">
+                  <div class="col-2 text-center">
+                    낮음
+                  </div>
+                  <div class="col-8 my-auto">
+                    <div class="progress">
+                      <div class="progress-bar" role="progressbar" style="width:20%;" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+                  <div class="col-2 text-center">
+                    높음
+                  </div>
+                </div>
+                - 민감도
+                <div class="row">
+                  <div class="col-2 text-center">
+                    낮음
+                  </div>
+                  <div class="col-8 my-auto">
+                    <div class="progress">
+                      <div class="progress-bar bg-success" role="progressbar" style="width:80%;" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+                  <div class="col-2 text-center">
+                    높음
+                  </div>
+                </div>
+                - 턱 높이 (발판 단차)
+                <div class="row">
+                  <div class="col-2 text-center">
+                    낮음
+                  </div>
+                  <div class="col-8 my-auto">
+                    <div class="progress">
+                      <div class="progress-bar bg-info" role="progressbar" style="width:80%;" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+                  <div class="col-2 text-center">
+                    무턱
+                  </div>
+                </div>
+                - 무릎 부하
+                <div class="row">
+                  <div class="col-2 text-center">
+                    낮음
+                  </div>
+                  <div class="col-8 my-auto">
+                    <div class="progress">
+                      <div class="progress-bar bg-warning" role="progressbar" style="width:10%;" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+                  <div class="col-2 text-center">
+                    높음
+                  </div>
+                </div>
+                </span>
               </div>
               <div class="modal-footer">
                   <button class="btn btn-secondary ml-auto" type="button" data-dismiss="modal">닫기</button>

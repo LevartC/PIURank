@@ -26,7 +26,7 @@ require_once $common_dir . "/header.php";
       <div class="row">
 
         <div class="col-12 mb-4">
-          <div class="card border-left-secondary shadow h-100 py-2" id="ticket_link">
+          <div class="card shadow h-100 py-2" style="border-left:0.25rem solid blueviolet !important" id="ticket_link">
             <div class="card-body">
               <div class="row no-gutters text-center align-items-center">
                 <div class="col mr-2">

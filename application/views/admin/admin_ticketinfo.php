@@ -118,7 +118,7 @@ $(document).on("click", ".tc_sentsms", function(e) {
         <?php require_once $common_dir . "/body_topbar.php"; ?>
 
         <!-- Begin Page Content -->
-        <div class="container-fhd mt-3">
+        <div class="container-fhd mt-3 p-0">
 
           <!-- Page Heading -->
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -126,9 +126,9 @@ $(document).on("click", ".tc_sentsms", function(e) {
           </div>
           <table class="table table-bordered text-center my-2 text-black" style="font-size:0.7rem;">
             <thead>
-              <th scope="col">예약시각</th>
-              <th scope="col">이름<br>연락처</th>
-              <th scope="col">인원<br>가격</th>
+              <th scope="col" style="min-width:130px">예약시각</th>
+              <th scope="col" style="min-width:150px">이름<br>연락처</th>
+              <th scope="col" style="min-width:80px">인원<br>가격</th>
             </thead>
             <tbody>
               <?php
@@ -148,15 +148,16 @@ $(document).on("click", ".tc_sentsms", function(e) {
                 <td>
                   <?=$ticket_row['tc_name']?> (<?=$ticket_row['mc_name']?>)<br>
                   <?=$ticket_row['tc_tel']?><br>
-                  <?php if (!$ticket_row['tc_deposit']) { ?>
-                    입금대기<button type="button" value="<?=$ticket_row['tc_seq']?>" str="<?=$ticket_row['tc_name']?>(<?=$ticket_row['mc_name']?>)" class="btn btn-xs btn-success tc_deposit">확인</button>
-                  <?php } else { ?>
-                    입금완료
-                  <?php } ?>
+                  <?=$ticket_row['tc_email']?>
                 </td>
                 <td>
                   <?=$ticket_row['tc_person']?>명&nbsp;<button type="button" value="<?=$ticket_row['tc_seq']?>" str="<?=$ticket_row['tc_name']?>(<?=$ticket_row['mc_name']?>)" class="btn btn-xs btn-danger tc_cancel">취소</button><br>
                   <?=number_format($ticket_row['tc_price'])?>원<br>
+                  <?php if (!$ticket_row['tc_deposit']) { ?>
+                    대기<button type="button" value="<?=$ticket_row['tc_seq']?>" str="<?=$ticket_row['tc_name']?>(<?=$ticket_row['mc_name']?>)" class="btn btn-xs btn-success tc_deposit">입금</button>
+                  <?php } else { ?>
+                    입금완료
+                  <?php } ?>
                 </td>
               </tr>
               <?php
