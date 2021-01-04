@@ -142,6 +142,8 @@ class Account extends CI_Controller {
             } else {
                 alert('회원 가입에 실패하였습니다.\\r\\n관리자에게 문의해주세요.');
             }
+        } else {
+            alert('필수 항목이 입력되지 않았습니다.');
         }
     }
     public function pi_delete() {
