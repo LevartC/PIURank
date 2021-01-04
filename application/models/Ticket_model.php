@@ -258,9 +258,10 @@ class Ticket_model extends CI_Model
  - 스튜디오에 비치된 공용 물품을 소중히 사용해주세요. 물품 도난 및 파손시 민/형사 책임을 물을 수 있습니다.
  - 퇴실시 놓고 가시는 물건은 없으신지 확인해주세요. 디비전 스튜디오는 개인 분실물에 대하여 책임을 지지 않습니다.
 
-[문의사항 (카카오톡)]
+[문의사항↓↓]
+연락처 : 010-2942-2527
+DIVISION STUDIO : https://open.kakao.com/o/sll6X0Oc
 WINDFORCE : https://open.kakao.com/me/wind4rce
-GIMGIMGI : https://open.kakao.com/o/smHObZjc
 ";
             // 메일 전송
             $mail->send();

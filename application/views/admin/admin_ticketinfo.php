@@ -127,7 +127,7 @@ $(document).on("click", ".tc_sentsms", function(e) {
           <table class="table table-bordered text-center my-2 text-black" style="font-size:0.7rem;">
             <thead>
               <th scope="col" style="min-width:130px">예약시각</th>
-              <th scope="col" style="min-width:150px">이름<br>연락처</th>
+              <th scope="col" style="min-width:130px">이름<br>연락처</th>
               <th scope="col" style="min-width:80px">인원<br>가격</th>
             </thead>
             <tbody>

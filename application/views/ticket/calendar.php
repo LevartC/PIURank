@@ -107,8 +107,12 @@ require_once $common_dir . "/header.php";
         <h1 class="h4 mb-0 text-gray-800">&nbsp;<?=date("Y년 m월", $ts)?>&nbsp;</h1>
         <a class="page-link move_month" href="" tabindex="1">></a>
       </div>
-      <div class="d-flex justify-content-center mx-auto my-2 text-black">
-        예약하실 날짜를 선택하세요.
+      <div class="text-center justify-content-center mx-auto my-2 text-black">
+        예약하실 날짜를 선택하세요.<br>
+        ※ 당일 예약은 별도로 문의해주시기 바랍니다.<br>
+        문의전화 : 010-2942-2527<br>
+        <a href="https://open.kakao.com/o/sll6X0Oc">카카오톡(DIVISION STUDIO) : (클릭)</a><br>
+        <a href="https://open.kakao.com/me/wind4rce">카카오톡(WINDFORCE) : (클릭)</a>
       </div>
       <table class="table table-td-hover text-center my-2">
         <thead>

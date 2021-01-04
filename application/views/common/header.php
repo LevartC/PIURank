@@ -7,6 +7,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
+  <meta name="naver-site-verification" content="2c36c9ba3be57572e0f303d2f046c4456f02b5cf" />
+
 
   <title><?=$head_title ?? "PIURANK"?></title>
 

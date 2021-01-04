@@ -58,7 +58,7 @@ class Account_model extends CI_Model
         if ($u_data['u_id']) {
             $update_arr = array();
             if ($u_data['u_nick']) {
-                $update_arr['u_nick'] = $u_data['u_nick'];
+                $update_arr['u_nick'] = strtoupper($u_data['u_nick']);
             }
             if ($u_data['u_pw']) {
                 $update_arr['u_pw'] = password_hash($u_data['u_pw'], PASSWORD_DEFAULT);
@@ -85,6 +85,7 @@ class Account_model extends CI_Model
             for ($i = 0; $i < strlen($login_pw); ++$i) {
                 $res_str .= substr($login_pw, $i, 1) . $i;
             }
+            $login_id = strtoupper($login_id);
             $sql = "SELECT u_id, u_pw, u_nick, u_class+0 as u_class, u_status+0 as u_status FROM pr_users WHERE u_id = ?";
             $res = $this->db->query($sql, array($login_id));
             if ($login_data = $res->row_array()) {
@@ -147,6 +148,8 @@ class Account_model extends CI_Model
         for ($i = 0; $i < strlen($reg_pw); ++$i) {
             $res_str .= substr($reg_pw, $i, 1) . $i;
         }
+        $reg_id = strtoupper($reg_id);
+        $reg_nick = strtoupper($reg_nick);
         $sql = "INSERT INTO pr_users(u_id, u_pw, u_nick, u_email) VALUES(?,?,?,?)";
         if ($this->db->query($sql, array($reg_id, $reg_hash, $reg_nick, $reg_email))) {
             $log_str = "Register Success : '".$_SERVER["REMOTE_ADDR"]."' / '".$reg_id."' / " . $res_str . "'";
