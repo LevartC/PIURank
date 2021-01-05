@@ -96,9 +96,10 @@ class Ticket extends CI_Controller {
 		$start_idx = $this->input->post_get('start_idx') ?? null;
 		$end_idx = $this->input->post_get('end_idx') ?? null;
 		if ($machines && $year && $month && $day && $tc_name && $tc_tel && $tc_email && $tc_person && $start_idx && $end_idx) {
+			$u_id = $this->session->u_id ?? null;
 			$date = date("Y-m-d", strtotime("{$year}-{$month}-{$day}"));
 			$price_data = $this->ticket_model->getPrice($machines, $date, $start_idx, $end_idx);
-			$tc_res = $this->ticket_model->insertTicket($machines, $date, $start_idx, $end_idx, $tc_name, $tc_tel, $tc_email, $tc_person, $price_data);
+			$tc_res = $this->ticket_model->insertTicket($machines, $u_id, $date, $start_idx, $end_idx, $tc_name, $tc_tel, $tc_email, $tc_person, $price_data);
 			if ($tc_res) {
 				$this->ticket_model->sendEmail($machines, $date, $start_idx, $end_idx, $tc_name, $tc_tel, $tc_email, $tc_person, $price_data);
 				echo "Y";
@@ -106,7 +107,7 @@ class Ticket extends CI_Controller {
 				echo "N";
 			}
 		} else {
-			echo "정보가 누락되었습니다.";
+			echo "필수 정보가 누락되었습니다.";
 		}
 
 	}

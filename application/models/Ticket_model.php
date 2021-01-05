@@ -66,7 +66,7 @@ class Ticket_model extends CI_Model
         return $price_info;
     }
 
-    public function insertTicket($machines, $date, $start_idx, $end_idx, $tc_name, $tc_tel, $tc_email, $tc_person, $tc_price) {
+    public function insertTicket($machines, $u_id, $date, $start_idx, $end_idx, $tc_name, $tc_tel, $tc_email, $tc_person, $tc_price) {
         $t_start = strtotime("{$date} {$start_idx} hours");
         $t_end = strtotime("{$date} {$end_idx} hours");
         $tc_start = date("Y-m-d H:i:s", $t_start);
@@ -75,10 +75,10 @@ class Ticket_model extends CI_Model
         $this->db->trans_start();
         foreach($machines as $m_val) {
             if ($this->checkTicket($m_val, $tc_start, $tc_end)) {
-                $sql = "INSERT INTO dv_ticket(tc_type, tc_name, tc_tel, tc_email, tc_starttime, tc_endtime, tc_person, tc_price) VALUES(?,?,?,?,?,?,?,?)";
-                $bind_array = array($m_val, $tc_name, $tc_tel, $tc_email, $tc_start, $tc_end, $tc_person, $tc_price[$m_val]);
+                $sql = "INSERT INTO dv_ticket(tc_u_id, tc_type, tc_name, tc_tel, tc_email, tc_starttime, tc_endtime, tc_person, tc_price) VALUES(?,?,?,?,?,?,?,?,?)";
+                $bind_array = array($u_id, $m_val, $tc_name, $tc_tel, $tc_email, $tc_start, $tc_end, $tc_person, $tc_price[$m_val]);
                 $res = $this->db->query($sql, $bind_array);
-                $sql2 = "INSERT INTO dv_ticket_ready(tc_type, tc_name, tc_tel, tc_email, tc_starttime, tc_endtime, tc_person, tc_price) VALUES(?,?,?,?,?,?,?,?)";
+                $sql2 = "INSERT INTO dv_ticket_ready(tc_u_id, tc_type, tc_name, tc_tel, tc_email, tc_starttime, tc_endtime, tc_person, tc_price) VALUES(?,?,?,?,?,?,?,?,?)";
                 $res2 = $this->db->query($sql2, $bind_array);
                 if (!($res && $res2)) {
                     $this->db->trans_off();
