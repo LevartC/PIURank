@@ -35,73 +35,6 @@ require_once $common_dir . "/header.php";
         $("#step_1").show();
     });
 
-    $(document).on("submit", "#ticket_form", function(e) {
-        e.preventDefault();
-        var tc_name = $("#tc_name").val();
-        if (tc_name == "") {
-            alert("이름을 입력해주세요.");
-            return;
-        }
-        var tc_tel = $("#tc_tel").val();
-        if (!check_hp(tc_tel)) {
-            alert("올바른 연락처를 입력해주세요.");
-            return;
-        }
-        var tc_email = $("#tc_email").val();
-        if (!check_hp(tc_tel)) {
-            alert("이메일을 입력해주세요.");
-            return;
-        }
-        var tc_person = $("#tc_person").val();
-        if (tc_person == "") {
-            alert("인원을 입력해주세요.");
-            return;
-        }
-        // 사회적 거리두기 강화로 5인 이상 예약 불가
-        var tc_person_int = parseInt(tc_person);
-        if (tc_person_int > 4) {
-            alert("현재 사회적 거리두기 시행으로 인해 한 팀당 5인 이상은 예약하실 수 없습니다.");
-            return;
-        }
-        if (confirm("안내한 주의사항에 동의하며, 예약을 신청하시겠습니까?")) {
-            $.ajax({
-                type : "POST",
-                url : "setTicket",
-                data: {
-                    "machines" : sel_machine,
-                    "year" : year,
-                    "month" : month,
-                    "day" : day,
-                    "tc_name" : tc_name,
-                    "tc_tel" : tc_tel,
-                    "tc_email" : tc_email,
-                    "tc_person" : tc_person,
-                    "start_idx" : start_btn.attr("index"),
-                    "end_idx" : end_btn.attr("index"),
-                },
-                error : function(data) {
-                    console.log(data);
-                    alert("예약에 실패하였습니다. 관리자에게 문의해주세요.");
-                    location.reload();
-                },
-                success : function(data) {
-                    loadComplete();
-                    var rtn = data[data.length-1];
-                    if (rtn == "Y") {
-                        alert("예약이 완료되었습니다.");
-                      location.href = "/ticket";
-                    } else if (rtn == "N") {
-                        alert("예약에 실패하였습니다. 관리자에게 문의해주세요.");
-                      location.reload();
-                    } else {
-                        alert("알 수 없는 오류가 발생했습니다. 관리자에게 문의해주세요.");
-                      location.reload();
-                    }
-                }
-            });
-        }
-    });
-
     $(document).on("click", "#step1_next", function(e) {
         sel_machine = [];
         $("input[name='machines[]']:checked").each(function() {
@@ -194,10 +127,21 @@ require_once $common_dir . "/header.php";
                         location.reload();
                     },
                     success : function(data) {
+<?php
+    if ($this->ticket_model->check_studio() || $time != strtotime(date("Y-m-d"))) {
+?>
                         console.log(data);
                         loadComplete();
                         $("#tc_price").html(data["total"].toLocaleString());
                         $("#step_3").show();
+<?php
+    } else {
+?>
+                        alert("당일 예약은 예약가능시각 확인만 가능합니다.\n예약하시려면 전화, 문자 또는 카카오톡으로 문의해주시기 바랍니다.");
+                        history.back();
+<?php
+    }
+?>
                     }
                 });
                 break;
@@ -284,6 +228,9 @@ require_once $common_dir . "/header.php";
           </div>
         </div>
       </div>
+<?php
+    if ($this->ticket_model->check_studio() || $time != strtotime(date("Y-m-d"))) {
+?>
       <form method="post" id="ticket_form">
       <div id="step_3" class="row align-items-center text-center my-2" style="display:none;">
         <div class="col-12 my-2">
@@ -377,7 +324,78 @@ require_once $common_dir . "/header.php";
         </div>
       </div>
       </form>
-    </div>
     <!-- /.container-fluid -->
+    <script>
+    $(document).on("submit", "#ticket_form", function(e) {
+        e.preventDefault();
+        var tc_name = $("#tc_name").val();
+        if (tc_name == "") {
+            alert("이름을 입력해주세요.");
+            return;
+        }
+        var tc_tel = $("#tc_tel").val();
+        if (!check_hp(tc_tel)) {
+            alert("올바른 연락처를 입력해주세요.");
+            return;
+        }
+        var tc_email = $("#tc_email").val();
+        if (!check_hp(tc_tel)) {
+            alert("이메일을 입력해주세요.");
+            return;
+        }
+        var tc_person = $("#tc_person").val();
+        if (tc_person == "") {
+            alert("인원을 입력해주세요.");
+            return;
+        }
+        // 사회적 거리두기 강화로 5인 이상 예약 불가
+        var tc_person_int = parseInt(tc_person);
+        if (tc_person_int > 4) {
+            alert("현재 사회적 거리두기 시행으로 인해 한 팀당 5인 이상은 예약하실 수 없습니다.");
+            return;
+        }
+        if (confirm("안내한 주의사항에 동의하며, 예약을 신청하시겠습니까?")) {
+            $.ajax({
+                type : "POST",
+                url : "setTicket",
+                data: {
+                    "machines" : sel_machine,
+                    "year" : year,
+                    "month" : month,
+                    "day" : day,
+                    "tc_name" : tc_name,
+                    "tc_tel" : tc_tel,
+                    "tc_email" : tc_email,
+                    "tc_person" : tc_person,
+                    "start_idx" : start_btn.attr("index"),
+                    "end_idx" : end_btn.attr("index"),
+                },
+                error : function(data) {
+                    console.log(data);
+                    alert("예약에 실패하였습니다. 관리자에게 문의해주세요.");
+                    location.reload();
+                },
+                success : function(data) {
+                    loadComplete();
+                    var rtn = data[data.length-1];
+                    if (rtn == "Y") {
+                        alert("예약이 완료되었습니다.");
+                      location.href = "/ticket";
+                    } else if (rtn == "N") {
+                        alert("예약에 실패하였습니다. 관리자에게 문의해주세요.");
+                      location.reload();
+                    } else {
+                        alert("알 수 없는 오류가 발생했습니다. 관리자에게 문의해주세요.");
+                      location.reload();
+                    }
+                }
+            });
+        }
+    });
+    </script>
+    </div>
+<?php
+}
+?>
 
     <?php require_once $common_dir . "/footer.php"; ?>

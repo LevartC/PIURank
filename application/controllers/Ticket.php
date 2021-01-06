@@ -26,11 +26,6 @@ class Ticket extends CI_Controller {
 		$day = $this->input->get_post('d') ?? null;
 
 		$time = strtotime("{$year}-{$month}-{$day}");
-		if ($time == strtotime(date("Y-m-d"))) {
-			if (!($this->check_studio())) {
-				alert("당일 예약은 별도로 문의해주시기 바랍니다.");
-			}
-		}
 		if ($time < strtotime("-1 days")) {
 			alert("과거 시간대 예약은 할 수 없습니다.");
 		}
@@ -130,12 +125,5 @@ class Ticket extends CI_Controller {
 		}
 	}
 
-    private function check_studio() {
-        if (isset($this->session->u_class) && ($this->session->u_class == 3 || $this->session->u_class == 1)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 }
 ?>

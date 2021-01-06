@@ -229,7 +229,7 @@ class Ticket_model extends CI_Model
             $mail->Body = "
 [DIVISION STUDIO]
 안녕하세요, 디비전 스튜디오입니다.
-{$ticket_date}자 예약 내역을 안내 드립니다.
+{$ticket_date}자 예약 내역을 안내하여 드립니다.
 예약시각 : {$krt_start} 부터 {$krt_end} 까지
 이름(입금자명) : {$tc_name} 님
 연락처 : {$tc_tel}
@@ -282,6 +282,14 @@ WINDFORCE : https://open.kakao.com/me/wind4rce
 
         } catch (Exception $e) {
             echo "Message could not be sent. Mailer Error : ", $mail->ErrorInfo;
+        }
+    }
+
+    public function check_studio() {
+        if (isset($this->session->u_class) && ($this->session->u_class == 3 || $this->session->u_class == 1)) {
+            return true;
+        } else {
+            return false;
         }
     }
 }
