@@ -363,7 +363,7 @@ require_once $common_dir . "/header.php";
                   - 스튜디오의 벽이나 물건에 <span class="text-black text-bold">낙서</span>를 하지 말아주세요.<br>
                   - 퇴실시 놓고 가시는 물건은 없으신지 확인해주세요. <span class="text-orange text-bold">디비전 스튜디오는 개인 분실물에 대하여 책임을 지지 않습니다.</span><br>
                   - 스튜디오에 비치된 공용 물품을 소중히 사용해주세요. <span class="text-danger text-bold">물품 도난 및 파손시 민/형사 책임</span>을 물을 수 있습니다.<br>
-                  - 만 14세 미만의 미성년자는 법정대리인의 이용 동의서가 필요합니다.<br>
+                  - 만 14세 미만의 미성년자는 <span class="text-black text-bold">법정대리인의 이용 동의서</span>가 필요합니다.<br>
                   <br>
                   &nbsp;&nbsp;&nbsp;<span class="text-black text-bold text-large">위 내용에 모두 동의하십니까?</span><br>
                 </div>

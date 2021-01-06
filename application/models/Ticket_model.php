@@ -207,6 +207,8 @@ class Ticket_model extends CI_Model
             $end_date = date('Y-m-d H시', $t_end);
             $krt_start = date('Y년 n월 j일 H시', $t_start);
             $krt_end = date('Y년 n월 j일 H시', $t_end);
+            $ticket_date = date('Y년 n월 j일', strtotime($date));
+            $deposit_date = date('Y년 n월 j일', strtotime("{$date} -1 days"));
             // 기본 설정
             $mail->SMTPDebug = 0;
             $mail->isSMTP();
@@ -225,6 +227,9 @@ class Ticket_model extends CI_Model
             $mail->isHTML(false); // HTML 태그 사용 여부
             $mail->Subject = "{$start_date} ~ {$end_date} ({$tc_name} / {$tc_tel})예약 접수됨";
             $mail->Body = "
+[DIVISION STUDIO]
+안녕하세요, 디비전 스튜디오입니다.
+{$ticket_date}자 예약 내역을 안내 드립니다.
 예약시각 : {$krt_start} 부터 {$krt_end} 까지
 이름(입금자명) : {$tc_name} 님
 연락처 : {$tc_tel}
@@ -241,9 +246,11 @@ class Ticket_model extends CI_Model
             $mail->Body .= "
 < 총합 {$total_price}원 >
 입금계좌 : 우리은행 1002-954-983411 (예금주 : 박소담)
+[ {$deposit_date} 24시 까지 입금해주세요. ]
 
 [주의사항 - 반드시 확인해주세요!]
- - 이용 요금은 대여 시작 전에 입금해주세요.
+ - 이용 요금은 대여일 전날까지 입금해주세요.
+ - 현재 코로나 2.5단계 적용중이므로, 물과 무알콜 음료 이외의 음식 취식은 일절 금지되어 있습니다.
  - 예약시각에 맞춰 대여가 시작됩니다. 늦지 않게 도착해주세요.
  - 무단 불참시 향후 예약이 불가할 수 있습니다.
  - 예약 당일 취소는 불가능하며, 취소 요청은 개별 문의 바랍니다.
@@ -257,6 +264,7 @@ class Ticket_model extends CI_Model
  - 스튜디오의 벽이나 물건에 낙서를 하지 말아주세요.
  - 스튜디오에 비치된 공용 물품을 소중히 사용해주세요. 물품 도난 및 파손시 민/형사 책임을 물을 수 있습니다.
  - 퇴실시 놓고 가시는 물건은 없으신지 확인해주세요. 디비전 스튜디오는 개인 분실물에 대하여 책임을 지지 않습니다.
+ - 만 14세 미만의 미성년자는 법정대리인의 이용 동의서가 필요합니다.
 
 [문의사항↓↓]
 연락처 : 010-2942-2527
