@@ -127,21 +127,8 @@ require_once $common_dir . "/header.php";
                         location.reload();
                     },
                     success : function(data) {
-<?php
-    if ($this->ticket_model->check_studio() || $time != strtotime(date("Y-m-d"))) {
-?>
                         console.log(data);
-                        loadComplete();
-                        $("#tc_price").html(data["total"].toLocaleString());
-                        $("#step_3").show();
-<?php
-    } else {
-?>
-                        alert("당일 예약은 예약가능시각 확인만 가능합니다.\n예약하시려면 전화, 문자 또는 카카오톡으로 문의해주시기 바랍니다.");
-                        history.back();
-<?php
-    }
-?>
+                        goto_step3(data["total"].toLocaleString());
                     }
                 });
                 break;
@@ -229,6 +216,7 @@ require_once $common_dir . "/header.php";
         </div>
       </div>
 <?php
+    // 당일 예약은 관리자만 가능
     if ($this->ticket_model->check_studio() || $time != strtotime(date("Y-m-d"))) {
 ?>
       <form method="post" id="ticket_form">
@@ -310,6 +298,7 @@ require_once $common_dir . "/header.php";
                   - 스튜디오의 벽이나 물건에 <span class="text-black text-bold">낙서</span>를 하지 말아주세요.<br>
                   - 퇴실시 놓고 가시는 물건은 없으신지 확인해주세요. <span class="text-orange text-bold">디비전 스튜디오는 개인 분실물에 대하여 책임을 지지 않습니다.</span><br>
                   - 스튜디오에 비치된 공용 물품을 소중히 사용해주세요. <span class="text-danger text-bold">물품 도난 및 파손시 민/형사 책임</span>을 물을 수 있습니다.<br>
+                  - 미성년자는 <span class="text-info text-bold">9시부터 22시까지 대여가 가능</span>합니다. (22시 ~ 익일 9시 대여 불가)<br>
                   - 만 14세 미만의 미성년자는 <span class="text-black text-bold">법정대리인의 이용 동의서</span>가 필요합니다.<br>
                   <br>
                   &nbsp;&nbsp;&nbsp;<span class="text-black text-bold text-large">위 내용에 모두 동의하십니까?</span><br>
@@ -324,78 +313,95 @@ require_once $common_dir . "/header.php";
         </div>
       </div>
       </form>
-    <!-- /.container-fluid -->
-    <script>
-    $(document).on("submit", "#ticket_form", function(e) {
-        e.preventDefault();
-        var tc_name = $("#tc_name").val();
-        if (tc_name == "") {
-            alert("이름을 입력해주세요.");
-            return;
-        }
-        var tc_tel = $("#tc_tel").val();
-        if (!check_hp(tc_tel)) {
-            alert("올바른 연락처를 입력해주세요.");
-            return;
-        }
-        var tc_email = $("#tc_email").val();
-        if (!check_hp(tc_tel)) {
-            alert("이메일을 입력해주세요.");
-            return;
-        }
-        var tc_person = $("#tc_person").val();
-        if (tc_person == "") {
-            alert("인원을 입력해주세요.");
-            return;
-        }
-        // 사회적 거리두기 강화로 5인 이상 예약 불가
-        var tc_person_int = parseInt(tc_person);
-        if (tc_person_int > 4) {
-            alert("현재 사회적 거리두기 시행으로 인해 한 팀당 5인 이상은 예약하실 수 없습니다.");
-            return;
-        }
-        if (confirm("안내한 주의사항에 동의하며, 예약을 신청하시겠습니까?")) {
-            $.ajax({
-                type : "POST",
-                url : "setTicket",
-                data: {
-                    "machines" : sel_machine,
-                    "year" : year,
-                    "month" : month,
-                    "day" : day,
-                    "tc_name" : tc_name,
-                    "tc_tel" : tc_tel,
-                    "tc_email" : tc_email,
-                    "tc_person" : tc_person,
-                    "start_idx" : start_btn.attr("index"),
-                    "end_idx" : end_btn.attr("index"),
-                },
-                error : function(data) {
-                    console.log(data);
-                    alert("예약에 실패하였습니다. 관리자에게 문의해주세요.");
-                    location.reload();
-                },
-                success : function(data) {
-                    loadComplete();
-                    var rtn = data[data.length-1];
-                    if (rtn == "Y") {
-                        alert("예약이 완료되었습니다.");
-                      location.href = "/ticket";
-                    } else if (rtn == "N") {
-                        alert("예약에 실패하였습니다. 관리자에게 문의해주세요.");
+      <script>
+      $(document).on("submit", "#ticket_form", function(e) {
+          e.preventDefault();
+          var tc_name = $("#tc_name").val();
+          if (tc_name == "") {
+              alert("이름을 입력해주세요.");
+              return;
+          }
+          var tc_tel = $("#tc_tel").val();
+          if (!check_hp(tc_tel)) {
+              alert("올바른 연락처를 입력해주세요.");
+              return;
+          }
+          var tc_email = $("#tc_email").val();
+          if (!check_hp(tc_tel)) {
+              alert("이메일을 입력해주세요.");
+              return;
+          }
+          var tc_person = $("#tc_person").val();
+          if (tc_person == "") {
+              alert("인원을 입력해주세요.");
+              return;
+          }
+          // 사회적 거리두기 강화로 5인 이상 예약 불가
+          var tc_person_int = parseInt(tc_person);
+          if (tc_person_int > 4) {
+              alert("현재 사회적 거리두기 시행으로 인해 한 팀당 5인 이상은 예약하실 수 없습니다.");
+              return;
+          }
+          if (confirm("안내한 주의사항에 동의하며, 예약을 신청하시겠습니까?")) {
+              $.ajax({
+                  type : "POST",
+                  url : "setTicket",
+                  data: {
+                      "machines" : sel_machine,
+                      "year" : year,
+                      "month" : month,
+                      "day" : day,
+                      "tc_name" : tc_name,
+                      "tc_tel" : tc_tel,
+                      "tc_email" : tc_email,
+                      "tc_person" : tc_person,
+                      "start_idx" : start_btn.attr("index"),
+                      "end_idx" : end_btn.attr("index"),
+                  },
+                  error : function(data) {
+                      console.log(data);
+                      alert("예약에 실패하였습니다. 관리자에게 문의해주세요.");
                       location.reload();
-                    } else {
-                        alert("알 수 없는 오류가 발생했습니다. 관리자에게 문의해주세요.");
-                      location.reload();
-                    }
-                }
-            });
-        }
-    });
-    </script>
-    </div>
+                  },
+                  success : function(data) {
+                      loadComplete();
+                      var rtn = data[data.length-1];
+                      if (rtn == "Y") {
+                          alert("예약이 완료되었습니다.");
+                        location.href = "/ticket";
+                      } else if (rtn == "N") {
+                          alert("예약에 실패하였습니다. 관리자에게 문의해주세요.");
+                        location.reload();
+                      } else {
+                          alert("알 수 없는 오류가 발생했습니다. 관리자에게 문의해주세요.");
+                        location.reload();
+                      }
+                  }
+              });
+          }
+      });
+      function goto_step3(price) {
+          loadComplete();
+          $("#tc_price").html(price);
+          $("#step_3").show();
+      }
+      </script>
 <?php
-}
+    } else { // 일반인은 당일예약 별도문의
 ?>
+      <script>
+      function goto_step3(price) {
+          alert("당일 예약은 예약가능시각 확인만 가능합니다.\n예약하시려면 전화, 문자 또는 카카오톡으로 문의해주시기 바랍니다.");
+          if (history.referrer) {
+              history.back();
+          } else {
+              location.href = "/ticket";
+          }
+      }
+      </script>
+<?php
+    }
+?>
+    </div> <!-- /.container-fhd -->
 
     <?php require_once $common_dir . "/footer.php"; ?>
