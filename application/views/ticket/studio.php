@@ -283,7 +283,7 @@ require_once $common_dir . "/header.php";
                   </button>
                 </div>
                 <div class="modal-body text-left" style="font-size:0.9rem;">
-                  - 현재 <span class="text-info text-bold">코로나 2.5단계</span> 적용중이므로, 물과 무알콜 음료 이외의 음식 취식은 <span class="text-danger text-bold">일절 금지</span>되어 있습니다.<br>
+                  - 현재 <span class="text-info text-bold">사회적 거리두기 2.5단계</span> 적용중이므로, 물과 무알콜 음료 이외의 음식 취식은 <span class="text-danger text-bold">일절 금지</span>되어 있습니다.<br>
                   - 이용 요금은 <span class="text-purple text-bold">대여 시작 전에 입금</span>해주세요.<br>
                   - <span class="text-primary text-bold">예약시각에 맞춰 대여가 시작</span>됩니다. 늦지 않게 도착해주세요.<br>
                   - <span class="text-orange text-bold">무단 불참시 향후 예약이 불가</span>할 수 있습니다.<br>
