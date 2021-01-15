@@ -171,15 +171,18 @@ require_once $common_dir . "/header.php";
         <div class="col-12 my-2">
           <h3 id="select_ment" class="text-black">시작 시각을 선택해주세요.</h3>
         </div>
+        <?php /* 전날예약 막아둠
         <div class="col-3 m-0">
           <span style="font-size:1rem; color:black;"><?= date("n/j", strtotime($yesterday))?></span><br>
         </div>
-        <div class="col-6 m-0">
+        */ ?>
+        <div class="col-6 mx-auto my-0">
           <span style="font-size:1rem; color:black;"><?= date("n/j", strtotime($today))?></span><br>
         </div>
-        <div class="col-3 m-0">
+        <div class="col-3 mx-auto my-0">
           <span style="font-size:1rem; color:black;"><?= date("n/j", strtotime($tomorrow))?></span><br>
         </div>
+        <?php /* 전날예약 막아둠
         <div class="col-3 m-0 p-0">
           <div class="btn-group-vertical">
             <?php for ($q = 12; $q < 24; ++$q) :
@@ -189,28 +192,29 @@ require_once $common_dir . "/header.php";
             <?php endfor; ?>
           </div>
         </div>
-        <div class="col-6 m-0 p-0">
+        */ ?>
+        <div class="col-6 mx-auto my-0 p-0">
           <div class="btn-group-vertical">
             <?php for ($q = 0; $q < 12; ++$q) :
               $chk_disabled = $resv_data["{$today}{$q}"] ?? "";
             ?>
-            <button type="button" id="btn_<?=$today?><?=$q?>" class="btn btn-primary ticket_btn" str="<?=date("Y년 n월 j일", $today_time)?> <?=$q?>시" value="0" index="<?=$q?>"><?=$q?>시
+            <button type="button" id="btn_<?=$today?><?=$q?>" class="btn btn-primary ticket_btn" str="<?=date("Y년 n월 j일", $today_time)?> <?=$q?>시" value="0" index="<?=$q?>"><?=$q?>:00
             <?php endfor; ?>
           </div>
           <div class="btn-group-vertical">
             <?php for ($q = 12; $q < 24; ++$q) :
               $chk_disabled = $resv_data["{$today}{$q}"] ?? "";
             ?>
-            <button type="button" id="btn_<?=$today?><?=$q?>" class="btn btn-primary ticket_btn" str="<?=date("Y년 n월 j일", $today_time)?> <?=$q?>시" value="0" index="<?=$q?>"><?=$q?>시
+            <button type="button" id="btn_<?=$today?><?=$q?>" class="btn btn-primary ticket_btn" str="<?=date("Y년 n월 j일", $today_time)?> <?=$q?>시" value="0" index="<?=$q?>"><?=$q?>:00
             <?php endfor; ?>
           </div>
         </div>
-        <div class="col-3 m-0 p-0">
+        <div class="col-3 mx-auto my-0 p-0">
           <div class="btn-group-vertical">
             <?php for ($q = 0; $q < 12; ++$q) :
               $chk_disabled = $resv_data["{$tomorrow}{$q}"] ?? "";
             ?>
-            <button type="button" id="btn_<?=$tomorrow?><?=$q?>" class="btn btn-success ticket_btn" str="<?=date("Y년 n월 j일", $tomorrow_time)?> <?=$q?>시" value="0" index="<?=$q+24?>"><?=$q?>시
+            <button type="button" id="btn_<?=$tomorrow?><?=$q?>" class="btn btn-success ticket_btn" str="<?=date("Y년 n월 j일", $tomorrow_time)?> <?=$q?>시" value="0" index="<?=$q+24?>"><?=$q?>:00
             <?php endfor; ?>
           </div>
         </div>
@@ -283,8 +287,8 @@ require_once $common_dir . "/header.php";
                   </button>
                 </div>
                 <div class="modal-body text-left" style="font-size:0.9rem;">
+                  - 이용 요금은 <span class="text-purple text-bold">대여일 전날까지 입금</span>해주세요. 입금이 되지 않을 경우 <span class="text-danger text-bold">예약이 취소</span>될 수 있습니다.<br>
                   - 현재 <span class="text-info text-bold">사회적 거리두기 2.5단계</span> 적용중이므로, 물과 무알콜 음료 이외의 음식 취식은 <span class="text-danger text-bold">일절 금지</span>되어 있습니다.<br>
-                  - 이용 요금은 <span class="text-purple text-bold">대여 시작 전에 입금</span>해주세요.<br>
                   - <span class="text-primary text-bold">예약시각에 맞춰 대여가 시작</span>됩니다. 늦지 않게 도착해주세요.<br>
                   - <span class="text-orange text-bold">무단 불참시 향후 예약이 불가</span>할 수 있습니다.<br>
                   - <span class="text-danger text-bold">예약 당일 취소는 불가능</span>하며, 취소 요청은 개별 문의 바랍니다.<br>

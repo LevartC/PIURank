@@ -313,8 +313,8 @@ require_once $common_dir . "/header.php";
                 <img src="/img/lx_g.jpg" style="width:100%"></img><br><br>
                 <span style="font-size:1rem; color:darkblue;">&nbsp;[ Version : PIU XX ]</span><br>
                 &nbsp;GIMGIMGI의 LX 기체입니다. (우측에 위치)<br>
-                &nbsp;(故)강남 KONG과 같은 기종의 모니터이며,<br>
-                &nbsp;발판 단차가 거의 없는 무턱으로 튜닝되어 있습니다.<br>
+                &nbsp;꾸준히 관리하여 기체의 상태가 매우 좋습니다.<br>
+                &nbsp;발판 단차가 거의 없는 무턱으로 튜닝되어 있으며,<br>
                 &nbsp;턱이 없는 발판을 원하시는 분들에게 제격입니다.<br>
                 - 방송 가능합니다.<br>
                 <br><span style="font-size:1rem">
@@ -490,7 +490,7 @@ require_once $common_dir . "/header.php";
           </tr>
         </table>
         탈의실 구비 / 플레이 전용 신발 구비<br>
-        물 기본 제공 (생수 + 종이컵 제공)
+        물 기본 제공 (생수 + 종이컵 제공)<br>
       </div>
 
     </div>
