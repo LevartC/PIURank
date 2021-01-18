@@ -125,5 +125,34 @@ class Ticket extends CI_Controller {
 		}
 	}
 
+	public function mailtest() {
+		$this->load->library('PHPMailer_Lib');
+		$mail = $this->phpmailer_lib->load();
+		try {
+			// 기본 설정
+			$mail->SMTPDebug = 0;
+			$mail->isSMTP();
+			$mail->Host = "smtp.piurank.com";
+			$mail->SMTPAuth = true;
+			$mail->Username = $this->config->item('mailer_id');
+			$mail->Password = $this->config->item('mailer_pw');
+			$mail->SMTPSecure = "ssl";
+			$mail->Port = 465;
+			$mail->CharSet = "utf-8";
+
+			// 관리자에게 전송
+			$mail->setFrom("ticket@piurank.com", "DIVISION STUDIO 관리자");
+			$mail->addAddress("curicou@naver.com", "유저");
+			$mail->addAddress("eodmalt@piurank.com", "WINDFORCE");
+			$mail->isHTML(false); // HTML 태그 사용 여부
+			$mail->Subject = "네이버 메일테스트";
+			$mail->Body = "테스트입니다.";
+			// 메일 전송
+			$mail->send();
+        } catch (Exception $e) {
+            echo "Message could not be sent. Mailer Error : ", $mail->ErrorInfo;
+        }
+    }
+
 }
 ?>
