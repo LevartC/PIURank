@@ -134,6 +134,69 @@ class Ticket_model extends CI_Model
         return $res_data;
     }
 
+    public function getSaleData($page = 0, $page_rows = 10) {
+        if (!($page || $page_rows)) {
+            // 페이지 입력하지 않을시 카운트 등록 ($val[0]['cnt'])
+            $sql = "SELECT count(*) as cnt FROM dv_sales";
+        } else {
+            $sql = "SELECT * FROM dv_sales LEFT JOIN dv_products ON dp_seq = ds_dp_seq ORDER BY ds_datetime DESC";
+        }
+        if ($page && $page_rows) {
+            $lim_start = ($page - 1) * $page_rows;
+            $lim_end = $page_rows;
+            $sql .= " LIMIT {$lim_start}, {$lim_end}";
+        }
+        $res = $this->db->query($sql);
+        $res_data = null;
+        if ($res->num_rows()) {
+            if (!($page || $page_rows)) {
+                if ($row = $res->row_array()) {
+                    $res_data = $row['cnt'];
+                }
+            } else {
+                foreach($res->result_array() as $row) {
+                    $res_data[] = $row;
+                }
+            }
+        }
+        return $res_data;
+    }
+    
+    public function getProductData() {
+        $sql = "SELECT dp_seq, dp_name, dp_price, dp_count FROM dv_products";
+        $res = $this->db->query($sql);
+        $res_data = null;
+        if ($res) {
+            foreach($res->result_array() as $row) {
+                $res_data[] = $row;
+            }
+        }
+        return $res_data;
+    }
+
+    public function insertSales($ds_name, $ds_price, $dp_seq = null, $ds_memo = null, $ds_etc = null) {
+        $this->db->trans_start();
+
+        $sql = "INSERT INTO dv_sales(ds_name, ds_price, ds_dp_seq, ds_memo, ds_etc) VALUES (?,?,?,?,?)";
+        $bind_array = array($ds_name, $ds_price, $dp_seq, $ds_memo, $ds_etc);
+        $res1 = $this->db->query($sql, $bind_array);
+
+        if ($dp_seq) {
+            $sql = "UPDATE dv_products SET dp_count = dp_count - 1 where dp_seq = ?";
+            $bind_array = array($dp_seq);
+            $res2 = $this->db->query($sql, $bind_array);
+        } else {
+            $res2 = true;
+        }
+        if ($res1 && $res2) {
+            $this->db->trans_complete();
+            return true;
+        } else {
+            $this->db->trans_off();
+            return false;
+        }
+    }
+
     public function getMachineName($tc_type) {
         $machine_name = array(
 			"W" => "LX-W",
@@ -208,7 +271,7 @@ class Ticket_model extends CI_Model
             $krt_start = date('Y년 n월 j일 H시', $t_start);
             $krt_end = date('Y년 n월 j일 H시', $t_end);
             $ticket_date = date('Y년 n월 j일', strtotime($date));
-            $deposit_date = date('Y년 n월 j일', strtotime("{$date} -1 days"));
+            $deposit_date = date('Y년 n월 j일 H시', strtotime("+25 hour") < $t_start ? strtotime("+25 hour") : $t_start);
             // 기본 설정
             $mail->SMTPDebug = 0;
             $mail->isSMTP();
@@ -246,10 +309,10 @@ class Ticket_model extends CI_Model
             $mail->Body .= "
 < 총합 {$total_price}원 >
 입금계좌 : 우리은행 1002-954-983411 (예금주 : 박소담)
-[ {$deposit_date} 23시 까지 입금해주세요. 시간 내 입금이 되지 않을 경우 예약이 취소될 수 있습니다.]
+[ {$deposit_date}까지 입금해주세요. 시간 내 입금이 되지 않을 경우 예약이 취소될 수 있습니다.]
 
 [주의사항 - 반드시 확인해주세요!]
- - 이용 요금은 대여일 전날까지 입금해주세요. 입금이 되지 않을 경우 예약이 취소될 수 있습니다.
+ - 이용 요금은 예약 후 24시간 내로, 예약시각을 넘어가지 않도록 입금해주세요. 입금이 완료되지 않을 경우 예약이 취소될 수 있습니다.
  - 현재 사회적 거리두기 2.5단계 적용중이므로, 물과 무알콜 음료 이외의 음식 취식은 일절 금지되어 있습니다.
  - 예약시각에 맞춰 대여가 시작됩니다. 늦지 않게 도착해주세요.
  - 무단 불참시 향후 예약이 불가할 수 있습니다.
@@ -293,5 +356,6 @@ WINDFORCE : https://open.kakao.com/me/wind4rce
             return false;
         }
     }
+
 }
 ?>

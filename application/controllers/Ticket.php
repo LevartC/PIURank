@@ -26,11 +26,13 @@ class Ticket extends CI_Controller {
 		$day = $this->input->get_post('d') ?? null;
 
 		$time = strtotime("{$year}-{$month}-{$day}");
-		if ($time < strtotime("-1 days")) {
-			alert("과거 시간대 예약은 할 수 없습니다.");
-		}
-		if ($time > strtotime("+14 days")) {
-			alert("2주 이후 시간대의 예약은 할 수 없습니다.");
+		if (!$this->ticket_model->check_studio()) {
+			if ($time < strtotime("-1 days")) {
+				alert("과거 시간대 예약은 할 수 없습니다.");
+			}
+			if ($time > strtotime("+14 days")) {
+				alert("2주 이후 시간대의 예약은 할 수 없습니다.");
+			}
 		}
 		$year = date("Y", $time);
 		$month = date("n", $time);

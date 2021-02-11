@@ -7,8 +7,7 @@ require_once $common_dir . "/header.php";
 <script>
   pi_status = <?= $this->piStatus?>;
 $(document).ready(function(e) {
-$("#pi_status").val(pi_status).attr("selected", "selected");
-
+    $("#pi_status").val(pi_status).attr("selected", "selected");
 });
 $(document).on("change", "#pi_status", function(e){
     $("#page").val("1");

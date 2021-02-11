@@ -150,18 +150,28 @@ require_once $common_dir . "/header.php";
         <img src="/img/loading.gif"></img>
       </div>
       <!-- Page Heading -->
-      <div id="step_1" class="row align-items-center text-center my-2" style="display:none;">
-        <div class="col-12 my-2 text-black">
+      <div id="step_1" class="row align-items-center text-center my-2 text-black" style="display:none;">
+        <div class="col-12 my-2">
           <h3>기체를 선택해주세요.</h3>
         </div>
-        <div class="col">
-          <input type="checkbox" name="machines[]" value="W" str="LX-W" class="form-control "><span class="text-primary text-bold">LX-W</span></input>
+        <div class="col-8">
+          <span style="font-size:1rem">[디비전 스튜디오]</span>
+          <div class="row">
+            <div class="col">
+              <input type="checkbox" name="machines[]" value="W" str="LX-W" class="form-control "><span class="text-primary text-bold">LX-W</span></input>
+            </div>
+            <div class="col">
+              <input type="checkbox" name="machines[]" value="G" str="LX-G" class="form-control"><span class="text-success text-bold">LX-G</span></input>
+            </div>
+          </div>
         </div>
-        <div class="col">
-          <input type="checkbox" name="machines[]" value="G" str="LX-G" class="form-control"><span class="text-success text-bold">LX-G</span></input>
-        </div>
-        <div class="col">
-          <input type="checkbox" name="machines[]" value="F" str="FX-정인" class="form-control"><span class="text-info text-bold">FX-정인</span></input>
+        <div class="col-4">
+          <span style="font-size:1rem">[정인 BC]</span>
+          <div class="row">
+            <div class="col">
+              <input type="checkbox" name="machines[]" value="F" str="FX-정인" class="form-control"><span class="text-info text-bold">FX-정인</span></input>
+            </div>
+          </div>
         </div>
         <div class="col-12 my-3">
           <button id="step1_next" type="button" class="btn btn-primary btn-block">다 음</button>
@@ -211,7 +221,7 @@ require_once $common_dir . "/header.php";
         </div>
         <div class="col-3 mx-auto my-0 p-0">
           <div class="btn-group-vertical">
-            <?php for ($q = 0; $q < 12; ++$q) :
+            <?php for ($q = 0; $q < 8; ++$q) :
               $chk_disabled = $resv_data["{$tomorrow}{$q}"] ?? "";
             ?>
             <button type="button" id="btn_<?=$tomorrow?><?=$q?>" class="btn btn-success ticket_btn" str="<?=date("Y년 n월 j일", $tomorrow_time)?> <?=$q?>시" value="0" index="<?=$q+24?>"><?=$q?>:00
@@ -287,7 +297,7 @@ require_once $common_dir . "/header.php";
                   </button>
                 </div>
                 <div class="modal-body text-left" style="font-size:0.9rem;">
-                  - 이용 요금은 <span class="text-purple text-bold">대여일 전날까지 입금</span>해주세요. 입금이 되지 않을 경우 <span class="text-danger text-bold">예약이 취소</span>될 수 있습니다.<br>
+                  - 이용 요금은 <span class="text-purple text-bold">예약 후 24시간 내로, 예약시각을 넘어가지 않도록 입금</span> 해주세요. 입금이 완료되지 않을 경우 <span class="text-danger text-bold">예약이 취소</span>될 수 있습니다.<br>
                   - 현재 <span class="text-info text-bold">사회적 거리두기 2.5단계</span> 적용중이므로, 물과 무알콜 음료 이외의 음식 취식은 <span class="text-danger text-bold">일절 금지</span>되어 있습니다.<br>
                   - <span class="text-primary text-bold">예약시각에 맞춰 대여가 시작</span>됩니다. 늦지 않게 도착해주세요.<br>
                   - <span class="text-orange text-bold">무단 불참시 향후 예약이 불가</span>할 수 있습니다.<br>

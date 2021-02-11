@@ -141,6 +141,47 @@ class Admin extends CI_Controller {
             $this->load->view('admin/admin_ticketinfo', $view_data);
         }
     }
+    public function sales() {
+        if ($this->check_studio()) {
+            $cnt = $this->ticket_model->getSaleData(0, 0);
+            $page = $this->input->post_get('page');
+            $page_rows = 10;
+            if ($page < 1) {
+                $page = 1;
+            }
+            $last_page = $cnt % $page_rows == 0 ? (int)($cnt / $page_rows) : (int)($cnt / $page_rows) + 1;
+            if ($page > $last_page) {
+                $page = $last_page;
+            }
+            $sales_data = $this->ticket_model->getSaleData($page);
+            $product_data = $this->ticket_model->getProductData();
+            $view_data = array(
+                'page' => $page,
+                'page_rows' => $page_rows,
+                'last_page' => $last_page,
+                'page_cnt' => $cnt,
+                "sales_data" => $sales_data,
+                "product_data" => $product_data,
+            );
+            $this->load->view('admin/admin_sales', $view_data);
+        }
+    }
+    public function insertSales() {
+        if ($this->check_studio()) {
+            $dp_seq = $this->input->post_get('dp_seq');
+            $ds_name = $this->input->post_get('ds_name') ?? null;
+            $ds_price = $this->input->post_get('ds_price') ?? null;
+            $ds_memo = $this->input->post_get('ds_memo') ?? null;
+            if ($ds_name && $ds_price !== null) {
+                $res = $this->ticket_model->insertSales($ds_name, $ds_price, $dp_seq, $ds_memo);
+                if ($res) {
+                    echo "Y";
+                    return;
+                }
+            }
+        }
+        echo "N";
+    }
 	public function delTicket() {
         if ($this->check_studio()) {
             $tc_seq = $this->input->post_get('seq') ?? null;

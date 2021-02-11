@@ -122,6 +122,7 @@ if (isset($_SESSION['u_class']) && $_SESSION['u_class'] <= '3') {
                 if ($_SESSION['u_class'] == '1' || $_SESSION['u_class'] == '3') {
                 ?>
                     <a class="dropdown-item" href="/admin/ticket">DIVISION STUDIO 예약 관리자</a>
+                    <a class="dropdown-item" href="/admin/sales">DIVISION STUDIO 매출 관리자</a>
                     <div class="dropdown-divider"></div>
                 <?php
                 }
