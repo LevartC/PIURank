@@ -234,6 +234,29 @@ class Admin extends CI_Controller {
 		}
 	}
 
+    public function ticket_wall() {
+        $start_date = $this->input->post_get('start_date') ?? null;
+        $start_time = $this->input->post_get('start_time') ?? null;
+        $end_date = $this->input->post_get('end_date') ?? null;
+        $end_time = $this->input->post_get('end_time') ?? null;
+        if ($start_date && $start_time && $end_date && $end_time) {
+            $this->db->trans_start();
+            for ($i = $start_date; $i <= $end_date; $i = date('Y-m-d', strtotime('+1 day', strtotime($i)))) {
+                $i_start = date('Y-m-d H:i:s', strtotime("{$i} {$start_time}"));
+                $i_end = date('Y-m-d H:i:s', strtotime("{$i} {$end_time}"));
+                if (!$this->ticket_model->insertWall($i_start, $i_end)) {
+                    $this->db->trans_off();
+                    alert("오류 발생");
+                }
+            }
+            $this->db->trans_complete();
+            alert("성공적으로 완료되었습니다.");
+        } else {
+            alert("날짜를 정확히 입력해주세요.");
+        }
+
+    }
+
 	public function add_chart() {
 		if ($this->check_super()) {
 			$season = $this->input->post('al_li_season');

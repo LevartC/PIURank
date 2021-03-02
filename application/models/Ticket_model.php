@@ -93,6 +93,28 @@ class Ticket_model extends CI_Model
         return $res;
     }
 
+    public function insertWall($tc_start, $tc_end) {
+        $bind_array = array($tc_start, $tc_end);
+        $sql_w = "INSERT INTO dv_ticket(tc_type, tc_name, tc_tel, tc_email, tc_starttime, tc_endtime, tc_person, tc_price) VALUES('W', '막아둠', '0', '0', ?, ?, 1, 0)";
+        $res_w = $this->db->query($sql_w, $bind_array);
+        $sql_g = "INSERT INTO dv_ticket(tc_type, tc_name, tc_tel, tc_email, tc_starttime, tc_endtime, tc_person, tc_price) VALUES('G', '막아둠', '0', '0', ?, ?, 1, 0)";
+        $res_g = $this->db->query($sql_g, $bind_array);
+        $sql_f = "INSERT INTO dv_ticket(tc_type, tc_name, tc_tel, tc_email, tc_starttime, tc_endtime, tc_person, tc_price) VALUES('F', '막아둠', '0', '0', ?, ?, 1, 0)";
+        $res_f = $this->db->query($sql_f, $bind_array);
+        if ($res_w && $res_g && $res_f) {
+            $sql2_w = "INSERT INTO dv_ticket_ready(tc_type, tc_name, tc_tel, tc_email, tc_starttime, tc_endtime, tc_person, tc_price) VALUES('W', '막아둠', '0', '0', ?, ?, 1, 0)";
+            $res2_w = $this->db->query($sql2_w, $bind_array);
+            $sql2_g = "INSERT INTO dv_ticket_ready(tc_type, tc_name, tc_tel, tc_email, tc_starttime, tc_endtime, tc_person, tc_price) VALUES('G', '막아둠', '0', '0', ?, ?, 1, 0)";
+            $res2_g = $this->db->query($sql2_g, $bind_array);
+            $sql2_f = "INSERT INTO dv_ticket_ready(tc_type, tc_name, tc_tel, tc_email, tc_starttime, tc_endtime, tc_person, tc_price) VALUES('F', '막아둠', '0', '0', ?, ?, 1, 0)";
+            $res2_f = $this->db->query($sql2_f, $bind_array);
+            if ($res2_w && $res2_g && $res2_f) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private function checkTicket($m_val, $tc_start, $tc_end) {
         $sql = "SELECT tc_seq FROM dv_ticket WHERE tc_type = ? AND ((tc_starttime <= ? AND tc_endtime > ?) OR (tc_starttime < ? AND tc_endtime >= ?))";
         $bind_array = array($m_val, $tc_start, $tc_start, $tc_end, $tc_end);
@@ -161,7 +183,7 @@ class Ticket_model extends CI_Model
         }
         return $res_data;
     }
-    
+
     public function getProductData() {
         $sql = "SELECT dp_seq, dp_name, dp_price, dp_count FROM dv_products";
         $res = $this->db->query($sql);

@@ -382,13 +382,14 @@ require_once $common_dir . "/header.php";
                       var rtn = data[data.length-1];
                       if (rtn == "Y") {
                           alert("예약이 완료되었습니다.");
-                        location.href = "/ticket";
+                          location.href = "/ticket";
                       } else if (rtn == "N") {
                           alert("예약에 실패하였습니다. 관리자에게 문의해주세요.");
-                        location.reload();
+                          location.reload();
                       } else {
+                          console.log(data);
                           alert("알 수 없는 오류가 발생했습니다. 관리자에게 문의해주세요.");
-                        location.reload();
+                          location.reload();
                       }
                   }
               });

@@ -25,6 +25,13 @@ require_once $common_dir . "/header.php";
             return false;
         }
     });
+    $(document).on("submit", "#frm_ticket", function(e) {
+        if (confirm("해당 날짜와 시각 사이를 막으시겠습니까?")) {
+            return true;
+        } else {
+            return false;
+        }
+    });
     $(function() {
       $("#al_title").autocomplete({
         source : function( request, response ) {
@@ -100,22 +107,22 @@ require_once $common_dir . "/header.php";
         <h1 class="h3 mb-0 text-gray-800">AEVILEAGUE 관리자</h1>
       </div>
       <form class="user" id="frm_league" method="post" action="cleanup_match">
-        <div class="form-row">
-          <div class="col-4">
+        <div class="form-row p-2 mb-2 border border-secondary">
+          <div class="col-6">
               <label for="li_season">시즌</label>
               <input type="text" class="form-control" id="li_season" name="li_season"></input>
           </div>
-          <div class="col-4">
+          <div class="col-6">
               <label for="li_degree">차수</label>
               <input type="text" class="form-control" id="li_degree" name="li_degree"></input>
           </div>
-        </div>
-        <div class="form-row m-2">
-              <button class="btn btn-primary" type="submit">시즌 갱신</button>
+          <div class="col-12 m-2">
+                <button class="btn btn-primary" type="submit">시즌 갱신</button>
+          </div>
         </div>
       </form>
       <form class="user" id="frm_chart" method="post" action="add_chart">
-        <div class="form-row">
+        <div class="form-row p-2 mb-2 border border-secondary">
           <div class="col-12">
               <label for="al_title">곡 선택</label>
               <input type="text" class="form-control" id="al_title" name="al_title" placeholder="제목, 모드, 레벨을 검색하여 선택하세요."></input>
@@ -143,9 +150,32 @@ require_once $common_dir . "/header.php";
                 ?>
               </select>
           </div>
+          <div class="col-12 m-2">
+                <button class="btn btn-primary" type="submit">추가</button>
+          </div>
         </div>
-        <div class="form-row m-2">
-              <button class="btn btn-primary" type="submit">추가</button>
+      </form>
+      <form class="user" id="frm_ticket" method="post" action="ticket_wall">
+        <div class="form-row p-2 mb-2 border border-secondary">
+          <div class="col-6">
+            <label for="start_date">시작일</label>
+            <input type="text" class="form-control" id="start_date" name="start_date"></input>
+          </div>
+          <div class="col-6">
+            <label for="start_time">시각</label>
+            <input type="text" class="form-control" id="start_time" name="start_time"></input>
+          </div>
+          <div class="col-6">
+            <label for="end_date">종료일</label>
+            <input type="text" class="form-control" id="end_date" name="end_date"></input>
+          </div>
+          <div class="col-6">
+            <label for="end_time">시각</label>
+            <input type="text" class="form-control" id="end_time" name="end_time"></input>
+          </div>
+          <div class="col-12 m-2">
+            <button class="btn btn-primary" type="submit">생성</button>
+          </div>
         </div>
       </form>
     </div>

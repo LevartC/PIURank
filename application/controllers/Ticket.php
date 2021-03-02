@@ -92,7 +92,7 @@ class Ticket extends CI_Controller {
 		$tc_person = $this->input->post_get('tc_person') ?? null;
 		$start_idx = $this->input->post_get('start_idx') ?? null;
 		$end_idx = $this->input->post_get('end_idx') ?? null;
-		if ($machines && $year && $month && $day && $tc_name && $tc_tel && $tc_email && $tc_person && $start_idx && $end_idx) {
+		if ($machines && $year && $month && $day && $tc_name && $tc_tel && $tc_email && $tc_person && $start_idx !== null && $end_idx !== null) {
 			$u_id = $this->session->u_id ?? null;
 			$date = date("Y-m-d", strtotime("{$year}-{$month}-{$day}"));
 			$price_data = $this->ticket_model->getPrice($machines, $date, $start_idx, $end_idx);
