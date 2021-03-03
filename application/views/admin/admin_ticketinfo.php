@@ -146,7 +146,7 @@ $(document).on("click", ".tc_sentsms", function(e) {
                   <?php } ?>
                 </td>
                 <td>
-                  <?=$ticket_row['tc_name']?> (<?=$ticket_row['mc_name']?>)<br>
+                  <?=$ticket_row['tc_name']?> (<?=$ticket_row['mc_name']?> / <?=$ticket_row['tc_version']?>)<br>
                   <?=$ticket_row['tc_tel']?><br>
                   <?=$ticket_row['tc_email']?>
                 </td>

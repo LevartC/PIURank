@@ -16,6 +16,7 @@ class Ticket extends CI_Controller {
 		$view_data = array(
 			'year' => $year,
 			'month' => $month,
+			'is_admin' => $this->ticket_model->check_studio(),
 		);
 		$this->load->view('ticket/calendar', $view_data);
 	}
@@ -24,14 +25,15 @@ class Ticket extends CI_Controller {
 		$year = $this->input->get_post('y') ?? null;
 		$month = $this->input->get_post('m') ?? null;
 		$day = $this->input->get_post('d') ?? null;
+		$is_admin = $this->ticket_model->check_studio();
 
 		$time = strtotime("{$year}-{$month}-{$day}");
-		if (!$this->ticket_model->check_studio()) {
+		if (!$is_admin) {
 			if ($time < strtotime("-1 days")) {
 				alert("과거 시간대 예약은 할 수 없습니다.");
 			}
 			if ($time > strtotime("+14 days")) {
-				alert("2주 이후 시간대의 예약은 할 수 없습니다.");
+				alert("예약은 2주 후까지 가능합니다.");
 			}
 		}
 		$year = date("Y", $time);
@@ -47,6 +49,7 @@ class Ticket extends CI_Controller {
 			'day' => $day,
 			'date' => $date,
 			'time' => $time,
+			'is_admin' => $is_admin,
 		);
 		$this->load->view('ticket/studio', $view_data);
 	}

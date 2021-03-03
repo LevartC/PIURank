@@ -32,12 +32,15 @@ class Ticket_model extends CI_Model
                 }
             }
         }
-        $time_limit = time();
-        if ($t_start <= $time_limit) {
-            foreach ($machines as $m_val) {
-                for ($t = $t_start; $t < $t_end && $t < $time_limit; $t = strtotime("+1 hours", $t)) {
-                    $idx = date("YmdG", $t);
-                    $data[$m_val][$idx] = "disabled";
+        // 스튜디오 관리자는 과거 내역 예약 가능
+        if (!$this->check_studio()) {
+            $time_limit = time();
+            if ($t_start <= $time_limit) {
+                foreach ($machines as $m_val) {
+                    for ($t = $t_start; $t < $t_end && $t < $time_limit; $t = strtotime("+1 hours", $t)) {
+                        $idx = date("YmdG", $t);
+                        $data[$m_val][$idx] = "disabled";
+                    }
                 }
             }
         }
@@ -66,7 +69,7 @@ class Ticket_model extends CI_Model
         return $price_info;
     }
 
-    public function insertTicket($machines, $u_id, $date, $start_idx, $end_idx, $tc_name, $tc_tel, $tc_email, $tc_person, $tc_price) {
+    public function insertTicket($machines, $u_id, $date, $start_idx, $end_idx, $tc_name, $tc_tel, $tc_email, $tc_person, $tc_price, $tc_version = 'XX') {
         $t_start = strtotime("{$date} {$start_idx} hours");
         $t_end = strtotime("{$date} {$end_idx} hours");
         $tc_start = date("Y-m-d H:i:s", $t_start);
@@ -75,10 +78,10 @@ class Ticket_model extends CI_Model
         $this->db->trans_start();
         foreach($machines as $m_val) {
             if ($this->checkTicket($m_val, $tc_start, $tc_end)) {
-                $sql = "INSERT INTO dv_ticket(tc_u_id, tc_type, tc_name, tc_tel, tc_email, tc_starttime, tc_endtime, tc_person, tc_price) VALUES(?,?,?,?,?,?,?,?,?)";
-                $bind_array = array($u_id, $m_val, $tc_name, $tc_tel, $tc_email, $tc_start, $tc_end, $tc_person, $tc_price[$m_val]);
+                $sql = "INSERT INTO dv_ticket(tc_u_id, tc_type, tc_name, tc_tel, tc_email, tc_starttime, tc_endtime, tc_person, tc_price, tc_version) VALUES(?,?,?,?,?,?,?,?,?,?)";
+                $bind_array = array($u_id, $m_val, $tc_name, $tc_tel, $tc_email, $tc_start, $tc_end, $tc_person, $tc_price[$m_val], $tc_version);
                 $res = $this->db->query($sql, $bind_array);
-                $sql2 = "INSERT INTO dv_ticket_ready(tc_u_id, tc_type, tc_name, tc_tel, tc_email, tc_starttime, tc_endtime, tc_person, tc_price) VALUES(?,?,?,?,?,?,?,?,?)";
+                $sql2 = "INSERT INTO dv_ticket_ready(tc_u_id, tc_type, tc_name, tc_tel, tc_email, tc_starttime, tc_endtime, tc_person, tc_price, tc_version) VALUES(?,?,?,?,?,?,?,?,?,?)";
                 $res2 = $this->db->query($sql2, $bind_array);
                 if (!($res && $res2)) {
                     $this->db->trans_off();
@@ -127,7 +130,7 @@ class Ticket_model extends CI_Model
     }
 
     public function searchTicket($tc_name, $tc_tel) {
-        $sql = "SELECT tc_type, tc_starttime, tc_endtime, tc_price, tc_deposit FROM dv_ticket WHERE tc_starttime > now() AND tc_name = ? AND tc_tel = ? ORDER BY tc_starttime";
+        $sql = "SELECT tc_type, tc_starttime, tc_endtime, tc_price, tc_deposit, tc_version FROM dv_ticket WHERE tc_starttime > now() AND tc_name = ? AND tc_tel = ? ORDER BY tc_starttime";
         $bind_array = array($tc_name, $tc_tel);
         $res = $this->db->query($sql, $bind_array);
         $res_data = null;
@@ -282,7 +285,7 @@ class Ticket_model extends CI_Model
     }
 
 
-    public function sendEmail($machines, $date, $start_idx, $end_idx, $tc_name, $tc_tel, $tc_email, $tc_person, $price_data) {
+    public function sendEmail($machines, $date, $start_idx, $end_idx, $tc_name, $tc_tel, $tc_email, $tc_person, $price_data, $tc_version = 'XX') {
         $this->load->library('PHPMailer_Lib');
         $mail = $this->phpmailer_lib->load();
         try {
@@ -319,6 +322,7 @@ class Ticket_model extends CI_Model
 이름(입금자명) : {$tc_name} 님
 연락처 : {$tc_tel}
 이메일 : {$tc_email}
+버전 : {$tc_version}
 인원 : {$tc_person} 명
 [가격]
 ";
@@ -335,7 +339,7 @@ class Ticket_model extends CI_Model
 
 [주의사항 - 반드시 확인해주세요!]
  - 이용 요금은 예약 후 24시간 내로, 예약시각을 넘어가지 않도록 입금해주세요. 입금이 완료되지 않을 경우 예약이 취소될 수 있습니다.
- - 현재 사회적 거리두기 2.5단계 적용중이므로, 물과 무알콜 음료 이외의 음식 취식은 일절 금지되어 있습니다.
+ - 현재 사회적 거리두기 2단계 적용중이므로, 물과 무알콜 음료 이외의 음식 취식은 일절 금지되어 있습니다.
  - 예약시각에 맞춰 대여가 시작됩니다. 늦지 않게 도착해주세요.
  - 무단 불참시 향후 예약이 불가할 수 있습니다.
  - 예약 당일 취소는 불가능하며, 취소 요청은 개별 문의 바랍니다.

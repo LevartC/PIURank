@@ -35,12 +35,13 @@ require_once $common_dir . "/header.php";
             month += 12;
             year--;
         }
-        location.href = "ticket?y="+year+"&m="+month;
+        location.href = "/ticket?y="+year+"&m="+month;
     });
     $(document).on("click", ".select_date", function(e) {
         e.preventDefault();
+        var url_addr = "/ticket/studio";
         var day = $(this).html().trim();
-        location.href = "/ticket/studio?y="+year+"&m="+month+"&d="+day;
+        location.href = url_addr + "?y="+year+"&m="+month+"&d="+day;
     });
 
     $(document).on("click", "#search_ticket", function(e) {
@@ -135,7 +136,10 @@ require_once $common_dir . "/header.php";
                   <div
                     <?php
                     $curdate = strtotime("{$year}-{$month}-{$n}");
-                    echo $curdate >= strtotime("-1 days") && $curdate <= strtotime("+14 days") ? "class='select_date' style='color:{$week_color[$k]}'" : ""?>>
+                    if ($is_admin || ($curdate >= strtotime("-1 days") && $curdate <= strtotime("+14 days"))) {
+                        echo "class='select_date' style='color:{$week_color[$k]}'";
+                    }
+                    ?>>
                     <?= $n++ ?>
                   </div>
                 <?php endif ?>

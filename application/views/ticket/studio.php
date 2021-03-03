@@ -35,14 +35,19 @@ require_once $common_dir . "/header.php";
         $("#step_1").show();
     });
 
-    $(document).on("click", "#step1_next", function(e) {
+//    $(document).on("click", "#step1_next", function(e) {
+    $(document).on("change", "input[name='machines[]']", function(e) {
+        $("#step_2").hide();
+        $("#step_3").hide();
+        is_selecting = 0;
         sel_machine = [];
         $("input[name='machines[]']:checked").each(function() {
             sel_machine.push($(this).val());
         });
         if (sel_machine.length > 0) {
-            $("#step_1").hide();
             loading();
+            $(".ticket_btn").removeAttr("disabled");
+            $("#select_ment").html("시작 시각을 선택해주세요.");
             $.ajax({
               type : "POST",
               url : "getReservation",
@@ -73,11 +78,29 @@ require_once $common_dir . "/header.php";
         }
     });
     function loading() {
-      $("#loading").show();
+        $("#loading").show();
     }
     function loadComplete() {
-      $("#loading").hide();
+        $("#loading").hide();
     }
+    function refresh() {
+        location.reload();
+    }
+    function addVersions(machine) {
+        $("#ver_select").empty();
+        $("#ver_select").append($("<option value='XX'>XX</option>"));
+        $("#ver_select").append($("<option value='PRIME2'>PRIME2</option>"));
+        if (machine == "FX-정인") {
+            $("#ver_select").append($("<option value='FIESTA2'>FIESTA2</option>"));
+            $("#ver_select").append($("<option value='FIESTA EX'>FIESTA EX</option>"));
+            $("#ver_select").append($("<option value='NXA'>NXA</option>"));
+            $("#ver_select").append($("<option value='NX2'>NX2</option>"));
+        }
+    }
+
+    $(document).on("click", "#btn_back", function(e) {
+        refresh();
+    });
 
     var start_btn = "";
     var end_btn = "";
@@ -107,12 +130,14 @@ require_once $common_dir . "/header.php";
                     break;
                 }
                 is_selecting = 0;
+                $("#step_1").hide();
                 $("#step_2").hide();
                 loading();
                 var str_machine = [];
                 $("input[name='machines[]']:checked").each(function() {
                     str_machine.push($(this).attr("str"));
                 });
+                addVersions(str_machine[(str_machine.length-1)]);
                 $("#str_machine").html(str_machine.join(" / "));
                 var ticket_time = start_btn.attr("str") + " 부터<br>" + end_btn.attr("str") + " 까지";
                 $("#ticket_time").html(ticket_time);
@@ -146,9 +171,6 @@ require_once $common_dir . "/header.php";
       <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h4 mb-0 text-blueviolet text-bold"><i class="fas fa-fw fa-ticket-alt"></i> <?=$year?>년 <?=$month?>월 <?=$day?>일 예약</h1>
       </div>
-      <div id="loading" class="text-center align-items-center mb-4">
-        <img src="/img/loading.gif"></img>
-      </div>
       <!-- Page Heading -->
       <div id="step_1" class="row align-items-center text-center my-2 text-black" style="display:none;">
         <div class="col-12 my-2">
@@ -173,9 +195,14 @@ require_once $common_dir . "/header.php";
             </div>
           </div>
         </div>
+        <?php /* 다음 버튼 삭제
         <div class="col-12 my-3">
           <button id="step1_next" type="button" class="btn btn-primary btn-block">다 음</button>
         </div>
+        */ ?>
+      </div>
+      <div id="loading" class="text-center align-items-center mb-4">
+        <img src="/img/loading.gif"></img>
       </div>
       <div id="step_2" class="row align-items-center text-center my-2" style="display:none;">
         <div class="col-12 my-2">
@@ -205,7 +232,12 @@ require_once $common_dir . "/header.php";
         */ ?>
         <div class="col-6 mx-auto my-0 p-0">
           <div class="btn-group-vertical">
-            <?php for ($q = 0; $q < 12; ++$q) :
+            <?php for ($q = 0; $q < 8; ++$q) : // 새벽시간대 선택 불가
+              $chk_disabled = $resv_data["{$today}{$q}"] ?? "";
+            ?>
+            <button type="button" class="btn btn-primary" value="0" index="<?=$q?>" disabled><?=$q?>:00
+            <?php endfor; ?>
+            <?php for ($q = 8; $q < 12; ++$q) :
               $chk_disabled = $resv_data["{$today}{$q}"] ?? "";
             ?>
             <button type="button" id="btn_<?=$today?><?=$q?>" class="btn btn-primary ticket_btn" str="<?=date("Y년 n월 j일", $today_time)?> <?=$q?>시" value="0" index="<?=$q?>"><?=$q?>:00
@@ -231,10 +263,11 @@ require_once $common_dir . "/header.php";
       </div>
 <?php
     // 당일 예약은 관리자만 가능
-    if ($this->ticket_model->check_studio() || $time != strtotime(date("Y-m-d"))) {
+    if ($is_admin || $time != strtotime(date("Y-m-d"))) {
 ?>
       <form method="post" id="ticket_form">
       <div id="step_3" class="row align-items-center text-center my-2" style="display:none;">
+        <button type="button" id="btn_back" class="btn btn-block btn-success" style="font-size:1.2rem;">기체 선택으로 돌아가기</button>
         <div class="col-12 my-2">
           <h3 id="select_ment" class="text-black">예약정보를 입력해주세요.</h3>
         </div>
@@ -259,6 +292,13 @@ require_once $common_dir . "/header.php";
         </div>
         <div class="col-8 my-2 d-block">
           <input class="form-control form-control-user ticket_form mb_hp" type="text" id="tc_tel" name="tc_tel" maxlength="13" required=""> </input>
+        </div>
+        <div class="col-4 my-2 align-items-center justify-content-center">
+          버 전
+        </div>
+        <div class="col-8 my-2 d-block">
+          <select class="form-control form-control-user" id="ver_select">
+          </select>
         </div>
         <div class="col-4 my-2 align-items-center justify-content-center">
           이메일
@@ -298,7 +338,7 @@ require_once $common_dir . "/header.php";
                 </div>
                 <div class="modal-body text-left" style="font-size:0.9rem;">
                   - 이용 요금은 <span class="text-purple text-bold">예약 후 24시간 내로, 예약시각을 넘어가지 않도록 입금</span> 해주세요. 입금이 완료되지 않을 경우 <span class="text-danger text-bold">예약이 취소</span>될 수 있습니다.<br>
-                  - 현재 <span class="text-info text-bold">사회적 거리두기 2.5단계</span> 적용중이므로, 물과 무알콜 음료 이외의 음식 취식은 <span class="text-danger text-bold">일절 금지</span>되어 있습니다.<br>
+                  - 현재 <span class="text-info text-bold">사회적 거리두기 2단계</span> 적용중이므로, 물과 무알콜 음료 이외의 음식 취식은 <span class="text-danger text-bold">일절 금지</span>되어 있습니다.<br>
                   - <span class="text-primary text-bold">예약시각에 맞춰 대여가 시작</span>됩니다. 늦지 않게 도착해주세요.<br>
                   - <span class="text-orange text-bold">무단 불참시 향후 예약이 불가</span>할 수 있습니다.<br>
                   - <span class="text-danger text-bold">예약 당일 취소는 불가능</span>하며, 취소 요청은 개별 문의 바랍니다.<br>
