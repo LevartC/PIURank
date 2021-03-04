@@ -244,12 +244,12 @@ require_once $common_dir . "/header.php";
               </div>
               <div class="modal-body text-left" style="font-size:0.8rem; color:black;">
                 <img src="/img/lx_w.jpg" style="width:100%"></img><br><br>
-                <span style="font-size:1rem; color:darkblue;">&nbsp;[ Version : PIU XX ]</span><br>
+                <span style="font-size:1rem; color:darkblue;">&nbsp;[ Version : XX, PRIME2 ]</span><br>
                 &nbsp;WINDFORCE의 LX 기체입니다. (좌측에 위치)<br>
                 &nbsp;호평이 자자하던 (故)강남 KONG과 같은 기종의 모니터이며,<br>
                 &nbsp;(故)이수 짱오락실과 유사한 발판 컨디션으로 세팅하였습니다.<br>
                 &nbsp;방문하신 많은 유저분들이 이 기체에서 좋은 성과를 많이 내고 계십니다.<br>
-                - 방송 가능합니다.<br>
+                ※ 방송 가능합니다.<br>
                 <br><span style="font-size:1rem">
                 [특징]<br>
                 - 타격감
@@ -315,12 +315,12 @@ require_once $common_dir . "/header.php";
               </div>
               <div class="modal-body text-left" style="font-size:0.8rem; color:black;">
                 <img src="/img/lx_g.jpg" style="width:100%"></img><br><br>
-                <span style="font-size:1rem; color:darkblue;">&nbsp;[ Version : PIU XX ]</span><br>
+                <span style="font-size:1rem; color:darkblue;">&nbsp;[ Version : XX, PRIME2 ]</span><br>
                 &nbsp;GIMGIMGI의 LX 기체입니다. (우측에 위치)<br>
                 &nbsp;꾸준히 관리하여 기체의 상태가 매우 좋습니다.<br>
                 &nbsp;발판 단차가 거의 없는 무턱으로 튜닝되어 있으며,<br>
                 &nbsp;턱이 없는 발판을 원하시는 분들에게 제격입니다.<br>
-                - 방송 가능합니다.<br>
+                ※ 방송 가능합니다.<br>
                 <br><span style="font-size:1rem">
                 [특징]<br>
                 - 타격감
@@ -386,14 +386,14 @@ require_once $common_dir . "/header.php";
               </div>
               <div class="modal-body text-left" style="font-size:0.8rem; color:black;">
                 <img src="/img/fx_j.jpg" style="width:100%"></img><br><br>
-                <span style="font-size:1rem; color:darkblue;">&nbsp;[ Version : PIU XX ]</span><br>
+                <span style="font-size:1rem; color:darkblue;">&nbsp;[ Version : XX, PRIME2, FIESTA2, FIESTA EX, NXA, NX2 ]</span><br>
                 &nbsp;WINDFORCE의 FX 기체입니다. (별실 설치)<br>
                 &nbsp;(故)정인게임장의 고유 모니터 채용 등 기존의 단점을 없애고 장점만을 계승하였으며,
                 &nbsp;독립된 공간에 설치하여 그 시절 그 느낌을 살려 보았습니다.<br>
                 &nbsp;홈케이드로 사용하였기 때문에 발판 단차가 적고(무턱), 발판 소음이 많이 나지 않으며, 무릎 부하가 적은 것이 특징입니다.<br>
                 &nbsp;심혈을 기울여 세팅한 WINDFORCE의 튜닝 노하우가 담겨 있는 발판을 경험하실 수 있습니다.<br>
-                &nbsp;추후 XX 외 다른 옛날 버전(NXA, 제로 등)을 돌릴 수 있도록 계획하고 있습니다.<br>
-                - 방송 가능합니다.<br>
+                &nbsp;현재 구버전 (FIESTA2, FIESTA EX, NXA, NX2) 플레이가 가능합니다.<br>
+                ※ 모든 버전 방송 가능합니다.<br>
                 <br><span style="font-size:1rem">
                 [특징]<br>
                 - 소음
