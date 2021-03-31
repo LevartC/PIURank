@@ -61,6 +61,7 @@ require_once $common_dir . "/header.php";
               success : function(data) {
                   console.log(data);
                   if (data) {
+                      $(".ticket_btn").val("0");
                       for(var idx in data) {
                           for (var t_idx in data[idx]) {
                               var btn_id = "#btn_" + t_idx;
@@ -397,6 +398,7 @@ require_once $common_dir . "/header.php";
               return;
           }
           if (confirm("안내한 주의사항에 동의하며, 예약을 신청하시겠습니까?")) {
+              var tc_version = $("#ver_select").val();
               $.ajax({
                   type : "POST",
                   url : "setTicket",
@@ -409,6 +411,7 @@ require_once $common_dir . "/header.php";
                       "tc_tel" : tc_tel,
                       "tc_email" : tc_email,
                       "tc_person" : tc_person,
+                      "tc_version" : tc_version,
                       "start_idx" : start_btn.attr("index"),
                       "end_idx" : end_btn.attr("index"),
                   },

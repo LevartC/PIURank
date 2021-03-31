@@ -25,6 +25,10 @@ class Ticket extends CI_Controller {
 		$year = $this->input->get_post('y') ?? null;
 		$month = $this->input->get_post('m') ?? null;
 		$day = $this->input->get_post('d') ?? null;
+		if ($month >= '4' && $day > '7') {
+			alert('스튜디오 무인화 준비로 인해 4월 1일 예약 재개 예정입니다.');
+			exit;
+		}
 		$is_admin = $this->ticket_model->check_studio();
 
 		$time = strtotime("{$year}-{$month}-{$day}");
@@ -95,13 +99,14 @@ class Ticket extends CI_Controller {
 		$tc_person = $this->input->post_get('tc_person') ?? null;
 		$start_idx = $this->input->post_get('start_idx') ?? null;
 		$end_idx = $this->input->post_get('end_idx') ?? null;
+		$tc_version = $this->input->post_get('tc_version') ?? null;
 		if ($machines && $year && $month && $day && $tc_name && $tc_tel && $tc_email && $tc_person && $start_idx !== null && $end_idx !== null) {
 			$u_id = $this->session->u_id ?? null;
 			$date = date("Y-m-d", strtotime("{$year}-{$month}-{$day}"));
 			$price_data = $this->ticket_model->getPrice($machines, $date, $start_idx, $end_idx);
-			$tc_res = $this->ticket_model->insertTicket($machines, $u_id, $date, $start_idx, $end_idx, $tc_name, $tc_tel, $tc_email, $tc_person, $price_data);
+			$tc_res = $this->ticket_model->insertTicket($machines, $u_id, $date, $start_idx, $end_idx, $tc_name, $tc_tel, $tc_email, $tc_person, $price_data, $tc_version);
 			if ($tc_res) {
-				$this->ticket_model->sendEmail($machines, $date, $start_idx, $end_idx, $tc_name, $tc_tel, $tc_email, $tc_person, $price_data);
+				$this->ticket_model->sendEmail($machines, $date, $start_idx, $end_idx, $tc_name, $tc_tel, $tc_email, $tc_person, $price_data, $tc_version);
 				echo "Y";
 			} else {
 				echo "N";
