@@ -9,7 +9,7 @@ class Ticket_model extends CI_Model
 
     public function getReservationInfo($year, $month, $day, $machines = null) {
         $t_start = strtotime("{$year}-{$month}-{$day} -12 hours");
-        $t_end = strtotime("{$year}-{$month}-{$day} 11:59:59 +1 days");
+        $t_end = strtotime("{$year}-{$month}-{$day} +2 days");
         $tc_start = date("Y-m-d H:i:s", $t_start);
         $tc_end = date("Y-m-d H:i:s", $t_end);
 
@@ -17,6 +17,9 @@ class Ticket_model extends CI_Model
         if ($machines) {
             $mc_str = implode("','", $machines);
             $sql .= " AND tc_type IN ('{$mc_str}')";
+        }
+        if ($this->check_studio()) {
+            $sql .= " AND tc_tel != '0'";
         }
         $bind_array = array($tc_start, $tc_end);
         $res = $this->db->query($sql, $bind_array);
@@ -77,7 +80,7 @@ class Ticket_model extends CI_Model
 
         $this->db->trans_start();
         foreach($machines as $m_val) {
-            if ($this->checkTicket($m_val, $tc_start, $tc_end)) {
+            if ($this->check_studio() || $this->checkTicket($m_val, $tc_start, $tc_end)) {
                 $sql = "INSERT INTO dv_ticket(tc_u_id, tc_type, tc_name, tc_tel, tc_email, tc_starttime, tc_endtime, tc_person, tc_price, tc_version) VALUES(?,?,?,?,?,?,?,?,?,?)";
                 $bind_array = array($u_id, $m_val, $tc_name, $tc_tel, $tc_email, $tc_start, $tc_end, $tc_person, $tc_price[$m_val], $tc_version);
                 $res = $this->db->query($sql, $bind_array);
