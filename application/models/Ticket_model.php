@@ -9,7 +9,7 @@ class Ticket_model extends CI_Model
 
     public function getReservationInfo($year, $month, $day, $machines = null) {
         $t_start = strtotime("{$year}-{$month}-{$day} -12 hours");
-        $t_end = strtotime("{$year}-{$month}-{$day} 11:59:59 +1 days");
+        $t_end = strtotime("{$year}-{$month}-{$day} +2 days");
         $tc_start = date("Y-m-d H:i:s", $t_start);
         $tc_end = date("Y-m-d H:i:s", $t_end);
 

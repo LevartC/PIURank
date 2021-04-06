@@ -25,10 +25,6 @@ class Ticket extends CI_Controller {
 		$year = $this->input->get_post('y') ?? null;
 		$month = $this->input->get_post('m') ?? null;
 		$day = $this->input->get_post('d') ?? null;
-		if ($month >= '4' && $day > '7') {
-			alert('스튜디오 무인화 준비로 인해 4월 1일 예약 재개 예정입니다.');
-			exit;
-		}
 		$is_admin = $this->ticket_model->check_studio();
 
 		$time = strtotime("{$year}-{$month}-{$day}");
