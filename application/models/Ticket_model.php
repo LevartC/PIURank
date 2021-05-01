@@ -287,6 +287,66 @@ class Ticket_model extends CI_Model
         }
     }
 
+    public function sendSMS($send_num, $dest_num, $content) {
+
+        $sms_url = $this->config->item('sms_url');
+
+		$data = array(
+			"body" => $content,
+			"sendNo" => $send_num,
+			"recipientList" => null,
+			"userId" => "test",
+		);
+        if (is_array($dest_num)) {
+            foreach($dest_num as $dest_row) {
+		        $data["recipientList"][] = array("recipientNo" => $dest_row);
+            }
+        } else {
+            $data["recipientList"][] = array("recipientNo" => $dest_num);
+        }
+        $json_data = json_encode($data);
+
+		$header = array(
+			'Content-Type: application/json;charset=UTF-8',
+		);
+
+		$ch = curl_init();                                 	// curl 초기화
+        curl_setopt($ch, CURLOPT_URL, $sms_url);            // URL 지정하기
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);    	// 요청 결과를 문자열로 반환
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);      	// connection timeout 10초
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);   	// 원격 서버의 인증서가 유효한지 검사 안함
+		curl_setopt($ch, CURLOPT_POST, true);              	// true시 post 전송
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);  	// POST data
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+
+        $curl_res = curl_exec($ch);
+
+		$res_dec = json_decode($curl_res);
+
+        return $res_dec;
+
+    }
+    public function sendMMS() {
+
+    }
+
+    public function sendTicketMessage($machines, $date, $start_idx, $end_idx, $tc_name, $tc_tel, $tc_email, $tc_person, $price_data, $tc_version = 'XX') {
+
+        $t_start = strtotime("{$date} {$start_idx} hours");
+        $t_end = strtotime("{$date} {$end_idx} hours");
+        $start_date = date('Y-m-d H시', $t_start);
+        $end_date = date('Y-m-d H시', $t_end);
+        $krt_start = date('Y년 n월 j일 H시', $t_start);
+        $krt_end = date('Y년 n월 j일 H시', $t_end);
+        $ticket_date = date('Y년 n월 j일', strtotime($date));
+        $deposit_date = date('Y년 n월 j일 H시', strtotime("+25 hour") < $t_start ? strtotime("+25 hour") : $t_start);
+        
+        $content =
+"안녕하세요, 디비전 스튜디오입니다.
+{$krt_start} ~ {$krt_end} 예약이 접수되었으며,
+
+";
+    }
 
     public function sendEmail($machines, $date, $start_idx, $end_idx, $tc_name, $tc_tel, $tc_email, $tc_person, $price_data, $tc_version = 'XX') {
         $this->load->library('PHPMailer_Lib');

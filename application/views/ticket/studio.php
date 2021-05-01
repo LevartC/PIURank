@@ -90,7 +90,6 @@ require_once $common_dir . "/header.php";
     function addVersions(machine) {
         $("#ver_select").empty();
         $("#ver_select").append($("<option value='XX'>XX</option>"));
-        $("#ver_select").append($("<option value='PRIME2'>PRIME2</option>"));
         if (machine == "FX-정인") {
             $("#ver_select").append($("<option value='FIESTA2'>FIESTA2</option>"));
             $("#ver_select").append($("<option value='FIESTA EX'>FIESTA EX</option>"));
@@ -341,8 +340,8 @@ require_once $common_dir . "/header.php";
                   </button>
                 </div>
                 <div class="modal-body text-left" style="font-size:0.9rem;">
-                  - 본 스튜디오는 24시간 CCTV가 작동중입니다. 이용 수칙을 반드시 지켜주세요.
-                  - 이용 요금은 <span class="text-purple text-bold">예약 후 3시간 내로 입금</span>해주세요. 입금이 완료되지 않을 경우 <span class="text-danger text-bold">예약이 취소</span>될 수 있습니다.<br>
+                  - 본 스튜디오는 <span class="text-success text-bold">무인으로 운영</span>되며, <span class="text-orange text-bold">CCTV가 24시간 작동중</span>입니다. 이용 수칙을 반드시 지켜주세요.<br>
+                  - 이용 요금은 <span class="text-purple text-bold">예약 후 1시간 내로 입금</span>해주세요. 입금이 완료되지 않을 경우 <span class="text-danger text-bold">예약이 취소</span>될 수 있습니다.<br>
                   - 현재 <span class="text-info text-bold">사회적 거리두기 2단계</span> 적용중이므로, 물과 무알콜 음료 이외의 음식 취식은 <span class="text-danger text-bold">일절 금지</span>되어 있습니다.<br>
                   - <span class="text-primary text-bold">예약시각에 맞춰 대여가 시작</span>됩니다. 늦지 않게 도착해주세요.<br>
                   - <span class="text-orange text-bold">무단 불참시 향후 예약이 불가</span>할 수 있습니다.<br>
@@ -358,7 +357,7 @@ require_once $common_dir . "/header.php";
                   - 퇴실시 놓고 가시는 물건은 없으신지 확인해주세요. <span class="text-orange text-bold">디비전 스튜디오는 개인 분실물에 대하여 책임을 지지 않습니다.</span><br>
                   - 스튜디오에 비치된 공용 물품을 소중히 사용해주세요. <span class="text-danger text-bold">물품 도난 및 파손시 민/형사 책임</span>을 물을 수 있습니다.<br>
                   - 미성년자는 <span class="text-info text-bold">9시부터 22시까지 대여가 가능</span>합니다. (22시 ~ 익일 9시 대여 불가)<br>
-                  - 만 14세 미만의 미성년자는 2021년 4월 7일 이후로 이용하실 수 없습니다.<br>
+                  - 만 14세 미만의 미성년자는 스튜디오 무인화로 인해 2021년 4월 7일부로 이용하실 수 없습니다. 양해 부탁드립니다.<br>
                   <br>
                   &nbsp;&nbsp;&nbsp;<span class="text-black text-bold text-large">위 내용에 모두 동의하십니까?</span><br>
                 </div>

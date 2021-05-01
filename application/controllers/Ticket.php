@@ -160,5 +160,36 @@ class Ticket extends CI_Controller {
         }
     }
 
+	public function smstest() {
+		$url = "https://api-sms.cloud.toast.com/sms/v2.4/appKeys/hWOhWAXiVIAkuGUL/sender/sms";
+
+		$data = array(
+			"body" => "testtt",
+			"sendNo" => "01053539253",
+			"recipientList" => null,
+			"userId" => "test",
+		);
+		$data["recipientList"][] = array("recipientNo" => "01085076643");
+		$json_data = json_encode($data);
+		// $json_data = json_encode($data);
+		$header = array(
+			'Content-Type: application/json;charset=UTF-8',
+		);
+		echo $data;
+		$ch = curl_init();                                 	//curl 초기화
+		curl_setopt($ch, CURLOPT_URL, $url);               	//URL 지정하기
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);    	//요청 결과를 문자열로 반환
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);      	//connection timeout 10초
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);   	//원격 서버의 인증서가 유효한지 검사 안함
+		curl_setopt($ch, CURLOPT_POST, true);              	//true시 post 전송
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $data);  		//POST data
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+
+        $curl_res = curl_exec($ch);
+
+		$res_dec = json_decode($curl_res);
+		var_dump($res_dec);
+	}
+
 }
 ?>

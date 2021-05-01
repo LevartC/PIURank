@@ -525,3 +525,4 @@ $config['proxy_ips'] = '';
 // PHPMailer 발송시 사용할 아이디 / 패스워드
 $config['mailer_id'] = 'ticket';
 $config['mailer_pw'] = 'xlzptaoslwj';
+$config['sms_url'] = 'https://api-sms.cloud.toast.com/sms/v2.4/appKeys/hWOhWAXiVIAkuGUL/sender/sms';
