@@ -102,7 +102,7 @@ class Ticket extends CI_Controller {
 			$price_data = $this->ticket_model->getPrice($machines, $date, $start_idx, $end_idx);
 			$tc_res = $this->ticket_model->insertTicket($machines, $u_id, $date, $start_idx, $end_idx, $tc_name, $tc_tel, $tc_email, $tc_person, $price_data, $tc_version);
 			if ($tc_res) {
-				$this->ticket_model->sendEmail($machines, $date, $start_idx, $end_idx, $tc_name, $tc_tel, $tc_email, $tc_person, $price_data, $tc_version);
+				$this->ticket_model->sendEmail_ticket($machines, $date, $start_idx, $end_idx, $tc_name, $tc_tel, $tc_email, $tc_person, $price_data, $tc_version);
 				echo "Y";
 			} else {
 				echo "N";
@@ -163,26 +163,64 @@ class Ticket extends CI_Controller {
 	public function smstest() {
 		$url = "https://api-sms.cloud.toast.com/sms/v2.4/appKeys/hWOhWAXiVIAkuGUL/sender/sms";
 
+		$tmpstr = "문자가 80자를 넘었을때 어떻게 되는가 테스트. 문자가 80자를 넘었을때 어떻게 되는가 테스트.";
+		$len_s = mb_strwidth($tmpstr);
+		$ren = mb_strlen($tmpstr);
 		$data = array(
-			"body" => "testtt",
-			"sendNo" => "01053539253",
+			"body" => "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890",
+			"sendNo" => "01085076643",
 			"recipientList" => null,
 			"userId" => "test",
 		);
-		$data["recipientList"][] = array("recipientNo" => "01085076643");
+		$data["recipientList"][] = array("recipientNo" => "01053539253");
 		$json_data = json_encode($data);
-		// $json_data = json_encode($data);
 		$header = array(
 			'Content-Type: application/json;charset=UTF-8',
 		);
-		echo $data;
 		$ch = curl_init();                                 	//curl 초기화
 		curl_setopt($ch, CURLOPT_URL, $url);               	//URL 지정하기
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);    	//요청 결과를 문자열로 반환
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);      	//connection timeout 10초
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);   	//원격 서버의 인증서가 유효한지 검사 안함
 		curl_setopt($ch, CURLOPT_POST, true);              	//true시 post 전송
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $data);  		//POST data
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);  		//POST data
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+
+        $curl_res = curl_exec($ch);
+
+		$res_dec = json_decode($curl_res);
+
+		print_r($res_dec);
+		echo "<br><br>";
+		echo var_export($res_dec);
+		echo "<br><br>";
+		var_dump($res_dec);
+	}
+
+	public function mmstest() {
+		$url = "https://api-sms.cloud.toast.com/sms/v2.4/appKeys/hWOhWAXiVIAkuGUL/sender/mms";
+
+		$data = array(
+			"title" => "mms테스트",
+			"body" => "testtt",
+			"sendNo" => "01085076643",
+			"recipientList" => null,
+			"userId" => "test",
+		);
+		$data["recipientList"][] = array("recipientNo" => "01053539253");
+		$json_data = json_encode($data);
+		// $json_data = json_encode($data);
+		$header = array(
+			'Content-Type: application/json;charset=UTF-8',
+		);
+		echo $json_data;
+		$ch = curl_init();                                 	//curl 초기화
+		curl_setopt($ch, CURLOPT_URL, $url);               	//URL 지정하기
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);    	//요청 결과를 문자열로 반환
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);      	//connection timeout 10초
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);   	//원격 서버의 인증서가 유효한지 검사 안함
+		curl_setopt($ch, CURLOPT_POST, true);              	//true시 post 전송
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);  		//POST data
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
 
         $curl_res = curl_exec($ch);

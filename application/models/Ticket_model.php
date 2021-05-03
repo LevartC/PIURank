@@ -288,6 +288,9 @@ class Ticket_model extends CI_Model
     }
 
     public function sendSMS($send_num, $dest_num, $content) {
+        if (!$content) {
+            return false;
+        }
 
         $sms_url = $this->config->item('sms_url');
 
@@ -295,7 +298,7 @@ class Ticket_model extends CI_Model
 			"body" => $content,
 			"sendNo" => $send_num,
 			"recipientList" => null,
-			"userId" => "test",
+			"userId" => "ticket",
 		);
         if (is_array($dest_num)) {
             foreach($dest_num as $dest_row) {
@@ -326,7 +329,48 @@ class Ticket_model extends CI_Model
         return $res_dec;
 
     }
-    public function sendMMS() {
+
+    public function sendLMS($send_num, $dest_num, $title = '', $content = '') {
+        $sms_url = $this->config->item('mms_url');
+
+        if (!$content) {
+            return false;
+        }
+
+		$data = array(
+            "title" => $title,
+			"body" => $content,
+			"sendNo" => $send_num,
+			"recipientList" => null,
+			"userId" => "ticket",
+		);
+        if (is_array($dest_num)) {
+            foreach($dest_num as $dest_row) {
+		        $data["recipientList"][] = array("recipientNo" => $dest_row);
+            }
+        } else {
+            $data["recipientList"][] = array("recipientNo" => $dest_num);
+        }
+        $json_data = json_encode($data);
+
+		$header = array(
+			'Content-Type: application/json;charset=UTF-8',
+		);
+
+		$ch = curl_init();                                 	// curl 초기화
+        curl_setopt($ch, CURLOPT_URL, $sms_url);            // URL 지정하기
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);    	// 요청 결과를 문자열로 반환
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);      	// connection timeout 10초
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);   	// 원격 서버의 인증서가 유효한지 검사 안함
+		curl_setopt($ch, CURLOPT_POST, true);              	// true시 post 전송
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);  	// POST data
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+
+        $curl_res = curl_exec($ch);
+
+		$res_dec = json_decode($curl_res);
+
+        return $res_dec;
 
     }
 
@@ -334,21 +378,76 @@ class Ticket_model extends CI_Model
 
         $t_start = strtotime("{$date} {$start_idx} hours");
         $t_end = strtotime("{$date} {$end_idx} hours");
+
         $start_date = date('Y-m-d H시', $t_start);
-        $end_date = date('Y-m-d H시', $t_end);
         $krt_start = date('Y년 n월 j일 H시', $t_start);
+        $end_date = date('Y-m-d H시', $t_end);
         $krt_end = date('Y년 n월 j일 H시', $t_end);
         $ticket_date = date('Y년 n월 j일', strtotime($date));
-        $deposit_date = date('Y년 n월 j일 H시', strtotime("+25 hour") < $t_start ? strtotime("+25 hour") : $t_start);
+        $deposit_date = date('Y년 n월 j일 H시', strtotime("+2 hour") < $t_start ? strtotime("+2 hour") : $t_start);
         
-        $content =
-"안녕하세요, 디비전 스튜디오입니다.
-{$krt_start} ~ {$krt_end} 예약이 접수되었으며,
+        $total_price = number_format($price_data['total']);
+        $sms_content =
+"[DIVISION STUDIO]
+안녕하세요, 디비전 스튜디오입니다.
+{$krt_start} ~ {$krt_end} 예약이 접수되었습니다.
+예약 금액 {$total_price}원을 {$deposit_date}까지 아래 계좌로 입금해주시기 바랍니다.
+<< 입금계좌가 변동되었으므로 필히 확인 부탁드립니다. >>
+입금계좌 : 우리은행 1002-060-554609 (예금주 : 최권식)
 
+※ 입금기한 내 입금하지 않을 경우 예약이 취소될 수 있습니다.
 ";
+        $this->sendLMS();
+        $this->sendEmail();
     }
 
-    public function sendEmail($machines, $date, $start_idx, $end_idx, $tc_name, $tc_tel, $tc_email, $tc_person, $price_data, $tc_version = 'XX') {
+    public function sendDepositMessage($tc_seq) {
+        $sql = "SELECT * FROM dv_ticket WHERE tc_seq = '{$tc_seq}'";
+        $res = $this->db->query($sql);
+        if ($ticket_data = $res->row_array()) {
+            $sms_content =
+"[DIVISION STUDIO]
+{$ticket_data['tc_price']}원 입금이 확인되었습니다.
+
+";
+            $send_num = $this->config->item('send_phone');
+            $this->sendSMS($send_num, $ticket_data['tc_tel'], $sms_content);
+        } else {
+            return false;
+        }
+    }
+
+    
+    public function sendEmail($dest_data, $title, $content) {
+        $this->load->library('PHPMailer_Lib');
+        $mail = $this->phpmailer_lib->load();
+        try {
+            // 기본 설정
+            $mail->SMTPDebug = 0;
+            $mail->isSMTP();
+            $mail->Host = "smtp.piurank.com";
+            $mail->SMTPAuth = true;
+            $mail->Username = $this->config->item('mailer_id');
+            $mail->Password = $this->config->item('mailer_pw');
+            $mail->SMTPSecure = "ssl";
+            $mail->Port = 465;
+            $mail->CharSet = "utf-8";
+            $mail->isHTML(false); // HTML 태그 사용 여부
+            $mail->Subject = $title;
+            $mail->Body = $content;
+            $mail->setFrom("ticket@piurank.com", "DIVISION STUDIO 관리자");
+            foreach($dest_data as $dest_row) {
+                $mail->addAddress($dest_row['addr'], $dest_row['addr']);
+            }
+            // 메일 전송
+            $mail->send();
+        } catch (Exception $e) {
+            echo "Message could not be sent. Mailer Error : ", $mail->ErrorInfo;
+            return false;
+        }
+        return true;
+    }
+    public function sendEmail_ticket($machines, $date, $start_idx, $end_idx, $tc_name, $tc_tel, $tc_email, $tc_person, $price_data, $tc_version = 'XX') {
         $this->load->library('PHPMailer_Lib');
         $mail = $this->phpmailer_lib->load();
         try {

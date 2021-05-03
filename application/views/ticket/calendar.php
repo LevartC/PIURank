@@ -96,7 +96,7 @@ require_once $common_dir . "/header.php";
       </div>
 
       <?php
-        $date = "$year-$month-01"; // 현재 날짜
+        $date = "{$year}-{$month}-01"; // 현재 날짜
         $ts = strtotime($date); // 현재 날짜의 타임스탬프
         $start_week = date('w', $ts); // 1. 시작 요일
         $total_day = date('t', $ts); // 2. 현재 달의 총 날짜

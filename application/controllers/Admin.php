@@ -201,8 +201,14 @@ class Admin extends CI_Controller {
             if ($tc_seq) {
                 $set_res = $this->ticket_model->setDeposit($tc_seq);
                 if ($set_res) {
-                    echo "Y";
-                    return;
+                    $sms_res = $this->ticket_model->sendDepositMessage($tc_seq);
+                    if ($sms_res) {
+                        echo "Y";
+                        return;
+                    } else {
+                        echo "SMS 전송 실패.";
+                        return;
+                    }
                 }
             }
         }
