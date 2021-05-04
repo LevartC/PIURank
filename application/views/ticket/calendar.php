@@ -110,11 +110,12 @@ require_once $common_dir . "/header.php";
       </div>
       <div class="text-center justify-content-center mx-auto my-2 text-black">
         예약하실 날짜를 선택하세요.<br>
-        ※ 당일 예약은 별도로 문의해주시기 바랍니다.<br>
-        (영업시간 외 예약도 문의 받고 있습니다.)<br>
-        문의전화 : 010-2942-2527<br>
-        <a href="https://open.kakao.com/o/sll6X0Oc">카카오톡(DIVISION STUDIO) : (클릭)</a><br>
-        <a href="https://open.kakao.com/me/wind4rce">카카오톡(WINDFORCE) : (클릭)</a>
+        <span style="color:black;"><b>※※ 당일 예약이 가능하도록 개편되었습니다! ※※</b></span><br>
+        문의는 아래의 링크 및 연락처를 이용해주세요.<br>
+        문의전화 : <?=$this->config->item('profile_phone')?><br>
+        <a href="<?=$this->config->item('chat_dvs')?>">DIVISION STUDIO 오픈채팅방 : (클릭)</a><br>
+        <a href="<?=$this->config->item('profile_dvs')?>">카카오톡(DIVISION STUDIO) : (클릭)</a><br>
+        <a href="<?=$this->config->item('profile_wf')?>">카카오톡(WINDFORCE) : (클릭)</a>
       </div>
       <table class="table table-td-hover text-center my-2">
         <thead>

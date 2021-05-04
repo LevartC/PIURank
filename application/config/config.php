@@ -530,3 +530,8 @@ $config['sms_url'] = 'https://api-sms.cloud.toast.com/sms/v2.4/appKeys/hWOhWAXiV
 $config['mms_url'] = 'https://api-sms.cloud.toast.com/sms/v2.4/appKeys/hWOhWAXiVIAkuGUL/sender/mms';
 // 발송자 폰번호
 $config['send_phone'] = '01085076643';
+// 프로필 정보
+$config['profile_phone'] = '010-8507-6643';
+$config['profile_dvs'] = 'https://open.kakao.com/me/dvstudio';
+$config['profile_wf'] = 'https://open.kakao.com/me/wind4rce';
+$config['chat_dvs'] = 'https://open.kakao.com/o/g9znI1Wc';

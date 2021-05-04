@@ -405,11 +405,14 @@ class Ticket_model extends CI_Model
         $sql = "SELECT * FROM dv_ticket WHERE tc_seq = '{$tc_seq}'";
         $res = $this->db->query($sql);
         if ($ticket_data = $res->row_array()) {
+            $price = number_format($ticket_data['tc_price']);
             $sms_content =
 "[DIVISION STUDIO]
-{$ticket_data['tc_price']}원 입금이 확인되었습니다.
-
+{$ticket_data['tc_name']}님 {$price}원 입금이 확인되었습니다.
+예약일시에 맞추어 방문해주시기 바랍니다.
+감사합니다.
 ";
+            $len = mb_strwidth($sms_content);
             $send_num = $this->config->item('send_phone');
             $this->sendSMS($send_num, $ticket_data['tc_tel'], $sms_content);
         } else {
@@ -519,9 +522,9 @@ class Ticket_model extends CI_Model
  - 만 14세 미만의 미성년자는 법정대리인의 이용 동의서가 필요합니다.
 
 [문의사항↓↓]
-연락처 : 010-2942-2527
-DIVISION STUDIO : https://open.kakao.com/o/sll6X0Oc
-WINDFORCE : https://open.kakao.com/me/wind4rce
+연락처 : {$this->config->item('profile_phone')}
+DIVISION STUDIO : {$this->config->item('profile_dvs')}
+WINDFORCE : {$this->config->item('profile_wf')}
 ";
             // 메일 전송
             $mail->send();

@@ -229,5 +229,9 @@ class Ticket extends CI_Controller {
 		var_dump($res_dec);
 	}
 
+	public function depotest() {
+		$this->ticket_model->sendDepositMessage(376);
+	}
+
 }
 ?>
