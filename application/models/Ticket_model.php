@@ -146,7 +146,7 @@ class Ticket_model extends CI_Model
         return $res_data;
     }
 
-    public function getTicketInfo($all = false) {
+    public function getTicketList($all = false) {
         $sql = "SELECT * FROM dv_ticket WHERE tc_endtime > now() AND tc_tel != '0' ORDER BY tc_starttime, tc_type";
         if ($all) {
             $sql = "SELECT * FROM dv_ticket WHERE tc_tel != '0' ORDER BY tc_starttime, tc_type";
@@ -160,6 +160,12 @@ class Ticket_model extends CI_Model
             }
         }
         return $res_data;
+    }
+
+    public function getTicketInfo($tc_seq) {
+        $sql = "SELECT * FROM dv_ticket WHERE tc_seq = ?";
+        $res = $this->db->query($sql, array($tc_seq));
+        return $res->row_array();
     }
 
     public function getSaleData($page = 0, $page_rows = 10) {
@@ -229,6 +235,7 @@ class Ticket_model extends CI_Model
         $machine_name = array(
 			"W" => "LX-W",
 			"G" => "LX-G",
+			"N" => "LX-N",
             "F" => "FX-정인",
 			"total" => "총합",
         );
@@ -379,15 +386,14 @@ class Ticket_model extends CI_Model
         $t_start = strtotime("{$date} {$start_idx} hours");
         $t_end = strtotime("{$date} {$end_idx} hours");
 
-        $start_date = date('Y-m-d H시', $t_start);
         $krt_start = date('Y년 n월 j일 H시', $t_start);
-        $end_date = date('Y-m-d H시', $t_end);
         $krt_end = date('Y년 n월 j일 H시', $t_end);
-        $ticket_date = date('Y년 n월 j일', strtotime($date));
-        $deposit_date = date('Y년 n월 j일 H시', strtotime("+2 hour") < $t_start ? strtotime("+2 hour") : $t_start);
-        
+        $deposit_limit_hour = $this->config->item('deposit_limit_hour') + 1;
+        $deposit_date = date('Y년 n월 j일 H시', strtotime("+{$deposit_limit_hour} hour") < $t_start ? strtotime("+{$deposit_limit_hour} hour") : $t_start);
+
         $total_price = number_format($price_data['total']);
-        $sms_content =
+        $msg_title = 'DIVISION STUDIO 입금 안내';
+        $msg_content =
 "[DIVISION STUDIO]
 안녕하세요, 디비전 스튜디오입니다.
 {$krt_start} ~ {$krt_end} 예약이 접수되었습니다.
@@ -397,30 +403,112 @@ class Ticket_model extends CI_Model
 
 ※ 입금기한 내 입금하지 않을 경우 예약이 취소될 수 있습니다.
 ";
-        $this->sendLMS();
-        $this->sendEmail();
+        $send_num = $this->config->item('send_phone');
+        $dest_num = $tc_tel;
+        $this->sendLMS($send_num, $dest_num, $msg_title, $msg_content);
     }
 
     public function sendDepositMessage($tc_seq) {
-        $sql = "SELECT * FROM dv_ticket WHERE tc_seq = '{$tc_seq}'";
-        $res = $this->db->query($sql);
-        if ($ticket_data = $res->row_array()) {
-            $price = number_format($ticket_data['tc_price']);
+        $this->db->trans_start();
+        if ($ticket_data = $this->getTicketInfo($tc_seq)) {
+            // 기체명
+            $tmp_type = $this->getMachineName($ticket_data['tc_type']);
+            $tmp_date = date('y-m-d', strtotime($ticket_data['tc_starttime']));
+            $tmp_price = number_format($ticket_data['tc_price']);
             $sms_content =
 "[DIVISION STUDIO]
-{$ticket_data['tc_name']}님 {$price}원 입금이 확인되었습니다.
-예약일시에 맞추어 방문해주시기 바랍니다.
+{$tmp_date}일 {$tmp_type} 예약금
+{$tmp_price}원 입금이 확인되었습니다.
 감사합니다.
 ";
-            $len = mb_strwidth($sms_content);
             $send_num = $this->config->item('send_phone');
-            $this->sendSMS($send_num, $ticket_data['tc_tel'], $sms_content);
+            $sms_res = $this->sendSMS($send_num, $ticket_data['tc_tel'], $sms_content);
+            $lm_res = $this->sendListMessage($tc_seq);
+            if ($sms_res && $lm_res) {
+                $this->db->trans_complete();
+                return true;
+            } else {
+                $this->db->trans_off();
+                return false;
+            }
         } else {
             return false;
         }
     }
+    public function insertListMessage($tc_seq, $machines, $price_data) {
+        $ticket_data = $this->getTicketInfo($tc_seq);
+        $msg_subj = 'DIVISION STUDIO 예약 확정 및 이용 안내';
+        $msg_cont =
+"[DIVISION STUDIO]
+안녕하세요, 디비전 스튜디오입니다.
+디비전 스튜디오 무인 이용 매뉴얼 및 이용 수칙 문서를 첨부하여 드립니다.
 
-    
+https://piurank.com/manual_lx.pdf
+
+※ 스튜디오 도어락 오픈 안내는 시작 10분 전에 안내하여 드립니다.
+※ 입장이 불가한 상황이 발생할 경우 즉시 문의하여 주시기 바랍니다.
+※ 일행분들 모두 매뉴얼을 공유하여 확인해주시기 바랍니다.
+
+감사합니다.
+";
+
+        // 메일 메시지 설정
+        $t_start = strtotime("{$ticket_data['tc_starttime']}");
+        $t_end = strtotime("{$ticket_data['tc_endtime']}");
+        $start_date = date('Y-m-d H시', $t_start);
+        $end_date = date('Y-m-d H시', $t_end);
+        $krt_start = date('Y년 n월 j일 H시', $t_start);
+        $krt_end = date('Y년 n월 j일 H시', $t_end);
+        $ticket_date = date('Y년 n월 j일', strtotime($ticket_data['tc_datetime']));
+        $mail_body = "
+[DIVISION STUDIO]
+안녕하세요, 디비전 스튜디오입니다.
+{$ticket_date}에 예약하신 내역을 안내하여 드립니다.
+예약시각 : {$krt_start} 부터 {$krt_end} 까지
+이름(입금자명) : {$ticket_data['tc_name']} 님
+연락처 : {$ticket_data['tc_tel']}
+이메일 : {$ticket_data['tc_email']}
+버전 : {$ticket_data['tc_version']}
+인원 : {$ticket_data['tc_person']} 명
+[가격]
+";
+        $mc_price = array();
+        foreach ($machines as $mc_code) {
+            $mc_price[] = $this->getMachineName($mc_code) . " - " . number_format($price_data[$mc_code]) . "원";
+        }
+        $total_price = number_format($price_data['total']);
+        $mail_body .= implode(PHP_EOL, $mc_price);
+        $mail_body .= "
+< 총합 {$total_price}원 >
+
+[주의사항 - 반드시 확인해주세요!]
+ - 본 스튜디오는 CCTV가 설치되어 실시간으로 녹화되고 있습니다. 이용 수칙을 위반하지 말아주세요.
+ - 현재 사회적 거리두기 2단계 적용중이므로, 물과 무알콜 음료 이외의 음식 취식은 일절 금지되어 있습니다.
+ - 예약시각에 맞춰 대여가 시작됩니다. 늦지 않게 도착해주세요.
+ - 예약 당일 취소는 불가능하며, 이외 취소 요청은 개별 문의 바랍니다.
+ - 다음 예약자를 위해 예약 종료 10분 전부터 퇴실 준비를 해주세요.
+ - 예약한 기체 외에 다른 기체나 방에 접근하지 말아주세요. (예: LX기체 이용시 FX방 접근 금지)
+ - LX 기체를 1대만 대여할 시 나머지 1대를 다른 팀에서 예약하여 같은 공간에서 이용하게 될 수 있습니다.
+ - 개인 장비로 방송하실 때는 설치 및 철거 시간을 고려하여 예약해주세요.
+ - 스튜디오 안에서 음주, 흡연을 하지 말아주세요.
+ - 발판의 위치를 임의로 움직이지 말아주시고, 발판에 눕거나 앉지 말아주세요.
+ - 발판의 봉에 매달리거나 무리한 힘을 사용하지 말아주세요.
+ - 스튜디오의 벽이나 물건에 낙서를 하지 말아주세요.
+ - 스튜디오에 비치된 공용 물품을 소중히 사용해주세요. 물품 도난 및 파손시 민/형사 책임을 물을 수 있습니다.
+ - 퇴실시 놓고 가시는 물건은 없으신지 확인해주세요. 디비전 스튜디오는 개인 분실물에 대하여 책임을 지지 않습니다.
+ - 미성년자는 9시부터 22시까지 대여가 가능합니다. (22시 ~ 익일 9시 대여 불가)
+ - 만 14세 미만의 미성년자는 법정대리인의 이용 동의서가 필요합니다.
+
+[문의사항↓↓]
+연락처 : {$this->config->item('profile_phone')}
+DIVISION STUDIO : {$this->config->item('profile_dvs')}
+WINDFORCE : {$this->config->item('profile_wf')}
+";
+        $bind_array = array($tc_seq, $msg_subj, $msg_cont, $mail_subj, $mail_body);
+        $sql = "INSERT INTO dv_msg_list(ml_tc_seq, ml_msg_title, ml_msg_content, ml_mail_title, ml_mail_content, ml_send_stack) VALUES(?,?,?,?,?,?)";
+        $this->db->query($sql, )
+    }
+
     public function sendEmail($dest_data, $title, $content) {
         $this->load->library('PHPMailer_Lib');
         $mail = $this->phpmailer_lib->load();
@@ -440,7 +528,7 @@ class Ticket_model extends CI_Model
             $mail->Body = $content;
             $mail->setFrom("ticket@piurank.com", "DIVISION STUDIO 관리자");
             foreach($dest_data as $dest_row) {
-                $mail->addAddress($dest_row['addr'], $dest_row['addr']);
+                $mail->addAddress($dest_row['addr'], $dest_row['name']);
             }
             // 메일 전송
             $mail->send();
@@ -478,8 +566,9 @@ class Ticket_model extends CI_Model
             $mail->addAddress("ticket@piurank.com", "DIVISION STUDIO 관리자");
             $mail->addAddress("eodmalt@piurank.com", "WINDFORCE");
             $mail->isHTML(false); // HTML 태그 사용 여부
-            $mail->Subject = "{$start_date} ~ {$end_date} ({$tc_name} / {$tc_tel})예약 접수됨";
-            $mail->Body = "
+            $tmp_subject = "{$start_date} ~ {$end_date} ({$tc_name} / {$tc_tel})예약 접수됨";
+            $mail->Subject = $tmp_subject;
+            $tmp_body = "
 [DIVISION STUDIO]
 안녕하세요, 디비전 스튜디오입니다.
 {$ticket_date}자 예약 내역을 안내하여 드립니다.
@@ -496,10 +585,10 @@ class Ticket_model extends CI_Model
                 $mc_price[] = $this->getMachineName($mc_code) . " - " . number_format($price_data[$mc_code]) . "원";
             }
             $total_price = number_format($price_data['total']);
-            $mail->Body .= implode(PHP_EOL, $mc_price);
-            $mail->Body .= "
+            $tmp_body .= implode(PHP_EOL, $mc_price);
+            $tmp_body .= "
 < 총합 {$total_price}원 >
-입금계좌 : 우리은행 1002-954-983411 (예금주 : 박소담)
+입금계좌 : 우리은행 1002-060-554609 (예금주 : 최권식)
 [ {$deposit_date}까지 입금해주세요. 시간 내 입금이 되지 않을 경우 예약이 취소될 수 있습니다.]
 
 [주의사항 - 반드시 확인해주세요!]
@@ -526,6 +615,7 @@ class Ticket_model extends CI_Model
 DIVISION STUDIO : {$this->config->item('profile_dvs')}
 WINDFORCE : {$this->config->item('profile_wf')}
 ";
+            $mail->Body = $tmp_body;
             // 메일 전송
             $mail->send();
 

@@ -235,12 +235,7 @@ require_once $common_dir . "/header.php";
         */ ?>
         <div class="col-6 mx-auto my-0 p-0">
           <div class="btn-group-vertical">
-            <?php for ($q = 0; $q < 8; ++$q) : // 새벽시간대 선택 불가
-              $chk_disabled = $resv_data["{$today}{$q}"] ?? "";
-            ?>
-            <button type="button" class="btn btn-primary" value="0" index="<?=$q?>" disabled><?=$q?>:00
-            <?php endfor; ?>
-            <?php for ($q = 8; $q < 12; ++$q) :
+            <?php for ($q = 0; $q < 12; ++$q) :
               $chk_disabled = $resv_data["{$today}{$q}"] ?? "";
             ?>
             <button type="button" id="btn_<?=$today?><?=$q?>" class="btn btn-primary ticket_btn" str="<?=date("Y년 n월 j일", $today_time)?> <?=$q?>시" value="0" index="<?=$q?>"><?=$q?>:00

@@ -102,7 +102,8 @@ class Ticket extends CI_Controller {
 			$price_data = $this->ticket_model->getPrice($machines, $date, $start_idx, $end_idx);
 			$tc_res = $this->ticket_model->insertTicket($machines, $u_id, $date, $start_idx, $end_idx, $tc_name, $tc_tel, $tc_email, $tc_person, $price_data, $tc_version);
 			if ($tc_res) {
-				$this->ticket_model->sendEmail_ticket($machines, $date, $start_idx, $end_idx, $tc_name, $tc_tel, $tc_email, $tc_person, $price_data, $tc_version);
+				$tc_seq = $this->db->insert_id();
+				$this->ticket_model->insertListMessage($machines, $date, $start_idx, $end_idx, $tc_name, $tc_tel, $tc_email, $tc_person, $price_data, $tc_version);
 				echo "Y";
 			} else {
 				echo "N";
@@ -130,6 +131,11 @@ class Ticket extends CI_Controller {
 			echo "이름과 연락처를 올바르게 입력해주세요.";
 		}
 	}
+
+
+
+
+	// TEST //
 
 	public function mailtest() {
 		$this->load->library('PHPMailer_Lib');

@@ -125,7 +125,7 @@ class Admin extends CI_Controller {
 
     public function ticket_all() {
         if ($this->check_studio()) {
-            $ticket_data = $this->ticket_model->getTicketInfo(true);
+            $ticket_data = $this->ticket_model->getTicketList(true);
             $view_data = array(
                 "ticket_data" => $ticket_data,
             );
@@ -134,7 +134,7 @@ class Admin extends CI_Controller {
     }
     public function ticket() {
         if ($this->check_studio()) {
-            $ticket_data = $this->ticket_model->getTicketInfo();
+            $ticket_data = $this->ticket_model->getTicketList();
             $view_data = array(
                 "ticket_data" => $ticket_data,
             );
