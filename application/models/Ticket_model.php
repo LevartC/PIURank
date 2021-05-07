@@ -423,7 +423,7 @@ class Ticket_model extends CI_Model
 ";
             $send_num = $this->config->item('send_phone');
             $sms_res = $this->sendSMS($send_num, $ticket_data['tc_tel'], $sms_content);
-            $lm_res = $this->sendListMessage($tc_seq);
+            $lm_res = $this->insertListMessage($tc_seq);
             if ($sms_res && $lm_res) {
                 $this->db->trans_complete();
                 return true;
@@ -437,13 +437,23 @@ class Ticket_model extends CI_Model
     }
     public function insertListMessage($tc_seq, $machines, $price_data) {
         $ticket_data = $this->getTicketInfo($tc_seq);
+        $t_start = strtotime("{$ticket_data['tc_starttime']}");
+        $t_end = strtotime("{$ticket_data['tc_endtime']}");
+        $start_date = date('Y-m-d H시', $t_start);
+        $end_date = date('Y-m-d H시', $t_end);
+        $krt_start = date('Y년 n월 j일 H시', $t_start);
+        $krt_end = date('Y년 n월 j일 H시', $t_end);
+        $ticket_date = date('Y년 n월 j일', strtotime($ticket_data['tc_datetime']));
         $msg_subj = 'DIVISION STUDIO 예약 확정 및 이용 안내';
         $msg_cont =
 "[DIVISION STUDIO]
 안녕하세요, 디비전 스튜디오입니다.
+{$krt_start} ~ {$krt_end} 예약이 확정되었으며,
+예약 상세 내역은 메일로 보내드렸습니다.
 디비전 스튜디오 무인 이용 매뉴얼 및 이용 수칙 문서를 첨부하여 드립니다.
 
-https://piurank.com/manual_lx.pdf
+LX - https://piurank.com/manual_lx.pdf
+FX 매뉴얼은 준비중입니다.
 
 ※ 스튜디오 도어락 오픈 안내는 시작 10분 전에 안내하여 드립니다.
 ※ 입장이 불가한 상황이 발생할 경우 즉시 문의하여 주시기 바랍니다.
@@ -453,13 +463,7 @@ https://piurank.com/manual_lx.pdf
 ";
 
         // 메일 메시지 설정
-        $t_start = strtotime("{$ticket_data['tc_starttime']}");
-        $t_end = strtotime("{$ticket_data['tc_endtime']}");
-        $start_date = date('Y-m-d H시', $t_start);
-        $end_date = date('Y-m-d H시', $t_end);
-        $krt_start = date('Y년 n월 j일 H시', $t_start);
-        $krt_end = date('Y년 n월 j일 H시', $t_end);
-        $ticket_date = date('Y년 n월 j일', strtotime($ticket_data['tc_datetime']));
+        $mail_subj = "{$start_date} ~ {$end_date} ({$ticket_data['tc_name']} / {$ticket_data['tc_tel']})예약 접수됨";
         $mail_body = "
 [DIVISION STUDIO]
 안녕하세요, 디비전 스튜디오입니다.
@@ -482,7 +486,7 @@ https://piurank.com/manual_lx.pdf
 < 총합 {$total_price}원 >
 
 [주의사항 - 반드시 확인해주세요!]
- - 본 스튜디오는 CCTV가 설치되어 실시간으로 녹화되고 있습니다. 이용 수칙을 위반하지 말아주세요.
+ - 본 스튜디오는 CCTV가 설치되어 실시간으로 녹화되고 있습니다. 이용 수칙을 반드시 지켜주세요.
  - 현재 사회적 거리두기 2단계 적용중이므로, 물과 무알콜 음료 이외의 음식 취식은 일절 금지되어 있습니다.
  - 예약시각에 맞춰 대여가 시작됩니다. 늦지 않게 도착해주세요.
  - 예약 당일 취소는 불가능하며, 이외 취소 요청은 개별 문의 바랍니다.
@@ -494,7 +498,7 @@ https://piurank.com/manual_lx.pdf
  - 발판의 위치를 임의로 움직이지 말아주시고, 발판에 눕거나 앉지 말아주세요.
  - 발판의 봉에 매달리거나 무리한 힘을 사용하지 말아주세요.
  - 스튜디오의 벽이나 물건에 낙서를 하지 말아주세요.
- - 스튜디오에 비치된 공용 물품을 소중히 사용해주세요. 물품 도난 및 파손시 민/형사 책임을 물을 수 있습니다.
+ - 스튜디오에 비치된 공용 물품을 소중히 사용해주세요. 물품 도난 및 파손시 책임을 물을 수 있습니다.
  - 퇴실시 놓고 가시는 물건은 없으신지 확인해주세요. 디비전 스튜디오는 개인 분실물에 대하여 책임을 지지 않습니다.
  - 미성년자는 9시부터 22시까지 대여가 가능합니다. (22시 ~ 익일 9시 대여 불가)
  - 만 14세 미만의 미성년자는 법정대리인의 이용 동의서가 필요합니다.
@@ -506,7 +510,7 @@ WINDFORCE : {$this->config->item('profile_wf')}
 ";
         $bind_array = array($tc_seq, $msg_subj, $msg_cont, $mail_subj, $mail_body);
         $sql = "INSERT INTO dv_msg_list(ml_tc_seq, ml_msg_title, ml_msg_content, ml_mail_title, ml_mail_content, ml_send_stack) VALUES(?,?,?,?,?,?)";
-        $this->db->query($sql, )
+        $this->db->query($sql, $bind_array);
     }
 
     public function sendEmail($dest_data, $title, $content) {
