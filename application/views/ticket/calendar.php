@@ -110,12 +110,11 @@ require_once $common_dir . "/header.php";
       </div>
       <div class="text-center justify-content-center mx-auto my-2 text-black">
         예약하실 날짜를 선택하세요.<br>
-        <span style="color:black;"><b>※※ 당일 예약이 가능하도록 개편되었습니다! ※※</b></span><br>
+        <span style="color:black;"><b>※※ 당일 예약 가능합니다! ※※</b></span><br>
         문의는 아래의 링크 및 연락처를 이용해주세요.<br>
         문의전화 : <?=$this->config->item('profile_phone')?><br>
         <a href="<?=$this->config->item('chat_dvs')?>">DIVISION STUDIO 오픈채팅방 : (클릭)</a><br>
         <a href="<?=$this->config->item('profile_dvs')?>">카카오톡(DIVISION STUDIO) : (클릭)</a><br>
-        <a href="<?=$this->config->item('profile_wf')?>">카카오톡(WINDFORCE) : (클릭)</a>
       </div>
       <table class="table table-td-hover text-center my-2">
         <thead>
@@ -203,8 +202,8 @@ require_once $common_dir . "/header.php";
                     입금계좌
                   </div>
                   <div class="col-9 my-2 text-black">
-                    우리은행 1002-954-983411<br>
-                    예금주 : 박소담
+                    <?=$this->config->item('deposit_addr')?><br>
+                    예금주 : <?=$this->config->item('deposit_owner')?>
                   </div>
                   <div class="col-3 my-2">
                     이 름
@@ -245,8 +244,8 @@ require_once $common_dir . "/header.php";
               </div>
               <div class="modal-body text-left" style="font-size:0.8rem; color:black;">
                 <img src="/img/lx_w.jpg" style="width:100%"></img><br><br>
-                <span style="font-size:1rem; color:darkblue;">&nbsp;[ Version : XX, PRIME2 ]</span><br>
-                &nbsp;WINDFORCE의 LX 기체입니다. (좌측에 위치)<br>
+                <span style="font-size:1rem; color:darkblue;">&nbsp;[ Version : XX ]</span><br>
+                &nbsp;좌측에 위치한 LX-W 기체입니다.<br>
                 &nbsp;호평이 자자하던 (故)강남 KONG과 같은 기종의 모니터이며,<br>
                 &nbsp;(故)이수 짱오락실과 유사한 발판 컨디션으로 세팅하였습니다.<br>
                 &nbsp;방문하신 많은 유저분들이 이 기체에서 좋은 성과를 많이 내고 계십니다.<br>
@@ -304,21 +303,21 @@ require_once $common_dir . "/header.php";
           </div>
         </div>
         &nbsp;
-        <button class="btn border-secondary" style="width:33%; background-color:black; color:white;" type="button" data-toggle="modal" data-target="#lx_g_info">LX-G<br>소개</button>
+        <button class="btn border-secondary" style="width:33%; background-color:gold; color:black;" type="button" data-toggle="modal" data-target="#lx_g_info">LX-N<br>소개</button>
         <div class="modal fade" id="lx_g_info" tabindex="-1" role="dialog" aria-labelledby="lx_g_info" aria-hidden="true">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title text-black">LX-G 기체 소개</h5>
+                <h5 class="modal-title text-black">LX-N 기체 소개</h5>
                 <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">×</span>
                 </button>
               </div>
               <div class="modal-body text-left" style="font-size:0.8rem; color:black;">
-                <img src="/img/lx_g.jpg" style="width:100%"></img><br><br>
-                <span style="font-size:1rem; color:darkblue;">&nbsp;[ Version : XX, PRIME2 ]</span><br>
-                &nbsp;GIMGIMGI의 LX 기체입니다. (우측에 위치)<br>
-                &nbsp;꾸준히 관리하여 기체의 상태가 매우 좋습니다.<br>
+                <!--<img src="/img/lx_n.jpg" style="width:100%"></img><br><br>-->
+                ( 사진 준비중입니다. )<br><br>
+                <span style="font-size:1rem; color:darkblue;">&nbsp;[ Version : XX ]</span><br>
+                &nbsp;5월 10일부터 새롭게 투입된 우측의 LX-N 기체입니다.<br>
                 &nbsp;발판 단차가 거의 없는 무턱으로 튜닝되어 있으며,<br>
                 &nbsp;턱이 없는 발판을 원하시는 분들에게 제격입니다.<br>
                 ※ 방송 가능합니다.<br>
@@ -468,11 +467,11 @@ require_once $common_dir . "/header.php";
         </div>
         <table class="table table-bordered border-secondary text-center my-2">
           <tr>
-            <td colspan="2" class="text-black">평일 0시 ~ <span class="text-primary">주말</span>, <span class="text-danger">공휴일</span> 전날 17시까지</td>
+            <td colspan="2" class="text-black">평일, <span class="text-primary">주말</span>, <span class="text-danger">공휴일</span></td>
           </tr>
           <tr>
             <th style="width:50%" class="text-black">
-              <span class="text-primary">LX-W</span> / <span class="text-success">LX-G</span><br>
+              <span class="text-primary">LX-W</span> / <span class="text-success">LX-N</span><br>
               8,000원
             </td>
             <th style="width:50%" class="text-black">
@@ -480,22 +479,11 @@ require_once $common_dir . "/header.php";
               7,000원
             </td>
           </tr>
-          <tr>
-            <td colspan="2" class="text-black"><span class="text-primary">주말</span>, <span class="text-danger">공휴일</span> 전날 17시 ~ 평일 0시까지</td>
-          </tr>
-          <tr>
-            <th style="width:50%" class="text-black">
-              <span class="text-primary">LX-W</span> / <span class="text-success">LX-G</span><br>
-              9,000원
-            </td>
-            <th style="width:50%" class="text-black">
-              <span class="text-info">FX-정인</span><br>
-              8,000원
-            </td>
-          </tr>
         </table>
+        <b><span class="text-black">
         탈의실 구비 / 플레이 전용 신발 구비<br>
         물 기본 제공 (생수 + 종이컵 제공)<br>
+        </b></span>
       </div>
 
     </div>

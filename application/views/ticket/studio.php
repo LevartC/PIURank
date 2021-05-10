@@ -90,7 +90,7 @@ require_once $common_dir . "/header.php";
     function addVersions(machine) {
         $("#ver_select").empty();
         $("#ver_select").append($("<option value='XX'>XX</option>"));
-        if (machine == "FX-정인") {
+        if (machine == "FX-정인" && 0) {
             $("#ver_select").append($("<option value='FIESTA2'>FIESTA2</option>"));
             $("#ver_select").append($("<option value='FIESTA EX'>FIESTA EX</option>"));
             $("#ver_select").append($("<option value='NXA'>NXA</option>"));
@@ -186,7 +186,7 @@ require_once $common_dir . "/header.php";
               <input type="checkbox" name="machines[]" value="W" str="LX-W" class="form-control "><span class="text-primary text-bold">LX-W</span></input>
             </div>
             <div class="col">
-              <input type="checkbox" name="machines[]" value="G" str="LX-G" class="form-control"><span class="text-success text-bold">LX-G</span></input>
+              <input type="checkbox" name="machines[]" value="N" str="LX-N" class="form-control"><span class="text-success text-bold">LX-N</span></input>
             </div>
           </div>
         </div>
@@ -261,7 +261,7 @@ require_once $common_dir . "/header.php";
       </div>
 <?php
     // 당일 예약은 관리자만 가능
-    if ($is_admin || $time != strtotime(date("Y-m-d"))) {
+    if (1 || $is_admin || $time != strtotime(date("Y-m-d"))) {
 ?>
       <form method="post" id="ticket_form">
       <div id="step_3" class="row align-items-center text-center my-2" style="display:none;">
@@ -320,8 +320,8 @@ require_once $common_dir . "/header.php";
           입금계좌
         </div>
         <div class="col-8 my-2 text-black">
-          우리은행 1002-954-983411<br>
-          예금주 : 박소담
+          <?=$this->config->item('deposit_addr')?><br>
+          예금주 : <?=$this->config->item('deposit_owner')?>
         </div>
         <div class="col-12 my-2">
           <button class="btn btn-block btn-primary" type="button" data-toggle="modal" data-target="#notice_modal">예약하기</button>

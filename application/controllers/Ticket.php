@@ -100,10 +100,10 @@ class Ticket extends CI_Controller {
 			$u_id = $this->session->u_id ?? null;
 			$date = date("Y-m-d", strtotime("{$year}-{$month}-{$day}"));
 			$price_data = $this->ticket_model->getPrice($machines, $date, $start_idx, $end_idx);
-			$tc_res = $this->ticket_model->insertTicket($machines, $u_id, $date, $start_idx, $end_idx, $tc_name, $tc_tel, $tc_email, $tc_person, $price_data, $tc_version);
-			if ($tc_res) {
-				$tc_seq = $this->db->insert_id();
-				$this->ticket_model->insertListMessage($machines, $date, $start_idx, $end_idx, $tc_name, $tc_tel, $tc_email, $tc_person, $price_data, $tc_version);
+			$tc_seq = $this->ticket_model->insertTicket($machines, $u_id, $date, $start_idx, $end_idx, $tc_name, $tc_tel, $tc_email, $tc_person, $price_data, $tc_version);
+			if ($tc_seq) {
+				$this->ticket_model->insertListMessage($tc_seq, $machines, $price_data);
+				$this->ticket_model->sendTicketMessage($tc_seq, $price_data);
 				echo "Y";
 			} else {
 				echo "N";

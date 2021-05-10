@@ -540,4 +540,6 @@ $config['profile_wf'] = 'https://open.kakao.com/me/wind4rce';
 $config['chat_dvs'] = 'https://open.kakao.com/o/g9znI1Wc';
 
 // 입금 제한시간
+$config['deposit_addr'] = '우리은행 1002-060-554609';
+$config['deposit_owner'] = '최권식';
 $config['deposit_limit_hour'] = 1;

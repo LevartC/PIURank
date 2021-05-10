@@ -203,6 +203,7 @@ class Admin extends CI_Controller {
                 if ($set_res) {
                     $sms_res = $this->ticket_model->sendDepositMessage($tc_seq);
                     if ($sms_res) {
+                        $this->ticket_model->sendListMessage();
                         echo "Y";
                         return;
                     } else {
