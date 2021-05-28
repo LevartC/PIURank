@@ -352,7 +352,7 @@ require_once $common_dir . "/header.php";
                   - 퇴실시 놓고 가시는 물건은 없으신지 확인해주세요. <span class="text-orange text-bold">디비전 스튜디오는 개인 분실물에 대하여 책임을 지지 않습니다.</span><br>
                   - 스튜디오에 비치된 공용 물품을 소중히 사용해주세요. <span class="text-danger text-bold">물품 도난 및 파손시 민/형사 책임</span>을 물을 수 있습니다.<br>
                   - 미성년자는 <span class="text-info text-bold">9시부터 22시까지 대여가 가능</span>합니다. (22시 ~ 익일 9시 대여 불가)<br>
-                  - 만 14세 미만의 미성년자는 스튜디오 무인화로 인해 2021년 4월 7일부로 이용하실 수 없습니다. 양해 부탁드립니다.<br>
+                  - 만 14세 미만의 미성년자는 법적보호자가 동반할 시에만 입장 가능합니다. (보호자 명의로 예약해주세요.)<br>
                   <br>
                   &nbsp;&nbsp;&nbsp;<span class="text-black text-bold text-large">위 내용에 모두 동의하십니까?</span><br>
                 </div>

@@ -228,6 +228,9 @@ class Admin extends CI_Controller {
         }
         echo "N";
 	}
+	public function sendListMessage() {
+        $this->ticket_model->sendListMessage();
+    }
 
 	public function super_menu() {
 		if ($this->check_super()) {

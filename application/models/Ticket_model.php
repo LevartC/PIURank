@@ -53,6 +53,11 @@ class Ticket_model extends CI_Model
     public function getPrice($machines, $date, $start_idx, $end_idx) {
         $price_info = null;
         $price_info['total'] = 0;
+        // 11시부터 7시까지 5시간 이상 대여시 특별 요금 적용
+        if ($end_idx - 23 >= 5) {
+
+        }
+        // 기본 요금 계산
         for ($i = $start_idx; $i < $end_idx; ++$i) {
             $current_datetime = date("Y-m-d H:i:s", strtotime("{$date} {$i} hours"));
             $sql = "SELECT * FROM dv_price_info WHERE pri_datetime <= ? ORDER BY pri_datetime DESC LIMIT 1";
@@ -79,13 +84,19 @@ class Ticket_model extends CI_Model
         $tc_end = date("Y-m-d H:i:s", $t_end);
 
         $this->db->trans_start();
+        $first_seq = null;
         foreach($machines as $m_val) {
             if ($this->check_studio() || $this->checkTicket($m_val, $tc_start, $tc_end)) {
-                $sql = "INSERT INTO dv_ticket(tc_u_id, tc_type, tc_name, tc_tel, tc_email, tc_starttime, tc_endtime, tc_person, tc_price, tc_version) VALUES(?,?,?,?,?,?,?,?,?,?)";
-                $bind_array = array($u_id, $m_val, $tc_name, $tc_tel, $tc_email, $tc_start, $tc_end, $tc_person, $tc_price[$m_val], $tc_version);
+                $sql = "INSERT INTO dv_ticket(tc_u_id, tc_type, tc_name, tc_tel, tc_email, tc_starttime, tc_endtime, tc_person, tc_price, tc_version, tc_m_seq) VALUES(?,?,?,?,?,?,?,?,?,?,?)";
+                $bind_array = array($u_id, $m_val, $tc_name, $tc_tel, $tc_email, $tc_start, $tc_end, $tc_person, $tc_price[$m_val], $tc_version, $first_seq);
                 $res = $this->db->query($sql, $bind_array);
                 $res_seq = $this->db->insert_id();
-                $sql2 = "INSERT INTO dv_ticket_ready(tc_u_id, tc_type, tc_name, tc_tel, tc_email, tc_starttime, tc_endtime, tc_person, tc_price, tc_version) VALUES(?,?,?,?,?,?,?,?,?,?)";
+                if ($res && $first_seq === null) {
+                    $first_seq = $res_seq;
+                    $sql = "UPDATE dv_ticket SET tc_m_seq = {$first_seq} WHERE tc_seq = {$first_seq}";
+                    $res = $this->db->query($sql);
+                }
+                $sql2 = "INSERT INTO dv_ticket_ready(tc_u_id, tc_type, tc_name, tc_tel, tc_email, tc_starttime, tc_endtime, tc_person, tc_price, tc_version, tc_m_seq) VALUES(?,?,?,?,?,?,?,?,?,?,?)";
                 $res2 = $this->db->query($sql2, $bind_array);
                 if (!($res && $res2)) {
                     $this->db->trans_off();
@@ -97,7 +108,7 @@ class Ticket_model extends CI_Model
             }
         }
         $this->db->trans_complete();
-        return $res_seq;
+        return $first_seq;
     }
 
     public function insertWall($tc_start, $tc_end) {
@@ -169,6 +180,15 @@ class Ticket_model extends CI_Model
         return $res->row_array();
     }
 
+    public function getFamilyTicketInfo($tc_seq) {
+        $sql = "SELECT * FROM dv_ticket WHERE tc_m_seq = ?";
+        $res = $this->db->query($sql, array($tc_seq));
+        $res_data = null;
+        foreach($res->result_array() as $row) {
+            $res_data[] = $row;
+        }
+        return $res_data;
+    }
     public function getSaleData($page = 0, $page_rows = 10) {
         if (!($page || $page_rows)) {
             // 페이지 입력하지 않을시 카운트 등록 ($val[0]['cnt'])
@@ -254,7 +274,8 @@ class Ticket_model extends CI_Model
         $res1 = $this->db->query($sql1, $bind_array);
         $sql2 = "UPDATE dv_ticket_ready SET tc_disabled = 1 WHERE tc_seq = ?";
         $res2 = $this->db->query($sql2, $bind_array);
-        if ($res1 && $res2) {
+        $sl_res = $this->deleteSendLists($tc_seq);
+        if ($res1 && $res2 && $sl_res) {
             $this->db->trans_complete();
             return true;
         } else {
@@ -266,11 +287,17 @@ class Ticket_model extends CI_Model
     public function setDeposit($tc_seq) {
         $this->db->trans_start();
         $bind_array = array($tc_seq);
+        // deposit 세팅
         $sql1 = "UPDATE dv_ticket SET tc_deposit = sysdate() WHERE tc_seq = ?";
         $res1 = $this->db->query($sql1, $bind_array);
         $sql2 = "UPDATE dv_ticket_ready SET tc_deposit = sysdate() WHERE tc_seq = ?";
         $res2 = $this->db->query($sql2, $bind_array);
-        if ($res1 && $res2) {
+        // 리스트 추가
+        $stk_res = $this->setSendStack($tc_seq, '-1');
+        // 도어락 안내 여부 추가
+        $door = $this->input->post_get('door') ?? 0;
+        $door_res = $this->ticket_model->setDoorStatus($tc_seq, $door);
+        if ($res1 && $res2 && $stk_res && $door_res) {
             $this->db->trans_complete();
             return true;
         } else {
@@ -297,6 +324,9 @@ class Ticket_model extends CI_Model
 
     public function sendSMS($send_num, $dest_num, $content = '', $request_date = null) {
         if (!$content) {
+            return false;
+        }
+        if (!$dest_num) {
             return false;
         }
         $sms_url = $this->config->item('sms_url');
@@ -343,6 +373,9 @@ class Ticket_model extends CI_Model
         if (!$content) {
             return false;
         }
+        if (!$dest_num) {
+            return false;
+        }
         $sms_url = $this->config->item('mms_url');
 
 		$data = array(
@@ -386,22 +419,27 @@ class Ticket_model extends CI_Model
 
     public function sendTicketMessage($tc_seq, $price_data) {
         $ticket_data = $this->getTicketInfo($tc_seq);
+
+        $msg_title = 'DIVISION STUDIO 입금 안내';
+        $msg_content = $this->getDepositGuideMessage($ticket_data, $price_data);
+        $send_num = $this->config->item('send_phone');
+        $dest_num = $ticket_data['tc_tel'];
+        $this->sendLMS($send_num, $dest_num, $msg_title, $msg_content);
+    }
+    private function getDepositGuideMessage($ticket_data, $price_data) {
         $t_start = strtotime("{$ticket_data['tc_starttime']}");
         $t_end = strtotime("{$ticket_data['tc_endtime']}");
-
         $krt_start = date('Y년 n월 j일 H시', $t_start);
         $krt_end = date('Y년 n월 j일 H시', $t_end);
         $deposit_limit_hour = $this->config->item('deposit_limit_hour') + 1;
         $deposit_date = date('Y년 n월 j일 H시', strtotime("+{$deposit_limit_hour} hour") < $t_start ? strtotime("+{$deposit_limit_hour} hour") : $t_start);
-
         $total_price = number_format($price_data['total']);
-        $msg_title = 'DIVISION STUDIO 입금 안내';
-        $msg_content =
+
+        $msg =
 "[DIVISION STUDIO]
 안녕하세요, 디비전 스튜디오입니다.
 {$krt_start} ~ {$krt_end} 예약이 접수되었습니다.
 예약 금액 {$total_price}원을 {$deposit_date}까지 아래 계좌로 입금해주시기 바랍니다.
-<< 입금계좌가 변동되었으므로 필히 확인해주시기 바랍니다. >>
 < 입금계좌 >
 {$this->config->item('deposit_addr')}
 (예금주 : {$this->config->item('deposit_owner')})
@@ -416,9 +454,7 @@ class Ticket_model extends CI_Model
 < DIVISION STUDIO 오픈채팅방 >
 {$this->config->item('chat_dvs')}
 ";
-        $send_num = $this->config->item('send_phone');
-        $dest_num = $ticket_data['tc_tel'];
-        $this->sendLMS($send_num, $dest_num, $msg_title, $msg_content);
+        return $msg;
     }
 
     public function sendDepositMessage($tc_seq) {
@@ -435,8 +471,7 @@ class Ticket_model extends CI_Model
 ";
             $send_num = $this->config->item('send_phone');
             $sms_res = $this->sendSMS($send_num, $ticket_data['tc_tel'], $sms_content);
-            $stk_res = $this->setSendStack($tc_seq, '-1');
-            if ($sms_res && $stk_res) {
+            if ($sms_res) {
                 return true;
             } else {
                 return false;
@@ -446,54 +481,33 @@ class Ticket_model extends CI_Model
         }
     }
     private function setSendStack($tc_seq, $stack_val) {
-        $sql = "UPDATE dv_send_list SET ml_send_stack = ml_send_stack + (?) WHERE ml_tc_seq = ?";
+        $sql = "UPDATE dv_send_list SET ml_send_stack = ml_send_stack + (?) WHERE ml_tc_seq = (SELECT tc_m_seq FROM dv_ticket where tc_seq = ?)";
         $bind_array = array($stack_val, $tc_seq);
         $res = $this->db->query($sql, $bind_array);
         return $res;
     }
 
+    public function setDoorStatus($tc_seq, $door) {
+        $sql = "UPDATE dv_send_list SET ml_door = ? WHERE ml_tc_seq = (SELECT tc_m_seq FROM dv_ticket where tc_seq = ?)";
+        $bind_array = array($door, $tc_seq);
+        $res = $this->db->query($sql, $bind_array);
+        return $res;
+    }
+
+    // 예약 확정시 메시지 전송
     public function sendListMessage() {
         $sql = "SELECT * FROM dv_send_list INNER JOIN dv_ticket ON ml_tc_seq = tc_seq WHERE ml_send_stack <= 0";
         $res = $this->db->query($sql);
         foreach($res->result_array() as $row) {
-            // 90바이트 초과시 LMS, 이하시 SMS
-            $send_phone = $this->config->item('send_phone');
-            $req_date = date('Y-m-d H:i', strtotime('1 min'));
-            if (mb_strwidth($row['ml_msg_content']) > 90) {
-                $msg_res = $this->sendLMS($send_phone, $row['tc_tel'], $row['ml_msg_title'], $row['ml_msg_content'], $req_date);
-            } else {
-                $msg_res = $this->sendSMS($send_phone, $row['tc_tel'], $row['ml_msg_content'], $req_date);
+            $send_res = $this->sendCompleteMessage($row['ml_tc_seq']);
+            if ($row['ml_door']) {
+                $this->requestEntranceMessage($row);
             }
-            $ent_res = $this->requestEntranceMessage($row);
-            // 이메일 전송
-            $mail_addr = array(
-                array('addr' => $row['tc_email'], 'name' => $row['tc_name'])
-            );
-            $guest_title = '[DIVISION STUDIO] 예약이 접수되었습니다.';
-            $mail_res = $this->sendEmail($mail_addr, $guest_title, $row['ml_mail_content']);
-            $mail_addr2 = array(
-                array('addr' => 'ticket@piurank.com', 'name' => 'DIVISION STUDIO 관리자'),
-                array('addr' => 'eodmalt@piurank.com', 'name' => 'WINDFORCE'),
-            );
-            $mail_res2 = $this->sendEmail($mail_addr2, $row['ml_mail_title'], $row['ml_mail_content']);
-            if ($msg_res && $ent_res) {
-                $this->saveMsgLog($row['tc_tel'], $row['ml_seq']);
-                $this->saveMailLog($row['tc_email'], $row['ml_seq']);
+            if ($send_res) {
                 $this->deleteSendList($row['ml_seq']);
-            } else {
-                return false;
             }
         }
-    }
-    private function saveMsgLog($dest_num, $ml_seq) {
-        $sql = "INSERT INTO dv_msg_log(ml_tc_seq, ml_datetime, ml_dest_num, ml_msg_title, ml_msg_content, ml_sent_time, ml_status) SELECT ml_tc_seq, ml_datetime, '{$dest_num}' as ml_dest_num, ml_msg_title, ml_msg_content, CURRENT_TIMESTAMP() AS ml_sent_time, '1' as ml_status FROM dv_send_list WHERE ml_seq = ?";
-        $res = $this->db->query($sql, array($ml_seq));
-        return $res;
-    }
-    private function saveMailLog($dest_addr, $ml_seq) {
-        $sql = "INSERT INTO dv_mail_log(ml_tc_seq, ml_datetime, ml_dest_addr, ml_mail_title, ml_mail_content, ml_sent_time, ml_status) SELECT ml_tc_seq, ml_datetime, '{$dest_addr}' as ml_dest_addr, ml_mail_title, ml_mail_content, CURRENT_TIMESTAMP() AS ml_sent_time, '1' as ml_status FROM dv_send_list WHERE ml_seq = ?";
-        $res = $this->db->query($sql, array($ml_seq));
-        return $res;
+        return true;
     }
     private function deleteSendList($ml_seq) {
         $sql = "DELETE FROM dv_send_list WHERE ml_seq = ?";
@@ -501,7 +515,7 @@ class Ticket_model extends CI_Model
         return $res;
     }
     private function requestEntranceMessage($ticket_data) {
-        $request_date = date('Y-m-d H:i', strtotime($ticket_data['tc_starttime'], '-10 min'));
+        $request_date = date('Y-m-d H:i', strtotime($ticket_data['tc_starttime'] . ' -10 min'));
 
         $random_pass = $this->getRandomPassword();
         $pass = '1207';
@@ -516,21 +530,25 @@ class Ticket_model extends CI_Model
         return '1207';
     }
 
-    public function insertListMessage($tc_seq, $machines, $price_data) {
+    private function deleteSendLists($tc_seq) {
+        $sql = "DELETE FROM dv_send_list WHERE ml_tc_seq = ?";
+        $res = $this->db->query($sql, array($tc_seq));
+        return $res;
+    }
+
+    // 예약 확정시 메시지
+    public function sendCompleteMessage($tc_seq) {
         $ticket_data = $this->getTicketInfo($tc_seq);
         $t_start = strtotime("{$ticket_data['tc_starttime']}");
         $t_end = strtotime("{$ticket_data['tc_endtime']}");
-        $start_date = date('Y-m-d H시', $t_start);
-        $end_date = date('Y-m-d H시', $t_end);
         $krt_start = date('Y년 n월 j일 H시', $t_start);
         $krt_end = date('Y년 n월 j일 H시', $t_end);
-        $ticket_date = date('Y년 n월 j일', strtotime($ticket_data['tc_tickettime']));
         $msg_subj = 'DIVISION STUDIO 예약 확정 및 이용 안내';
         $msg_cont =
 "[DIVISION STUDIO]
 안녕하세요, 디비전 스튜디오입니다.
 {$krt_start} ~ {$krt_end} 예약이 확정되었으며,
-예약 상세 내역은 메일로 보내드렸습니다.
+예약 상세 내역은 메일로 전송해드렸습니다.
 디비전 스튜디오 무인 이용 매뉴얼 및 이용 수칙 문서를 첨부하여 드립니다.
 
 < 오시는 길 >
@@ -541,7 +559,8 @@ https://piurank.com/manual_lx.pdf
 
 FX 매뉴얼은 준비중입니다.
 
-※ 스튜디오 도어락 오픈 안내는 시작 10분 전에 안내하여 드립니다.
+※ 스튜디오 도어락 오픈 안내는 대여 시작 10분 전에 안내하여 드립니다.
+(도어락 오픈 안내는 상황에 따라 생략될 수 있습니다.)
 ※ 입장이 불가한 상황이 발생할 경우 즉시 문의하여 주시기 바랍니다.
 ※ 일행분들 모두 매뉴얼을 공유하여 확인해주시기 바랍니다.
 
@@ -555,8 +574,58 @@ FX 매뉴얼은 준비중입니다.
 {$this->config->item('chat_dvs')}
 ";
 
+        // 문자 전송 (90바이트 초과시 LMS, 이하시 SMS)
+        $send_phone = $this->config->item('send_phone');
+        $req_date = date('Y-m-d H:i', strtotime('1 min'));
+        if (mb_strwidth($msg_cont) > 90) {
+            $msg_res = $this->sendLMS($send_phone, $ticket_data['tc_tel'], $msg_subj, $msg_cont, $req_date);
+        } else {
+            $msg_res = $this->sendSMS($send_phone, $ticket_data['tc_tel'], $msg_cont, $req_date);
+        }
+
+        // 이메일 전송
+        $mail_addr = array(
+            array('addr' => $ticket_data['tc_email'], 'name' => $ticket_data['tc_name'])
+        );
+        $mail_body = $this->getTicketMailBody($ticket_data);
+        $mail_subj = '[DIVISION STUDIO] 예약이 접수되었습니다.';
+        $mail_res = $this->sendEmail($mail_addr, $mail_subj, $mail_body);
+        if ($msg_res && $mail_res) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function insertSendList($tc_seq, $send_stack) {
+
+        // SendList 등록
+        $bind_array = array($tc_seq, $send_stack);
+        $sql = "INSERT INTO dv_send_list(ml_tc_seq, ml_send_stack) VALUES(?,?)";
+        $res = $this->db->query($sql, $bind_array);
+
+        // 관리자 메일 등록
+        $ticket_data = $this->getTicketInfo($tc_seq);
+        $mail_body = $this->getTicketMailBody($ticket_data);
+        $t_start = strtotime("{$ticket_data['tc_starttime']}");
+        $t_end = strtotime("{$ticket_data['tc_endtime']}");
+        $start_date = date('Y-m-d H시', $t_start);
+        $end_date = date('Y-m-d H시', $t_end);
+        $mail_admin_subj = "{$start_date} ~ {$end_date} ({$ticket_data['tc_name']} / {$ticket_data['tc_tel']})예약 접수됨";
+        $mail_admin_addr = array(
+            array('addr' => 'ticket@piurank.com', 'name' => 'DIVISION STUDIO 관리자'),
+            array('addr' => 'eodmalt@piurank.com', 'name' => 'WINDFORCE'),
+        );
+        $mail_res = $this->sendEmail($mail_admin_addr, $mail_admin_subj, $mail_body);
+        return $res;
+    }
+    private function getTicketMailBody($ticket_data) {
+        $t_start = strtotime("{$ticket_data['tc_starttime']}");
+        $t_end = strtotime("{$ticket_data['tc_endtime']}");
+        $krt_start = date('Y년 n월 j일 H시', $t_start);
+        $krt_end = date('Y년 n월 j일 H시', $t_end);
+        $ticket_date = date('Y년 n월 j일', strtotime($ticket_data['tc_tickettime']));
         // 메일 메시지 설정
-        $mail_subj = "{$start_date} ~ {$end_date} ({$ticket_data['tc_name']} / {$ticket_data['tc_tel']})예약 접수됨";
         $mail_body =
 "[DIVISION STUDIO]
 안녕하세요, 디비전 스튜디오입니다.
@@ -569,11 +638,14 @@ FX 매뉴얼은 준비중입니다.
 인원 : {$ticket_data['tc_person']} 명
 [가격]
 ";
+        $family_ticket_data = $this->getFamilyTicketInfo($ticket_data['tc_m_seq']);
         $mc_price = array();
-        foreach ($machines as $mc_code) {
-            $mc_price[] = $this->getMachineName($mc_code) . " - " . number_format($price_data[$mc_code]) . "원";
+        $total_price = 0;
+        foreach ($family_ticket_data as $family_ticket_row) {
+            $mc_price[] = $this->getMachineName($family_ticket_row['tc_type']) . " : " . number_format($family_ticket_row['tc_price']) . "원";
+            $total_price += $family_ticket_row['tc_price'];
         }
-        $total_price = number_format($price_data['total']);
+        $total_price = number_format($total_price);
         $mail_body .= implode(PHP_EOL, $mc_price);
         $mail_body .= "
 < 총합 {$total_price}원 >
@@ -594,18 +666,14 @@ FX 매뉴얼은 준비중입니다.
  - 스튜디오에 비치된 공용 물품을 소중히 사용해주세요. 물품 도난 및 파손시 책임을 물을 수 있습니다.
  - 퇴실시 놓고 가시는 물건은 없으신지 확인해주세요. 디비전 스튜디오는 개인 분실물에 대하여 책임을 지지 않습니다.
  - 미성년자는 9시부터 22시까지 대여가 가능합니다. (22시 ~ 익일 9시 대여 불가)
- - 만 14세 미만의 미성년자는 스튜디오 무인화로 인해 2021년 4월 7일부로 이용하실 수 없습니다. 양해 부탁드립니다.
+ - 만 14세 미만의 미성년자는 법적보호자가 동반할 시에만 입장 가능합니다. (보호자 명의로 예약해주세요.)
 
 [문의사항↓↓]
 연락처 : {$this->config->item('profile_phone')}
 DIVISION STUDIO : {$this->config->item('profile_dvs')}
 DIVISION STUDIO 오픈채팅방 : {$this->config->item('chat_dvs')}
 ";
-        $send_stack = count($machines);
-        $bind_array = array($tc_seq, $msg_subj, $msg_cont, $mail_subj, $mail_body, $send_stack);
-        $sql = "INSERT INTO dv_send_list(ml_tc_seq, ml_msg_title, ml_msg_content, ml_mail_title, ml_mail_content, ml_send_stack) VALUES(?,?,?,?,?,?)";
-        $res = $this->db->query($sql, $bind_array);
-        return $res;
+        return $mail_body;
     }
 
     public function sendEmail($dest_data, $title, $content) {

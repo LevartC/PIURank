@@ -102,7 +102,7 @@ class Ticket extends CI_Controller {
 			$price_data = $this->ticket_model->getPrice($machines, $date, $start_idx, $end_idx);
 			$tc_seq = $this->ticket_model->insertTicket($machines, $u_id, $date, $start_idx, $end_idx, $tc_name, $tc_tel, $tc_email, $tc_person, $price_data, $tc_version);
 			if ($tc_seq) {
-				$this->ticket_model->insertListMessage($tc_seq, $machines, $price_data);
+				$this->ticket_model->insertSendList($tc_seq, count($machines));
 				$this->ticket_model->sendTicketMessage($tc_seq, $price_data);
 				echo "Y";
 			} else {
@@ -237,6 +237,15 @@ class Ticket extends CI_Controller {
 
 	public function depotest() {
 		$this->ticket_model->sendDepositMessage(376);
+	}
+
+	public function enttest() {
+		$dest_num = $this->input->get('hp');
+		$ticket_data = array(
+			'tc_starttime' => date('Y-m-d H:i:s', strtotime('+30 min')),
+			'tc_tel' => $dest_num,
+		);
+		$this->ticket_model->requestEntranceMessage();
 	}
 
 }

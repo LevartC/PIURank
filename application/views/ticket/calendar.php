@@ -303,8 +303,8 @@ require_once $common_dir . "/header.php";
           </div>
         </div>
         &nbsp;
-        <button class="btn border-secondary" style="width:33%; background-color:gold; color:black;" type="button" data-toggle="modal" data-target="#lx_g_info">LX-N<br>소개</button>
-        <div class="modal fade" id="lx_g_info" tabindex="-1" role="dialog" aria-labelledby="lx_g_info" aria-hidden="true">
+        <button class="btn border-secondary" style="width:33%; background-color:gold; color:black;" type="button" data-toggle="modal" data-target="#lx_n_info">LX-N<br>소개</button>
+        <div class="modal fade" id="lx_n_info" tabindex="-1" role="dialog" aria-labelledby="lx_n_info" aria-hidden="true">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-header">
@@ -314,29 +314,15 @@ require_once $common_dir . "/header.php";
                 </button>
               </div>
               <div class="modal-body text-left" style="font-size:0.8rem; color:black;">
-                <!--<img src="/img/lx_n.jpg" style="width:100%"></img><br><br>-->
-                ( 사진 준비중입니다. )<br><br>
+                <img src="/img/lx_n.jpg" style="width:100%"></img><br><br>
                 <span style="font-size:1rem; color:darkblue;">&nbsp;[ Version : XX ]</span><br>
-                &nbsp;5월 10일부터 새롭게 투입된 우측의 LX-N 기체입니다.<br>
-                &nbsp;발판 단차가 거의 없는 무턱으로 튜닝되어 있으며,<br>
+                &nbsp;새롭게 투입된 우측의 LX-N 기체입니다.<br>
+                &nbsp;기존 G기체와 같이 발판 단차가 거의 없는 무턱으로 튜닝되어 있으며,<br>
                 &nbsp;턱이 없는 발판을 원하시는 분들에게 제격입니다.<br>
+                &nbsp;최상의 민감도 세팅으로 고레벨 도전 위주 플레이가 용이합니다.<br>
                 ※ 방송 가능합니다.<br>
                 <br><span style="font-size:1rem">
                 [특징]<br>
-                - 타격감
-                <div class="row">
-                  <div class="col-2 text-center">
-                    낮음
-                  </div>
-                  <div class="col-8 my-auto">
-                    <div class="progress">
-                      <div class="progress-bar" role="progressbar" style="width:60%;" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                  </div>
-                  <div class="col-2 text-center">
-                    높음
-                  </div>
-                </div>
                 - 민감도
                 <div class="row">
                   <div class="col-2 text-center">
@@ -344,7 +330,7 @@ require_once $common_dir . "/header.php";
                   </div>
                   <div class="col-8 my-auto">
                     <div class="progress">
-                      <div class="progress-bar bg-success" role="progressbar" style="width:70%;" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
+                      <div class="progress-bar bg-success" role="progressbar" style="width:90%;" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
                   </div>
                   <div class="col-2 text-center">
@@ -358,7 +344,7 @@ require_once $common_dir . "/header.php";
                   </div>
                   <div class="col-8 my-auto">
                     <div class="progress">
-                      <div class="progress-bar bg-info" role="progressbar" style="width:85%;" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100"></div>
+                      <div class="progress-bar bg-info" role="progressbar" style="width:90%;" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
                   </div>
                   <div class="col-2 text-center">
@@ -386,13 +372,13 @@ require_once $common_dir . "/header.php";
               </div>
               <div class="modal-body text-left" style="font-size:0.8rem; color:black;">
                 <img src="/img/fx_j.jpg" style="width:100%"></img><br><br>
-                <span style="font-size:1rem; color:darkblue;">&nbsp;[ Version : XX, PRIME2, FIESTA2, FIESTA EX, NXA, NX2 ]</span><br>
+                <span style="font-size:1rem; color:darkblue;">&nbsp;[ Version : XX, PRIME2, FIESTA2, FIESTA EX, NXA, NX2, NX, ZERO, EXCEED2 ]</span><br>
                 &nbsp;WINDFORCE의 FX 기체입니다. (별실 설치)<br>
                 &nbsp;(故)정인게임장의 고유 모니터 채용 등 기존의 단점을 없애고 장점만을 계승하였으며,
                 &nbsp;독립된 공간에 설치하여 그 시절 그 느낌을 살려 보았습니다.<br>
                 &nbsp;홈케이드로 사용하였기 때문에 발판 단차가 적고(무턱), 발판 소음이 많이 나지 않으며, 무릎 부하가 적은 것이 특징입니다.<br>
                 &nbsp;심혈을 기울여 세팅한 WINDFORCE의 튜닝 노하우가 담겨 있는 발판을 경험하실 수 있습니다.<br>
-                &nbsp;현재 구버전 (FIESTA2, FIESTA EX, NXA, NX2) 플레이가 가능합니다.<br>
+                &nbsp;현재 구버전 플레이는 별도로 문의를 받고 있습니다.<br>
                 ※ 모든 버전 방송 가능합니다.<br>
                 <br><span style="font-size:1rem">
                 [특징]<br>
@@ -461,7 +447,7 @@ require_once $common_dir . "/header.php";
           </div>
         </div>
       </div>
-      <div class="card border-secondary text-center">
+      <div class="card border-secondary text-center pb-2">
         <div class="card-header text-black text-bold text-large">
           스튜디오 이용 요금표 (시간당)
         </div>

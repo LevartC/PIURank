@@ -46,6 +46,11 @@ $(document).on("click", ".tc_cancel", function(e) {
 });
 $(document).on("click", ".tc_deposit", function(e) {
     var str = $(this).attr("str");
+    if (confirm("도어락 오픈 안내문자를 보내시겠습니까?")) {
+        var door = 1;
+    } else {
+        var door = 0;
+    }
     if (confirm(str + " 예약을 입금확인 처리하시겠습니까?")) {
         var seq = $(this).val();
         $.ajax({
@@ -53,6 +58,7 @@ $(document).on("click", ".tc_deposit", function(e) {
             url : "setDeposit",
             data: {
                 "seq" : seq,
+                "door" : door,
             },
             error : function(data) {
                 console.log(data);
