@@ -54,14 +54,18 @@ class Ticket_model extends CI_Model
         $sale_list = array('PICTUREFOREST777', 'ADMIN', 'EODMALT');
         $price_info = null;
         $price_info['total'] = 0;
-        // 11시부터 7시까지 5시간 이상 대여시 특별 요금 적용
-        if ($end_idx - 23 >= 5) {
-
+        $night_start_idx = array(23, 0, 1, 2);
+        $night_flag = false;
+        // 11시부터 7시까지 5시간 이상 대여시 심야 요금 적용
+        if ($end_idx - $start_idx >= 5 && in_array($start_idx%24, $night_start_idx)) {
+            $night_flag = true;
         }
         $u_id = $this->session->u_id ?? null;
         $sale_price = 0;
+        $sale_ment = array();
         if ($u_id && in_array($u_id, $sale_list)) {
             $sale_price = 1000;
+            $sale_ment['special'] = "특별할인";
         }
         // 기본 요금 계산
         for ($i = $start_idx; $i < $end_idx; ++$i) {
@@ -77,9 +81,19 @@ class Ticket_model extends CI_Model
                     $m_idx = "price_" . strtolower($m_val);
                     // 특정 계정 할인요금 적용
                     $h_price = $row[$m_idx] - $sale_price;
+                    if ($i % 24 < 7 || $i % 24 >= 23) {
+                        if ($night_flag) {
+                            $h_price = $row['price_night'];
+                            $sale_ment['night'] = "심야요금";
+                        }
+                    }
                     $price_info[$m_val] += $h_price;
                     $price_info['total'] += $h_price;
                 }
+            }
+            if ($sale_ment) {
+                $tmp_str = implode(", ", $sale_ment);
+                $price_info['ment'] = " ({$tmp_str} 적용)";
             }
         }
         return $price_info;
